@@ -1,0 +1,126 @@
+\paragraph{Goal.}
+The objective of this project is to generate bash commands from natural
+language using a deep neural network. Novitiates often find the terminal
+interface perplexing and are quickly overwhelmed by the syntax of bash
+commands. Even experienced engineers frequently consult man-pages, online
+documentation, and online forms like stackoverflow to learn about the
+particulars of various commands. This project aims to ease that burden on new
+and experienced users alike. An interesting minimum viable product in this
+space in this space is ``aish,'' short for AI-shell, which is part of the
+\href{http://anix.org}{AInix} Kernel project. In the future, we hope that this
+field of research will be able to construct sequences of bash commands,
+automating entire workflows from simple natural language descriptions. However,
+for this project, we focus solely on executing atomic commands.
+\par
+This project is a variant of semantic parsing. In the preceding paper summary,
+we discussed the Seq2SQL model, which is used to translate natural language to
+SQL commands. There are several novel techniques used in this paper that are
+applicable to our project. First, we note that they prune the total number of
+acceptable translations using the structure of the input and the SQL grammar.
+Using ``augmented pointer networks'', the input includes all the tokens
+required to generate SQL come from the input, including column names, SQL
+keywords, and the tokenized question. We would like to try something similar in
+our translator.
+\par
+The paper also introduces an element of reinforcement learning. Because some
+components of the SQL query are order agnostic, i.e. where clause order, they
+cannot simply compare the generated query to the golden query. The reward
+assigned to a given query depends on (1) whether it is a valid SQL query and
+(2) whether it executes to the correct result. This reward is factored in with
+the other loss calculations to calculate total loss on a translation. While we
+would like to do something similar, we have a few issues. First, most of the
+bash commands executed in a naked environment will probably fail, even if
+properly formed, due to missing paths. Second, there is no easy way to tell
+whether a bash command is well-formed. While most commands could be expressed
+as a context-free grammar, generating those from help pages would prove
+prohibitive. In sum, if we incorporate policy generation, we will need to
+define a new loss function, perhaps defined on the number of matches between
+sets of flags.
+
+\paragraph{Task.}
+The task here is to correctly translate natural language commands to bash
+commands. For example, one might query this system with, ``How do I unpack a
+tarball?'' To which the answer would be ``tar -xvzf $<$placeholder$>$''. To
+start, we will attempt to match the golden answer exactly, and measure accuracy
+over the test set.
+
+\paragraph{Data.}
+We will be using the dataset provided by ``The NLC2CMD Challenge'' hosted
+\href{https://nlc2cmd.us-east.mybluemix.net/}{here}. This was a competition
+held in 2020 by NeurIPS. The
+\href{https://github.com/IBM/clai/blob/nlc2cmd/docs/nl2bash-data.md}{dataset}
+consists of 10,000 parallel translations of English and bash. The main
+\href{https://github.com/IBM/clai/tree/nlc2cmd}{github page} for the challenge
+provides several tools for loading and preprocessing the data. However, we plan
+to try several different tokenization techniques, guided by our model
+selections, BART and T5. We also plan to augment the dataset by generating text
+for placeholders, i.e. different paths, for eligible commands.
+
+\paragraph{Methods.}
+We plan on fine-tuning a BART transformer for our model. In addition to tuning
+the model for bash commands, we would like to experiment with the augmented
+pointers in the input for the BART model. Time permitting, we would also like
+to introduce an element reinforcement learning by defining a reward function
+over flag permutations and factoring that into our loss.
+
+\paragraph{Baselines.}
+The competition provides several baselines. The primary baseline is a model
+called Tellina, which achieves 13.8\% accuracy on the dataset. The competition
+winner, Magnum, used OpenNMT, a holistic python framework for neural machine
+translation, and achieved an accuracy score of 53.2\%. While we hope to improve
+on the best model's performance, we suspect that our performance will lie
+somewhere in between these two.
+
+\paragraph{Evaluation.}
+The competition clearly defines a metric for evaluation, which we will use. The
+data consists of natural language to bash command pairs, . Our model, $A$,
+will implement a top 5 translator from a natural language command, $nlc$, to a
+prediction, $c$, and confidence, $\delta$, tuple.
+\[
+	\begin{aligned}
+		G(nlc)
+		 & =\{C\mid \text{Bash command that achieves the task described in} nlc\} \\
+		A : nlc
+		 & \rightarrow \{p \mid p = \langle c, \delta\rangle\}                    \\
+		|A(nlc)|
+		 & \le 5                                                                  \\
+	\end{aligned}
+\]
+The normalized score of a prediction, $p=\langle c, \delta\rangle$ is:
+\[
+	\begin{aligned}
+		S(p)
+		 & = \max_{C\in G(nlc)}\sum_{i\in[1,T]}\frac{\delta}{T}\times\left(
+		\mathbb{I}[U(c)_i=U(C)i]\times\frac{1}{2}\left(
+			1+\frac{1}{N}\left(X\right)\right) -\mathbb{I}[U(c)_i\ne U(C)_i]
+		\right)                                                                    \\
+		\text{where}
+		 &                                                                         \\
+		X
+		 & = 2\times \abs{F(U(c)_i)\cap F(U(C)_i)} - \abs{F(U(c)_i)\cup F(U(C)_i)} \\
+		U(c)
+		 & = \text{sequence of Bash utilities in a command $c$}                    \\
+		F(u)
+		 & = \text{the set of flags for an utility $u$}                            \\
+		T
+		 & = \max\left(\abs{U(c)}, \abs{U(C)}\right)                               \\
+		N
+		 & = \max\left(\abs{F(U(c)_i)}, \abs{F(U(C)_i)}\right)                     \\
+	\end{aligned}
+\]
+The overall score is given by the following:
+\[
+	\begin{aligned}
+		Score(A(nlc))
+		 & =
+		\begin{cases}
+			\max_{p\in A(nlc)}S(p),
+			 & \text{ if }\exists_{p\in A(nlc)}\text{ such that }S(p) > 0 \\
+			\frac{1}{\abs{A(nlc)}}\sum_{p\in A(nlc)}S(p),
+			 & \text{otherwise}                                           \\
+		\end{cases}
+	\end{aligned}
+\]
+This scoring mechanism promotes precision and recall of the correct binary and
+flags, weighted by confidence. There are more caveats and details under the
+Task section of the challenge website.
