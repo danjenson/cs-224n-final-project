@@ -5,6 +5,7 @@
 - semantic parsing to query languages
 - Salesforce semantic parsing
 - converting text to code
+- https://towardsdatascience.com/building-a-python-code-generator-4b476eec5804
 
 ## Tasks
 
