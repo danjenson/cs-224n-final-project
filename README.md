@@ -10,6 +10,9 @@
 ## Tasks
 
 1. Get data
+
+- modularize this
+
 2. Repurpose code:
 
 - extract parts:
@@ -22,10 +25,11 @@
 
 3. Steps:
 
+- ensure using gpu
 - load data
-- load BART
 - process data
 - score predictions
+- load BART
 
 - [starter code](https://github.com/nokia/nlc2cmd-submission-hubris)
 
