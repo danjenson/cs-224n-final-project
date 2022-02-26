@@ -31,7 +31,11 @@ def preprocess(args):
 def templatize(data):
     '''Parse commands and replace identifiers with placeholders.'''
     for d in data:
-        d['cmd'] = ast2template(bash_parser(d['cmd']))
+        try:
+            d['cmd'] = ast2template(bash_parser(d['cmd']))
+        except:
+            print(f'unable to templatize: {d["cmd"]}', file=sys.stderr)
+            continue
     return data
 
 
@@ -58,8 +62,10 @@ def split(data, p_valid, p_test):
 
 
 def write(rows, file):
+    '''Writes rows out to the given file.'''
     with open(file, 'w') as f:
         f.write('\n'.join(rows))
+    print(f'wrote {file}!', file=sys.stderr)
 
 
 def parse_args(argv):
