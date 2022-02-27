@@ -8,12 +8,13 @@ cuda = torch.device('cuda')
 
 
 def post_process(command: str, separator):
+    special_char = "|"
+    max_words = 15;
     # remove query at the start
     input = command[command.find(separator) + len(separator):].split()
     if len(input) == 0:
         return None
     output = [input[0]]
-    special_char = "|"
     counter = 0
     for i in range(len(input) - 1):
         if input[i + 1] != input[i]:
@@ -22,6 +23,8 @@ def post_process(command: str, separator):
                 if counter >= 4:
                     break
             output.append(input[i + 1])
+    if len(output) > 15:
+        output = output[:max_word]
     output = " ".join(output)
     return output
 
