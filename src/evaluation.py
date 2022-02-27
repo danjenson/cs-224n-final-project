@@ -24,7 +24,7 @@ def post_process(command: str, separator):
                     break
             output.append(input[i + 1])
     if len(output) > 15:
-        output = output[:max_word]
+        output = output[:max_words]
     output = " ".join(output)
     return output
 
