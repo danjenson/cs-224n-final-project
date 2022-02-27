@@ -74,7 +74,6 @@ def model(yaml_config_path):
     test_evaluation(test, tokenizer, model, cfg.data.tokens.cmd)
 
 
-
 def load_config_yaml(path):
     '''Load yaml config as a nested namespace object.'''
     with open(path) as f:
