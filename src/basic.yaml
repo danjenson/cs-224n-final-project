@@ -12,6 +12,7 @@ data:
     eos: "<|endoftext|>"
 model:
   name: "gpt2"
+  output_path: "./results/gpt2.model"
 training:
   output_dir: "./results"
   overwrite_output_dir: True

@@ -68,6 +68,7 @@ def model(yaml_config_path):
         eval_dataset=valid_ds,
     )
     trainer.train()
+    torch.save(model.state_dict(), cfg.model.output_path)
 
 
 def load_config_yaml(path):
