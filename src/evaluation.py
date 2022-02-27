@@ -46,9 +46,9 @@ def test_evaluation(testset, tokenizer, model, separator="cmd: "):
         query, truth = line.split(separator)
         prediction = make_prediction(query + separator, tokenizer, model,
                                      separator)
-        print('query: {query}', file=sys.stderr)
-        print('query: {prediction}', file=sys.stderr)
-        print('query: {truth}', file=sys.stderr)
+        print(f'query: {query}', file=sys.stderr)
+        print(f'query: {prediction}', file=sys.stderr)
+        print(f'query: {truth}', file=sys.stderr)
         confidence = 1.0
         metric_val = metric_utils.compute_metric(prediction, confidence, truth)
         total_scores += metric_val
