@@ -118,8 +118,7 @@ def preprocess(command_pairs, tokens):
 def encode(command_pair, tokens):
     '''Encode data for use by the transformer.'''
     nl, cmd = command_pair.nl, templatize(command_pair.cmd)
-    p, eos, nl, cmd = command_pair, tokens.eos, tokens.nl, tokens.cmd
-    return f'{eos} {nl} {p.nl} {cmd} {p.cmd} {eos}'
+    return f'{tokens.eos} {tokens.nl} {nl} {tokens.cmd} {cmd} {tokens.eos}'
 
 
 def templatize(cmd):
