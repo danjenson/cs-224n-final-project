@@ -55,7 +55,8 @@ def model(yaml_config_path):
                                        cfg.data.tokens)
     tokenizer = AutoTokenizer.from_pretrained(cfg.model.name)
     tokenizer.eos_token = cfg.data.tokens.eos
-    tokenizer.pad_token = cfg.data.tokens.eos
+    if not tokenizer.pad_token:
+        tokenizer.pad_token = cfg.data.tokens.eos
     collator = DataCollatorForLanguageModeling(tokenizer, mlm=False)
     train, valid, test = split(encoded_command_pairs, cfg.data.splits)
     train_ds = NL2CMDDataset(train, tokenizer)
@@ -82,7 +83,8 @@ def evaluate(yaml_config_path):
     cfg = load_config_yaml(yaml_config_path)
     tokenizer = AutoTokenizer.from_pretrained(cfg.model.name)
     tokenizer.eos_token = cfg.data.tokens.eos
-    tokenizer.pad_token = cfg.data.tokens.eos
+    if not tokenizer.pad_token:
+        tokenizer.pad_token = cfg.data.tokens.eos
     model = AutoModelForCausalLM.from_pretrained(cfg.model.output_path)
     test_evaluation(test, tokenizer, model, cfg.data.tokens.cmd)
 
