@@ -20,9 +20,9 @@ def make_prediction(input, tokenizer, model, separator):
     tokens = torch.tensor(tokens["input_ids"], dtype=torch.long)
     prediction = model.generate(
         input_ids=tokens,
-        max_length=50,  # max_length less relevant as we do early stopping
+        max_length=100,
         do_sample=False,  # greedy
-        eos_token_id=198,  # halt on newline
+        eos_token_id=tokenizer.eos_token_id,  # halt on newline
         pad_token_id=tokenizer.eos_token_id)
     prediction = ' '.join([
         tokenizer.decode(v, clean_up_tokenization_spaces=False)
