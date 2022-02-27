@@ -1,0 +1,26 @@
+---
+data:
+  sources:
+    - nl2bash-data.json
+  splits:
+    train: 0.96
+    valid: 0.02
+    test: 0.02
+  tokens:
+    nl: "nl: "
+    cmd: "cmd: "
+    eos: "<|endoftext|>"
+model:
+  name: "facebook/bart-large"
+  output_path: "./results/bart.model"
+training:
+  output_dir: "./results/bart"
+  overwrite_output_dir: True
+  num_train_epochs: 5
+  per_device_train_batch_size: 50
+  per_device_eval_batch_size: 50
+  eval_steps: 10
+  save_steps: 1000
+  warmup_steps: 100
+  logging_steps: 10
+  prediction_loss_only: True
