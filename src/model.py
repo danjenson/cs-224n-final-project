@@ -25,6 +25,8 @@ from bashlint.data_tools import (
     ast2template,
 )
 
+from evaluation import test_evaluation
+
 
 class InvalidData(Exception):
     pass
@@ -68,7 +70,9 @@ def model(yaml_config_path):
         eval_dataset=valid_ds,
     )
     trainer.train()
-    torch.save(model.state_dict(), cfg.model.output_path)
+    model.save_pretrained(cfg.model.output_path)
+    test_evaluation(test, tokenizer, model, cfg.data.tokens.cmd)
+
 
 
 def load_config_yaml(path):
