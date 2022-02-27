@@ -44,12 +44,13 @@ def test_evaluation(testset, tokenizer, model, separator="cmd: "):
     #    for line in lines:
     for line in testset:
         query, truth = line.split(separator)
+        truth = truth.replace('<|endoftext|>', '')
         prediction = make_prediction(query + separator, tokenizer, model,
                                      separator)
-        print(f'q: {query}', file=sys.stderr)
+        print(f'\nq: {query}', file=sys.stderr)
         print(f'p: {prediction}', file=sys.stderr)
         print(f't: {truth}', file=sys.stderr)
-        confidence = 1.0
+        confidence = 1
         metric_val = metric_utils.compute_metric(prediction, confidence, truth)
         total_scores += metric_val
     total_scores /= sample_size
