@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-import json
-import sys
 import argparse
+import json
 import random
+import sys
 
 from bashlint.data_tools import (
     bash_parser,
@@ -10,22 +10,33 @@ from bashlint.data_tools import (
 )
 
 
-def preprocess(args):
-    '''Preprocess data, creating train, validation, and test sets.
-
+def preprocess(
+    data,
+    p_test=0.02,
+    p_valid=0.02,
+    sep='<|sep|>',
+    sep_inv='<|inv|>',
+    sep_cmd='<|cmd|>',
+    output_train_file=None,
+    output_valid_file=None,
+    output_test_file=None,
+):
+    '''
     Steps:
     1. Templatize commands.
     2. Encode data for use by transformer.
     3. Partition into train, validation, and test sets.
     '''
-    with open(args.data_json) as f:
-        data = json.load(f).values()
     data = templatize(data)
-    data = encode(data, args.sep, args.sep_inv, args.sep_cmd)
-    train, valid, test = split(data, args.p_valid, args.p_test)
-    write(train, args.output_train_file)
-    write(valid, args.output_valid_file)
-    write(test, args.output_test_file)
+    data = encode(data, sep, sep_inv, sep_cmd)
+    train, valid, test = split(data, p_valid, p_test)
+    if output_train_file:
+        write(train, output_train_file)
+    if output_valid_file:
+        write(valid, output_valid_file)
+    if output_test_file:
+        write(test, output_test_file)
+    return train, valid, test
 
 
 def templatize(data):
@@ -129,4 +140,16 @@ def parse_args(argv):
 
 if __name__ == '__main__':
     args = parse_args(sys.argv)
-    preprocess(args)
+    with open(args.data_json) as f:
+        data = json.load(f).values()
+    preprocess(
+        data,
+        args.p_test,
+        args.p_valid,
+        args.sep,
+        args.sep_inv,
+        args.sep_cmd,
+        args.output_train_file,
+        args.output_valid_file,
+        args.output_test_file,
+    )
