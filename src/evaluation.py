@@ -13,8 +13,14 @@ def post_process(command: str, separator):
     if len(input) == 0:
         return None
     output = [input[0]]
+    special_char = "|"
+    counter = 0
     for i in range(len(input) - 1):
         if input[i + 1] != input[i]:
+            if input[i + 1] == special_char:
+                counter += 1
+                if counter >= 4:
+                    break
             output.append(input[i + 1])
     output = " ".join(output)
     return output
@@ -46,7 +52,7 @@ def test_evaluation(testset, tokenizer, model, separator="cmd: "):
     #    for line in lines:
     for line in testset:
         query, truth = line.split(separator)
-        truth = truth.replace('<|endoftext|>', '')
+        truth = truth.replace('<|endoftext|>', '')[1:]
         prediction = make_prediction(query + separator, tokenizer, model,
                                      separator)
         print(f'\nq: {query}', file=sys.stderr)
