@@ -63,6 +63,7 @@ def model(yaml_config_path):
     test_ds = NL2CMDDataset(test, tokenizer)
     if pathlib.Path(cfg.model.output_path).is_dir():
         model = AutoModelForCausalLM.from_pretrained(cfg.model.output_path)
+        model.to(torch.device('cuda'))
     else:
         model = AutoModelForCausalLM.from_pretrained(cfg.model.name)
         trainer = Trainer(

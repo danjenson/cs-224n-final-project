@@ -4,6 +4,8 @@ import torch
 
 import metric_utils
 
+cuda = torch.device('cuda')
+
 
 def post_process(command: str, separator):
     # remove query at the start
@@ -20,7 +22,7 @@ def post_process(command: str, separator):
 
 def make_prediction(input, tokenizer, model, separator):
     tokens = tokenizer(input, return_tensors="pt")
-    tokens = tokens["input_ids"].clone().detach()
+    tokens = tokens["input_ids"].clone().detach().cuda()
     prediction = model.generate(
         input_ids=tokens,
         max_length=100,
