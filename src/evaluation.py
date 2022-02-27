@@ -1,5 +1,8 @@
-import metric_utils
+import sys
+
 import torch
+
+import metric_utils
 
 
 def post_process(command: str, separator):
@@ -17,7 +20,7 @@ def post_process(command: str, separator):
 
 def make_prediction(input, tokenizer, model, separator):
     tokens = tokenizer(input, return_tensors="pt")
-    tokens = torch.tensor(tokens["input_ids"], dtype=torch.long)
+    tokens = tokens["input_ids"].clone().detach()
     prediction = model.generate(
         input_ids=tokens,
         max_length=100,
@@ -33,19 +36,21 @@ def make_prediction(input, tokenizer, model, separator):
     return prediction
 
 
-def test_evaluation(testset, tokenizer, model, separator="cmd:"):
+def test_evaluation(testset, tokenizer, model, separator="cmd: "):
     #    with open(file_path, 'r') as f:
     #        lines = [x.strip() for x in f.readlines()]
     total_scores = 0.0
     sample_size = len(testset)
     #    for line in lines:
     for line in testset:
-        query = line[:line.find(separator) + len(separator)]
-        ground_truth = line[line.find(separator) + len(separator) + 1:]
-        prediction = make_prediction(query, tokenizer, model, separator)
+        query, truth = line.split(separator)
+        prediction = make_prediction(query + separator, tokenizer, model,
+                                     separator)
+        print('query: {query}', file=sys.stderr)
+        print('query: {prediction}', file=sys.stderr)
+        print('query: {truth}', file=sys.stderr)
         confidence = 1.0
-        metric_val = metric_utils.compute_metric(prediction, confidence,
-                                                 ground_truth)
+        metric_val = metric_utils.compute_metric(prediction, confidence, truth)
         total_scores += metric_val
     total_scores /= sample_size
     print(f"The averaged score is {total_scores}.")
