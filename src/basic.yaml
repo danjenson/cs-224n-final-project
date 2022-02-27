@@ -1,0 +1,17 @@
+---
+data:
+  paths:
+    - nl2bash-data.json
+  splits:
+    train: 0.96
+    validation: 0.02
+    test: 0.02
+  tokenizer:
+    pretrained_model_name_or_path: "bart"
+    bos_token: "<|BOS|>"
+    eos_token: "<|EOS|>"
+    sep_token: "<|SEP|>"
+    pad_token: "<|PAD|>"
+
+model:
+  pretrained_model_name_or_path: "bart"
