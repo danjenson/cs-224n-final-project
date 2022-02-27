@@ -21,4 +21,5 @@ training:
   eval_steps: 10
   save_steps: 100
   warmup_steps: 100
+  logging_steps: 10
   prediction_loss_only: True

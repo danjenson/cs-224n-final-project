@@ -9,8 +9,7 @@ import random
 import sys
 import yaml
 
-import torch
-
+from torch.utils.data.dataset import Dataset
 from transformers import (
     AutoModelForCausalLM,
     AutoTokenizer,
@@ -19,7 +18,7 @@ from transformers import (
     Trainer,
     TrainingArguments,
 )
-from torch.utils.data.dataset import Dataset
+import torch
 
 from bashlint.data_tools import (
     bash_parser,
