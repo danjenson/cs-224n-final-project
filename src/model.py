@@ -53,7 +53,6 @@ def model(yaml_config_path):
     cfg = load_config_yaml(yaml_config_path)
     encoded_command_pairs = preprocess(load_data(cfg.data.sources[0]),
                                        cfg.data.tokens)
-    model = AutoModelForCausalLM.from_pretrained(cfg.model.name)
     tokenizer = AutoTokenizer.from_pretrained(cfg.model.name)
     tokenizer.eos_token = cfg.data.tokens.eos
     tokenizer.pad_token = cfg.data.tokens.eos
@@ -62,15 +61,28 @@ def model(yaml_config_path):
     train_ds = NL2CMDDataset(train, tokenizer)
     valid_ds = NL2CMDDataset(valid, tokenizer)
     test_ds = NL2CMDDataset(test, tokenizer)
-    trainer = Trainer(
-        model=model,
-        args=TrainingArguments(**vars(cfg.training)),
-        data_collator=collator,
-        train_dataset=train_ds,
-        eval_dataset=valid_ds,
-    )
-    trainer.train()
-    model.save_pretrained(cfg.model.output_path)
+    if pathlib.Path(cfg.model.output_path).is_dir():
+        model = AutoModelForCausalLM.from_pretrained(cfg.model.output_path)
+    else:
+        model = AutoModelForCausalLM.from_pretrained(cfg.model.name)
+        trainer = Trainer(
+            model=model,
+            args=TrainingArguments(**vars(cfg.training)),
+            data_collator=collator,
+            train_dataset=train_ds,
+            eval_dataset=valid_ds,
+        )
+        trainer.train()
+        model.save_pretrained(cfg.model.output_path)
+    test_evaluation(test, tokenizer, model, cfg.data.tokens.cmd)
+
+
+def evaluate(yaml_config_path):
+    cfg = load_config_yaml(yaml_config_path)
+    tokenizer = AutoTokenizer.from_pretrained(cfg.model.name)
+    tokenizer.eos_token = cfg.data.tokens.eos
+    tokenizer.pad_token = cfg.data.tokens.eos
+    model = AutoModelForCausalLM.from_pretrained(cfg.model.output_path)
     test_evaluation(test, tokenizer, model, cfg.data.tokens.cmd)
 
 
