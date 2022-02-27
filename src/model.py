@@ -105,7 +105,7 @@ def file_type(path):
 
 
 def load_data_json(path):
-    '''Load json data, returns list of (inv, cmd) pairs.'''
+    '''Load json data, returns list of (nl, cmd) pairs.'''
     with open(path) as f:
         data = json.load(f)
     return [
