@@ -23,6 +23,9 @@ def post_process(command: str, separator):
                 if counter >= 4:
                     break
             output.append(input[i + 1])
+            if(input[i+1][-1] == ";"):
+                break
+    #truncate string
     if len(output) > 15:
         output = output[:max_words]
     output = " ".join(output)
