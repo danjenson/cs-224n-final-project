@@ -1,0 +1,121 @@
+\documentclass{article}
+
+\usepackage[final]{neurips_2019}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{amsfonts}
+\usepackage{nicefrac}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{verbatim}
+\usepackage{xcolor}
+\usepackage{lipsum}
+\usepackage{fullpage,enumitem,amsmath,amssymb,graphicx}
+\newcommand{\note}[1]{\textcolor{blue}{{#1}}}
+\hypersetup{colorlinks}
+\title{
+  Milestone Report: Translating Natural Language to Bash Commands using Deep Neural Networks \\
+  \vspace{1em}
+  \small{\normalfont Stanford CS224N Custom Project  }
+}
+
+\author{
+ Daniel Jenson \\
+  Department of Management Science \& Engineering \\
+  Stanford University \\
+  \texttt{djenson@stanford.edu} \\
+  % Examples of more authors
+  \And
+  Yingxiao Liu \\
+  Department of Civil and Environmental Engineering \\
+  Stanford University \\
+  \texttt{liuyx@stanford.edu} \\
+  % Examples of more authors
+%   \And
+%   Name \\
+%   Department of Computer Science \\
+%   Stanford University \\
+%   \texttt{name@stanford.edu} \\
+%   \And
+%   Name \\
+%   Department of Computer Science \\
+%   Stanford University \\
+%   \texttt{name@stanford.edu}
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+	The objective of this project is to generate bash commands from natural
+	language using a deep neural network. We are experimenting with several models,
+	including GPT-2, BART, and T5, as well as different tokenization schemes to
+	improve model performance on the NLC2CMD dataset. We have successfully
+	trained a GPT-2 model, which has achieved modest performance. Next, we will
+	next train models using BART and T-5. However, we suspect that the majority
+	of gains may be achieved from improved encoding and tokenization.
+\end{abstract}
+
+
+\section{Key Information to include}
+\begin{itemize}
+	\item TA mentor: Ethan A. Chi
+	\item External collaborators: No
+	\item External mentor: No
+	\item Sharing project: No
+\end{itemize}
+
+% {\color{red} This template does not contain the full instruction set for this assignment; please refer back to the milestone instructions PDF.}
+
+\section{Approach}
+The NLC2CMD Challenge was only held once at NeurIPS in 2020 and competing teams
+put out working papers at best, but most often simply scattered notes across
+Github. The dataset is simple a JSON consisting of translation pairs. Because
+of this, a great deal of work had to go into preprocessing and encoding the
+data, as well as becoming familiar with the HuggingFace infrastructure. We used
+several trivial encodings to start, but found only one that achieves decent
+performance, detailed in the dataset section. We found that the effectiveness
+of the encoding varies by model and training objective, so this will have to be
+tuned as we experiment with different models.
+\par
+The competition also provided several utilities of which we availed ourselves.
+First, they released a bash to AST parser, which can also write an AST back to
+a templated form, e.g. replacing file paths with ``File'' and regular
+expressions with the token ``Regex.'' This allows the model to learn
+placeholder values for commands. They also provided a function to compute their
+competition scoring metric, which we use to establish our baseline.
+\par
+We used GPT-2 as our first base model, as most top competitors used this model
+and it appears to provide a solid foundation for causal language modeling. We
+also used the corresponding HuggingFace tokenizer. We experimented with BART,
+but this model requires more work, as repurposing it for casual language
+modeling has proven difficult; many original model weights are left
+uninitialized, since this was not the original training objective of the model.
+Our GPT-2 model achieved a performance of -0.20 using the evaluation criteria
+provided by the competition, which is just shy of the -0.19 achieved by the
+GPT-3 baseline.
+\par
+
+\section{Experiments}
+\input{experiments.tex}
+
+\section{Future work}
+In future work, we will create a much larger dataset, as well as experiment
+with different command line read-evaluate-print-loops (REPL). Outside of bash
+AST parsing, this framework is REPL-agnostic and could be used for any
+collection of structured commands. We will experiment with Nushell, a
+recent shell written in Rust, which has much cleaner syntax than POSIX
+compliant shells. Lastly, we will incorporate input selection for identifiers
+to avoid using templated commands, similar to that used by Zhong, et
+al\cite{zhong2017seq2sql}.
+
+
+\bibliographystyle{unsrt}
+\bibliography{references}
+
+\end{document}

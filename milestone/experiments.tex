@@ -1,0 +1,79 @@
+\subsection{Dataset}
+The dataset we used is from the ``\href{https://nlc2cmd.us-east.mybluemix.net/}{The NLC2CMD Competition},'' consisting of 10,000 parallel translations of English and bash, such as the following:
+\begin{verbatim}
+invocation: Assign permissions 755 to directories in the current directory tree
+cmd: find . -type d -print0 | xargs -0 chmod 755
+\end{verbatim}
+Because the bash commands contain identifiers, such as directory paths, file names, and permissions, we followed the guidance \href{https://github.com/IBM/clai/tree/nlc2cmd}{here} to translate bash commands, such as the one above, into the corresponding template form:
+\begin{verbatim}
+cmd: find Path -type d -print0 | xargs -0 -I chmod Permission
+\end{verbatim}
+Finally, we combined the natural language and bash command pair into a single recording, encoding it with the following format:
+\begin{verbatim}
+<eos> <nl> <natural language command> <cmd> <bash command> <eos> 
+\end{verbatim}
+For training, we created three datasets, training, validation, and test, with
+96\%, 2\%, and 2\% of the data, respectively.
+
+\subsection{Evaluation method}
+We used the cross entropy loss to train the model, but to measure the model performance, we used the metric similar to that defined by the competition. The model allows submission of up to five translations for each natural language command. However, as we have not yet implemented beam search, we submit only one translation with a confidence of 1.0. The metric is computed as follows:
+\begin{align*}
+	S(p) & =\sum_{i\in[1,T]}\frac{1}{T}\times\left(
+	\mathbb{I}[U(c)_i=U(C)i]\times\frac{1}{2}\left(
+		1+\frac{1}{N}\left(X\right)\right) -\mathbb{I}[U(c)_i\ne U(C)_i]
+	\right)
+\end{align*}
+where $U(x)$ is a sequence of bash utilities in a command $x$, $c$ is the
+predicted bash command and $C$ is the ground truth bash command. $X = 2\times
+	|F(U(c)_i)\cap F(U(C)_i)| - |F(U(c)_i)\cup F(U(C)_i)|$ where $F(x)$ refers to
+the set of bash flags in a command $x$. $T$ is the maximum length between
+$U(c)$ and $U(C)$ while $N$ is the maximum size between $F(c)$ and $F(C)$. This
+is a very strict metric penalizing for both incorrect and extra bash
+utilities and flags.
+\subsection{Experimental Details}
+We fine tuned a GPT-2 model from the Huggingface AutoModelForCausalLM
+pretrained models on our dataset. We trained in 5 epochs with a batch size of
+50; we found that further training led to overfitting on the training set and
+worse performance on the validation set. We used the AdamW optimizer with an
+initial learning rate of 5e-5.
+
+\subsection{Results}
+The change of training loss during training has been plotted in the Figure 1
+below. Initially, the loss decreased rapidly but after 3 epochs it became more
+or less stable at around 1.4.
+
+\begin{figure}[ht!]
+	\centering
+	\includegraphics[width = 160px]{training_loss.png}
+	\caption{Cross entropy loss by epoch.}
+	\label{overfitting}
+\end{figure}
+\par
+Using the evaluation metric defined previously, without any post processing of
+the prediction, the model achieves a score of only -0.6 (a dummy model will get
+a score of -1.0 while an oracle will score 1.0). After conducting an error
+analysis, we found that the model tended to output repeated sequences or
+redundant pipelines, which were heavily penalized by the metric. Therefore, a
+post processing function has been added to remove adjacent repeated words, and
+limit the maximum number of pipelines to be 3. Then, our model achieves a score
+of -0.21538. For comparison, the baseline model using GPT-3 scored -0.19.
+\par
+While the score appears quite low, looking at the predictions, we can see that
+the model is making substantively correct predictions. In most cases, the
+prediction is very close to the ground truth:
+\begin{verbatim}
+Prediction: find Path -nouser -exec rm {} \;
+Truth     : find Path -nouser -ok rm {} \; 
+\end{verbatim}
+However, the model has a tendency to ramble, adding additional, unnecessary command sequences:
+\begin{verbatim}
+Prediction: cat File | sort -n -r | grep -v Regex
+Truth     : cat File | sort -r -h 
+\end{verbatim}
+Another example with repeated sequences:
+\begin{verbatim}
+Prediction: mount Regex -o remount,rw Regex mount Regex -o remount,rw 
+            Regex mount Regex -o remount ...
+Truth     : mount -o remount,ro -t yaffs2 Regex Regex 
+\end{verbatim}
+Fixing these more minor mistakes will significantly increase the score.
