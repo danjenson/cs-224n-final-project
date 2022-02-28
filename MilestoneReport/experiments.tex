@@ -1,0 +1,21 @@
+\subsection{Dataset}
+The dataset we used is from the ``The NLC2CMD Challenge'' hosted
+\href{https://nlc2cmd.us-east.mybluemix.net/}{here}, consists of 10,000 parallel translations of English and bash. One example is like
+\begin{verbatim}
+ENG: Assign permissions 755 to directories in the current directory tree
+CMD: find . -type d -print0 | xargs -0 chmod 755
+\end{verbatim}
+Since the bash examples consist specific directory paths, file names and permissions, we followed the guidance \href{https://github.com/IBM/clai/tree/nlc2cmd}{here} to parse the bash command into the corresponding template form as
+\begin{verbatim}
+CMD: find Path -type d -print0 | xargs -0 -I chmod Permission
+\end{verbatim}
+both to better capture the command structure and for simplicity. Finally, we grouped the English and the bash template together into the form
+\begin{verbatim}
+<eos_token> <ENG_token> <English> <CMD_token> <CMD_template> <eos_token> 
+\end{verbatim}
+by inserting tokens, which can be readily fed into the tokenizer provided by Huggingface. The dataset was then split into the training, validation and test sets with a ratio of 0.96 : 0.02 : 0.02.
+
+\subsection{Evaluation method}
+During training, the 
+\subsection{Experimental Details}
+\subsection{Results}
