@@ -73,7 +73,7 @@
 % {\color{red} This template does not contain the full instruction set for this assignment; please refer back to the milestone instructions PDF.}
 
 \section{Approach}
-The NLC2CMD Challenge was only held once at NeurIPS in 2020 and competing teams
+The NLC2CMD Challenge was held only once at NeurIPS in 2020 and competing teams
 put out working papers at best, but most often simply scattered notes across
 Github. The dataset is simple a JSON consisting of translation pairs. Because
 of this, a great deal of work had to go into preprocessing and encoding the
@@ -96,7 +96,7 @@ also used the corresponding HuggingFace tokenizer. We experimented with BART,
 but this model requires more work, as repurposing it for casual language
 modeling has proven difficult; many original model weights are left
 uninitialized, since this was not the original training objective of the model.
-Our GPT-2 model achieved a performance of -0.20 using the evaluation criteria
+Our GPT-2 model achieved a performance of -0.21 using the evaluation criteria
 provided by the competition, which is just shy of the -0.19 achieved by the
 GPT-3 baseline.
 \par

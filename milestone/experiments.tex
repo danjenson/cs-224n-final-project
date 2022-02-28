@@ -16,7 +16,11 @@ For training, we created three datasets, training, validation, and test, with
 96\%, 2\%, and 2\% of the data, respectively.
 
 \subsection{Evaluation method}
-We used the cross entropy loss to train the model, but to measure the model performance, we used the metric similar to that defined by the competition. The model allows submission of up to five translations for each natural language command. However, as we have not yet implemented beam search, we submit only one translation with a confidence of 1.0. The metric is computed as follows:
+We used the cross entropy loss to train the model, but to measure model
+performance we used the metric defined by the competition. The metric permits
+submission of up to five translations for each natural language command.
+However, as we have not yet implemented beam search, we submit only one
+translation with a confidence of 1.0. The metric is computed as follows:
 \begin{align*}
 	S(p) & =\sum_{i\in[1,T]}\frac{1}{T}\times\left(
 	\mathbb{I}[U(c)_i=U(C)i]\times\frac{1}{2}\left(
@@ -40,7 +44,7 @@ initial learning rate of 5e-5.
 \subsection{Results}
 The change of training loss during training has been plotted in the Figure 1
 below. Initially, the loss decreased rapidly but after 3 epochs it became more
-or less stable at around 1.4.
+or less stable around 1.4.
 
 \begin{figure}[ht!]
 	\centering
@@ -76,4 +80,4 @@ Prediction: mount Regex -o remount,rw Regex mount Regex -o remount,rw
             Regex mount Regex -o remount ...
 Truth     : mount -o remount,ro -t yaffs2 Regex Regex 
 \end{verbatim}
-Fixing these more minor mistakes will significantly increase the score.
+Fixing these more minor mistakes will significantly increase the performance.
