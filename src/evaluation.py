@@ -31,7 +31,8 @@ def post_process(command: str, separator):
 
 def make_prediction(input, tokenizer, model, separator):
     tokens = tokenizer(input, return_tensors="pt")
-    tokens = tokens["input_ids"].clone().detach().cuda()
+#    tokens = tokens["input_ids"].clone().detach().cuda()
+    tokens = tokens["input_ids"].clone().detach()
     prediction = model.generate(
         input_ids=tokens,
         max_length=100,
