@@ -16,6 +16,43 @@ both to better capture the command structure and for simplicity. Finally, we gro
 by inserting tokens, which can be readily fed into the tokenizer provided by Huggingface. The dataset was then split into the training, validation and test sets with a ratio of 0.96 : 0.02 : 0.02.
 
 \subsection{Evaluation method}
-During training, the 
+We used the cross entropy loss to train the model, but to measure the model performance, we used the metric similar to that defined by the competition, except only one prediction was sampled by the greedy algorithm (with a confidence of 1.0)
+\begin{align*}
+	S(p) & =\sum_{i\in[1,T]}\frac{1}{T}\times\left(
+		\mathbb{I}[U(c)_i=U(C)i]\times\frac{1}{2}\left(
+			1+\frac{1}{N}\left(X\right)\right) -\mathbb{I}[U(c)_i\ne U(C)_i]
+		\right)                                                               
+\end{align*}
+where $U(x)$ is a sequence of bash utilities in a command $x$, $c$ is the predicted bash and $C$ is the ground truth bash. $X = 2\times |F(U(c)_i)\cap F(U(C)_i)| - |F(U(c)_i)\cup F(U(C)_i)|$ where $F(x)$ refers to the set of bash flags in a command $x$. $T$ is the maximum length between $U(c)$ and $U(C)$ while $N$ is the maximum size between $F(c)$ and $F(C)$. This is a very strict metric penalizing for both incorrect and unnecessary bash utilities/flags.
 \subsection{Experimental Details}
+We fine tuned a GPT-2 model from the Huggingface AutoModelForCausalLM pretrained models on our dataset. The number of epoch was chosen to be 5, since we found that although more epochs could help to reduce training loss, it harmed the evaluation performance of the model on the test set. The batch size was chosen to be 50, and an AdamW optimizer was used with an initial learning rate of 5e-5.
+
 \subsection{Results}
+The change of training loss during training has been plotted in the Figure 1 below. Initially, the loss decreased rapidly but after 3 epochs it became more or less stable at around 1.4. Further training can still reduce the loss, but the evaluation performance on the test set would be harmed.
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width = 160px]{MilestoneReport/training_loss.png} 
+    \caption{Change of training loss with number of epochs.}
+    \label{overfitting}
+\end{figure}
+
+Using the evaluation metric defined previously, without any post processing of the prediction, the model can only achieve a score of -0.6 (a dummy model will get a score of -1.0 while an oracle will get 1.0). By doing an error analysis, we found that the model intended to output repeated sequences, or redundant pipelines, which were heavily penalized by the metric. Therefore, a post processing function has been added to remove adjacent repeated words, and limit the maximum number of pipelines to be 3. Then, our model can get a score of -0.21538. For comparison, the baseline model based on GPT-3 provided by the competition holder got a score of -0.19.
+
+Also the score seemed to be far below 1.0, by taking a closer look at the model predictions, we can see the model actually did well. For most cases, the prediction is very close to or even exactly the same as the ground truth:
+\begin{verbatim}
+Prediction: find Path -nouser -exec rm {} \;
+Truth     : find Path -nouser -ok rm {} \; 
+\end{verbatim}
+However, the model still tended to append wrong pipelines to the right predictions:
+\begin{verbatim}
+Prediction: cat File | sort -n -r | grep -v Regex
+Truth     : cat File | sort -r -h 
+\end{verbatim}
+or even output repeated sequences:
+\begin{verbatim}
+Prediction: mount Regex -o remount,rw Regex mount Regex -o remount,rw 
+            Regex mount Regex -o remount ...
+Truth     : mount -o remount,ro -t yaffs2 Regex Regex 
+\end{verbatim}
+If the above errors can be fixed, the evaluation score will be significantly improved.
