@@ -6,6 +6,7 @@
 - Salesforce semantic parsing
 - converting text to code
 - https://towardsdatascience.com/building-a-python-code-generator-4b476eec5804
+- [translation](https://github.com/huggingface/transformers/blob/master/examples/pytorch/translation/run_translation.py)
 
 ## Tasks
 
