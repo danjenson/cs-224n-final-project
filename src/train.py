@@ -3,6 +3,7 @@ import argparse
 import json
 import logging
 import sys
+import yaml
 from types import SimpleNamespace
 
 import datasets as hfd
