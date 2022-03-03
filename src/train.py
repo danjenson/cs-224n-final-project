@@ -46,7 +46,7 @@ def train(cfg):
         model=model,
         args=hft.TrainingArguments(**vars(cfg.training)),
         train_dataset=ds['train'],
-        test_dataset=ds['test'],
+        eval_dataset=ds['test'],
         tokenizer=tokenizer,
     )
     trainer.train()
