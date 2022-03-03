@@ -1,20 +1,17 @@
 ---
-data:
-  sources:
-    - nl2bash-data.json
+dataset:
+  path: "./tds"
   splits:
-    train: 0.96
-    valid: 0.02
+    seed: 0
     test: 0.02
-  tokens:
-    nl: "nl: "
-    cmd: "cmd: "
-    eos: "<|endoftext|>"
+  translate:
+    source: "nlc"
+    target: "cmd_templated"
 model:
-  name: "facebook/bart-large"
+  checkpoint: "facebook/bart-large"
   output_path: "./results/bart.model"
 training:
-  output_dir: "./results/bart"
+  output_dir: "./results"
   overwrite_output_dir: True
   num_train_epochs: 5
   per_device_train_batch_size: 50
