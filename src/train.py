@@ -21,9 +21,10 @@ logging.basicConfig(
 )
 
 # TODO:
-# 1. compute metric
-# 2. do we need a data loader?
+# 1. create labels in tokenizer
+# 2. compute metric
 # 3. test Causal vs Seq2Seq
+# 4. do we need a data loader?
 
 
 def train(cfg):
@@ -42,7 +43,6 @@ def train(cfg):
         lambda x: tokenizer(x[trans.source], x[trans.target], truncation=True),
         batched=True,
     )
-    # NOTE: Trainer uses DataCollatorWithPadding by default; requires tokenizer
     trainer = hft.Trainer(
         model=model,
         args=hft.TrainingArguments(**vars(cfg.training)),
