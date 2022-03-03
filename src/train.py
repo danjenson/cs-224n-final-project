@@ -99,7 +99,7 @@ def parse_args(argv):
         '-t',
         '--train_yaml',
         help='train a model with given yaml config',
-        action='store_true',
+        default='bart.yaml',
     )
     parser.add_argument(
         '-tds',
