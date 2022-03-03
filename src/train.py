@@ -49,6 +49,7 @@ def train(cfg):
         train_dataset=ds['train'],
         eval_dataset=ds['test'],
         tokenizer=tokenizer,
+        data_collator=collator,
     )
     trainer.train()
     model.save_pretrained(cfg.model.output_path)
