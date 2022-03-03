@@ -30,6 +30,7 @@ def train(cfg):
     '''Train a HuggingFace model.'''
     tokenizer = hft.AutoTokenizer.from_pretrained(cfg.model.checkpoint)
     model = hft.AutoModelForSeq2SeqLM.from_pretrained(cfg.model.checkpoint)
+    collator = hft.DataCollatorForSeq2Seq(tokenizer, model)
     trans = cfg.dataset.translate
     ds = hfd.load_from_disk(cfg.dataset.path)
     ds = ds.train_test_split(
