@@ -26,12 +26,6 @@ logging.basicConfig(
 # 3. test Causal vs Seq2Seq
 # 4. do we need a data loader?
 
-def prepross_function(examples, tokenizer):
-    model_inputs = tokenzier(examples[trans.source])
-    with tokenizer.as_target_tokenizer():
-        labels = tokenizer(examples[trans.target])
-    model_inputs["labels"] = labels["input_ids"]
-    return model_inputs
 
 def train(cfg):
     '''Train a HuggingFace model.'''
@@ -47,8 +41,15 @@ def train(cfg):
     )
 
     # need some modifications here
-    ds_train = ds['train'].map(lambda p: prepross_function(p, tokenizer), remove_columns=[trans.source, trans.target, "cmd"])
-    ds_test  = ds['test'].map(lambda p: prepross_function(p, tokenizer), remove_columns=[trans.source, trans.target, "cmd"])
+    def prepross_function(examples):
+        model_inputs = tokenzier(examples[trans.source], truncation=True)
+        with tokenizer.as_target_tokenizer():
+            labels = tokenizer(examples[trans.target], truncation=True)
+        model_inputs["labels"] = labels["input_ids"]
+        return model_inputs
+
+    ds_train = ds['train'].map(preprocess_function, remove_columns=[trans.source, trans.target, "cmd"])
+    ds_test  = ds['test'].map(preprocess_function, remove_columns=[trans.source, trans.target, "cmd"])
     trainer = hft.Seq2SeqTrainer(
         model=model,
         args=hft.Seq2SeqTrainingArguments(**vars(cfg.training)),
