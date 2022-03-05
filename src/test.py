@@ -41,8 +41,8 @@ def train(cfg):
     )
 
     # need some modifications here
-    def prepross_function(examples):
-        model_inputs = tokenzier(examples[trans.source], truncation=True)
+    def preprocess_function(examples):
+        model_inputs = tokenizer(examples[trans.source], truncation=True)
         with tokenizer.as_target_tokenizer():
             labels = tokenizer(examples[trans.target], truncation=True)
         model_inputs["labels"] = labels["input_ids"]
