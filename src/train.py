@@ -63,7 +63,7 @@ def resolve(model_type):
     return {
         'seq2seq': {
             'tokenizer': hft.AutoTokenizer,
-            'model': hft.AutoModelForCausalLM,
+            'model': hft.AutoModelForSeq2SeqLM,
             'collator': hft.DataCollatorForSeq2Seq,
             'trainer': hft.Seq2SeqTrainer,
             'args': hft.Seq2SeqTrainingArguments,
