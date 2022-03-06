@@ -49,7 +49,8 @@ def train(cfg):
         shuffle=True,
     )
     ds = ds.map(lambda x: d['tokenize']
-                (tokenizer, x, trans.source, trans.target))
+                (tokenizer, x, trans.source, trans.target),
+                batched=True)
     trainer = d['trainer'](
         model=model,
         args=d['args'](**vars(cfg.training)),
@@ -112,11 +113,8 @@ def tokenize_causal(tokenizer, examples, source, target):
         dst='<|target|>',
     )
 
-    def encode(example):
-        a, b = example[source], example[target]
-        return f'{t.bos} {t.src} {a} {t.dst} {b} {t.eos}'
-
-    encoded = list(map(encode, examples))
+    f = lambda a, b: f'{t.bos} {t.src} {a} {t.dst} {b} {t.eos}'
+    encoded = map(f, zip(examples[source], examples[target]))
     return tokenizer(encoded, truncation=True)
 
 
