@@ -1,0 +1,23 @@
+---
+dataset:
+  path: "./tds"
+  splits:
+    seed: 0
+    test: 0.02
+  translate:
+    source: "nlc"
+    target: "cmd_templated"
+model:
+  type: "seq2seq"
+  checkpoint: "google/t5-v1_1-base"
+  output_path: "./results/t5.model"
+training:
+  output_dir: "./results"
+  overwrite_output_dir: True
+  num_train_epochs: 5
+  per_device_train_batch_size: 10
+  per_device_eval_batch_size: 10
+  eval_steps: 10
+  save_steps: 1000
+  warmup_steps: 100
+  logging_steps: 10
