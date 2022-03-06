@@ -91,9 +91,9 @@ def tune(task, tokenizer, model):
     if task == 'causal':
         tokenizer.add_special_tokens(
             {'additional_special_tokens': ['<|source|>', '<|target|>']})
-        model.resize_token_embeddings(len(tokenizer))
     if not tokenizer.pad_token:
-        tokenizer.pad_token = tokenizer.eos_token
+        tokenizer.add_special_tokens({'pad_token': tokenizer.eos_token})
+    model.resize_token_embeddings(len(tokenizer))
     return tokenizer, model
 
 
