@@ -124,7 +124,7 @@ def tokenize_causal(tokenizer, examples, source, target):
 
     f = lambda a, b: f'{t.bos} {t.src} {a} {t.dst} {b} {t.eos}'
     encoded = list(map(f, examples[source], examples[target]))
-    return tokenizer(encoded, truncation=True, mlm=False)
+    return tokenizer(encoded, truncation=True)
 
 
 def build_templated_dataset():
