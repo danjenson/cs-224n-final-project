@@ -91,7 +91,7 @@ def tokenize_seq2seq(tokenizer, examples, source, target):
 
 def tokenize_causal(tokenizer, examples, source, target):
     '''Tokenize for a causal model.'''
-    args = zip(examples, it.repeat((source, target)))
+    args = zip(examples, it.repeat((source, target, tokenizer.eos_token)))
     if not tokenizer.pad_token:
         tokenizer.pad_token = tokenizer.eos_token
     with mp.Pool() as p:
@@ -99,10 +99,10 @@ def tokenize_causal(tokenizer, examples, source, target):
     return tokenizer(encoded, add_special_tokens=True, truncation=True)
 
 
-def encode_causal(example, source, target):
+def encode_causal(example, source, target, eos):
     '''Encode an example for a causal model.'''
     s, t = example[source], example[target]
-    return f'<|{source}|> {s} <|{target}|> {t}'
+    return f'{eos} <|{source}|> {s} <|{target}|> {t} {eos}'
 
 
 def build_templated_dataset():
