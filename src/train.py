@@ -91,7 +91,8 @@ def tokenize_seq2seq(tokenizer, examples, source, target):
 
 def tokenize_causal(tokenizer, examples, source, target):
     '''Tokenize for a causal model.'''
-    args = zip(examples, it.repeat((source, target, tokenizer.eos_token)))
+    args = zip(examples, it.repeat(source), it.repeat(target),
+               it.repeat(tokenizer.eos_token))
     if not tokenizer.pad_token:
         tokenizer.pad_token = tokenizer.eos_token
     with mp.Pool() as p:
