@@ -10,14 +10,14 @@ dataset:
 model:
   task: "seq2seq"
   checkpoint: "facebook/bart-large"
-  output_path: "./results/bart.model"
 training:
   output_dir: "./results"
   overwrite_output_dir: True
   num_train_epochs: 5
   per_device_train_batch_size: 10
   per_device_eval_batch_size: 10
-  eval_steps: 10
-  save_steps: 1000
+  eval_steps: 100
+  save_steps: 10000
   warmup_steps: 100
-  logging_steps: 10
+  logging_steps: 100
+output_path: "./results/bart"

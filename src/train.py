@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 import argparse
-import itertools as it
 import json
 import logging
-import multiprocessing as mp
 import sys
 import yaml
+from pathlib import Path
 from types import SimpleNamespace
 
 import torch
@@ -24,15 +23,16 @@ logging.basicConfig(
     level=logging.DEBUG,
 )
 
-# TODO:
-# 1. Test tokenization / causal LM
+# TODO: table stakes
 # 2. Write evaluate
 # 3. Test GPT-2 vs. BART vs. T-5
 # 4. Try non-templated commands
 # 5. Visualization / errors
 
+# TODO: experiments
 # 1. Different postprocessing
 # 2. Data augmentation
+# 3. Different metrics: https://huggingface.co/docs/datasets/metrics
 
 
 def train(cfg):
@@ -61,7 +61,9 @@ def train(cfg):
         data_collator=collator,
     )
     trainer.train()
-    model.save_pretrained(cfg.model.output_path)
+    p = Path(cfg.output_path)
+    model.save_pretrained(p / 'model')
+    tokenizer.save_pretrained(p / 'tokenizer')
 
 
 def resolve(task):
@@ -153,8 +155,9 @@ def templatize(cmd):
 def evaluate(cfg):
     '''Evaluate a model given a config.'''
     d = resolve(cfg.model.task)
-    tokenizer = d['tokenizer'].from_pretrained(cfg.model.checkpoint)
-    model = d['model'].from_pretrained(cfg.model.output_path)
+    p = Path(cfg.output_path)
+    tokenizer = d['tokenizer'].from_pretrained(p / 'tokenizer')
+    model = d['model'].from_pretrained(p / 'model')
     model.to(torch.device('cuda'))
     # TODO(yingxiao)
     raise NotImplementedError()
