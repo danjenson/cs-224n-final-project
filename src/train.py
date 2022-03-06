@@ -24,15 +24,15 @@ logging.basicConfig(
 )
 
 # TODO: table stakes
-# 2. Write evaluate
-# 3. Test GPT-2 vs. BART vs. T-5
-# 4. Try non-templated commands
-# 5. Visualization / errors
+# - Write evaluate
+# - Test GPT-2 vs. BART vs. T-5
 
 # TODO: experiments
-# 1. Different postprocessing
-# 2. Data augmentation
-# 3. Different metrics: https://huggingface.co/docs/datasets/metrics
+# - Different postprocessing
+# - Data augmentation
+# - Try non-templated commands
+# - Beam search with custom eval?
+# - Different metrics: https://huggingface.co/docs/datasets/metrics
 
 
 def train(cfg):
@@ -195,9 +195,9 @@ def parse_args(argv):
         action='store_true',
     )
     parser.add_argument(
-        '-e',
-        '--evaluate',
-        help='evaluate a model with a given yaml config',
+        '-p',
+        '--predict',
+        help='predict using a model with a given yaml config',
     )
     return parser.parse_args(argv[1:])
 
@@ -211,6 +211,6 @@ if __name__ == '__main__':
     if args.train:
         cfg = load_config(args.train)
         train(cfg)
-    if args.evaluate:
+    if args.predict:
         cfg = load_config(args.evaluate)
-        evaluate(cfg)
+        predict(cfg)
