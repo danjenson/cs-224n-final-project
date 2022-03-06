@@ -48,7 +48,8 @@ def train(cfg):
         seed=cfg.dataset.splits.seed,
         shuffle=True,
     )
-    ds = ds.map(lambda x: tokenize(tokenizer, x, trans.source, trans.target))
+    ds = ds.map(lambda x: tokenize(tokenizer, x, trans.source, trans.target),
+                remove_columns=[trans.source, trans.target, 'cmd'])
     trainer = hft.Trainer(
         model=model,
         args=args,
