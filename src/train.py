@@ -41,6 +41,7 @@ def train(cfg):
     tokenizer = d['tokenizer'].from_pretrained(cfg.model.checkpoint)
     model = d['model'].from_pretrained(cfg.model.checkpoint)
     tokenizer, model = tune(cfg.model.task, tokenizer, model)
+    collator = build_collator(cfg.model.task, d['collator'], tokenizer, model)
     trans = cfg.dataset.translate
     ds = hfd.load_from_disk(cfg.dataset.path)
     ds = ds.train_test_split(
@@ -57,7 +58,7 @@ def train(cfg):
         train_dataset=ds['train'],
         eval_dataset=ds['test'],
         tokenizer=tokenizer,
-        data_collator=d['collator'](tokenizer, model),
+        data_collator=collator,
     )
     trainer.train()
     model.save_pretrained(cfg.model.output_path)
@@ -86,6 +87,7 @@ def resolve(task):
 
 
 def tune(task, tokenizer, model):
+    '''Tune model and tokenizer for specific task.'''
     if task == 'causal':
         tokenizer.add_special_tokens(
             {'additional_special_tokens': ['<|source|>', '<|target|>']})
@@ -93,6 +95,13 @@ def tune(task, tokenizer, model):
     if not tokenizer.pad_token:
         tokenizer.pad_token = tokenizer.eos_token
     return tokenizer, model
+
+
+def build_collator(task, cls, tokenizer, model):
+    '''Build an appropriate data collator.'''
+    if task == 'causal':
+        return cls(tokenizer, model, mlm=False)
+    return cls(tokenizer, model)
 
 
 def tokenize_seq2seq(tokenizer, examples, source, target):
@@ -114,8 +123,8 @@ def tokenize_causal(tokenizer, examples, source, target):
     )
 
     f = lambda a, b: f'{t.bos} {t.src} {a} {t.dst} {b} {t.eos}'
-    encoded = map(f, zip(examples[source], examples[target]))
-    return tokenizer(encoded, truncation=True)
+    encoded = list(map(f, examples[source], examples[target]))
+    return tokenizer(encoded, truncation=True, mlm=False)
 
 
 def build_templated_dataset():
