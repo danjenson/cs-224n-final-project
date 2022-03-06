@@ -35,12 +35,8 @@ logging.basicConfig(
 def train(cfg):
     '''Train a HuffingFace model.'''
     d = resolve(cfg.model.type)
-    ckpt = cfg.model.checkpoint
-    tokenizer = d['tokenizer'].from_pretrained(ckpt)
+    tokenizer = d['tokenizer'].from_pretrained(cfg.model.checkpoint)
     model = d['model'].from_pretrained(cfg.model.checkpoint)
-    collator = d['collator'](tokenizer, model)
-    args = d['args'](**vars(cfg.training))
-    tokenize = d['tokenize']
     trans = cfg.dataset.translate
     ds = hfd.load_from_disk(cfg.dataset.path)
     ds = ds.train_test_split(
@@ -48,15 +44,15 @@ def train(cfg):
         seed=cfg.dataset.splits.seed,
         shuffle=True,
     )
-    ds = ds.map(lambda x: tokenize(tokenizer, x, trans.source, trans.target),
-                remove_columns=[trans.source, trans.target, 'cmd'])
-    trainer = hft.Trainer(
+    ds = ds.map(lambda x: d['tokenize']
+                (tokenizer, x, trans.source, trans.target))
+    trainer = d['trainer'](
         model=model,
-        args=args,
+        args=d['args'](**vars(cfg.training)),
         train_dataset=ds['train'],
         eval_dataset=ds['test'],
         tokenizer=tokenizer,
-        data_collator=collator,
+        data_collator=d['collator'](tokenizer, model),
     )
     trainer.train()
     model.save_pretrained(cfg.model.output_path)
@@ -69,6 +65,7 @@ def resolve(model_type):
             'tokenizer': hft.AutoTokenizer,
             'model': hft.AutoModelForCausalLM,
             'collator': hft.DataCollatorForSeq2Seq,
+            'trainer': hft.Seq2SeqTrainer,
             'args': hft.Seq2SeqTrainingArguments,
             'tokenize': tokenize_seq2seq,
         },
@@ -76,6 +73,7 @@ def resolve(model_type):
             'tokenizer': hft.AutoTokenizer,
             'model': hft.AutoModelForCausalLM,
             'collator': hft.DataCollatorForLanguageModeling,
+            'trainer': hft.Trainer,
             'args': hft.TrainingArguments,
             'tokenize': tokenize_causal,
         },
