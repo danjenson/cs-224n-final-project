@@ -1,17 +1,15 @@
 ---
-data:
-  sources:
-    - nl2bash-data.json
+dataset:
+  path: "./tds"
   splits:
-    train: 0.96
-    valid: 0.02
+    seed: 0
     test: 0.02
-  tokens:
-    nl: "nl: "
-    cmd: "cmd: "
-    eos: "<|endoftext|>"
+  translate:
+    source: "nlc"
+    target: "cmd_templated"
 model:
-  name: "gpt2"
+  type: "causal"
+  checkpoint: "gpt2"
   output_path: "./results/gpt2.model"
 training:
   output_dir: "./results"

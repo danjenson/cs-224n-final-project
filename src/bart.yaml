@@ -8,6 +8,7 @@ dataset:
     source: "nlc"
     target: "cmd_templated"
 model:
+  type: "seq2seq"
   checkpoint: "facebook/bart-large"
   output_path: "./results/bart.model"
 training:
