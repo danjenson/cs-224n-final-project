@@ -26,17 +26,21 @@ logging.basicConfig(
 
 # TODO:
 # 1. Test tokenization / causal LM
-# 2. compute metric
+# 2. Write evaluate
 # 3. Test GPT-2 vs. BART vs. T-5
 # 4. Try non-templated commands
 # 5. Visualization / errors
 
+# 1. Different postprocessing
+# 2. Data augmentation
+
 
 def train(cfg):
     '''Train a HuffingFace model.'''
-    d = resolve(cfg.model.type)
+    d = resolve(cfg.model.task)
     tokenizer = d['tokenizer'].from_pretrained(cfg.model.checkpoint)
     model = d['model'].from_pretrained(cfg.model.checkpoint)
+    tokenizer, model = tune(cfg.model.task, tokenizer, model)
     trans = cfg.dataset.translate
     ds = hfd.load_from_disk(cfg.dataset.path)
     ds = ds.train_test_split(
@@ -58,7 +62,7 @@ def train(cfg):
     model.save_pretrained(cfg.model.output_path)
 
 
-def resolve(model_type):
+def resolve(task):
     '''Resolve task specific classes and functions.'''
     return {
         'seq2seq': {
@@ -77,7 +81,17 @@ def resolve(model_type):
             'args': hft.TrainingArguments,
             'tokenize': tokenize_causal,
         },
-    }[model_type]
+    }[task]
+
+
+def tune(task, tokenizer, model):
+    if task == 'causal':
+        tokenizer.add_special_tokens(
+            {'additional_special_tokens': ['<|source|>', '<|target|>']})
+        model.resize_token_embeddings(len(tokenizer))
+    if not tokenizer.pad_token:
+        tokenizer.pad_token = tokenizer.eos_token
+    return tokenizer, model
 
 
 def tokenize_seq2seq(tokenizer, examples, source, target):
@@ -91,19 +105,18 @@ def tokenize_seq2seq(tokenizer, examples, source, target):
 
 def tokenize_causal(tokenizer, examples, source, target):
     '''Tokenize for a causal model.'''
-    args = zip(examples, it.repeat(source), it.repeat(target),
-               it.repeat(tokenizer.eos_token))
-    if not tokenizer.pad_token:
-        tokenizer.pad_token = tokenizer.eos_token
-    with mp.Pool() as p:
-        encoded = p.starmap(encode_causal, args)
-    return tokenizer(encoded, add_special_tokens=True, truncation=True)
+    t = SimpleNamespace(
+        bos=tokenizer.bos_token,
+        eos=tokenizer.eos_token,
+        src='<|source|>',
+        dst='<|target|>',
+    )
 
+    def encode(example):
+        a, b = example[source], example[target]
+        return f'{t.bos} {t.src} {a} {t.dst} {b} {t.eos}'
 
-def encode_causal(example, source, target, eos):
-    '''Encode an example for a causal model.'''
-    s, t = example[source], example[target]
-    return f'{eos} <|{source}|> {s} <|{target}|> {t} {eos}'
+    return tokenizer(map(encode, examples), truncation=True)
 
 
 def build_templated_dataset():
@@ -131,7 +144,7 @@ def templatize(cmd):
 
 def evaluate(cfg):
     '''Evaluate a model given a config.'''
-    d = resolve(cfg.model.type)
+    d = resolve(cfg.model.task)
     tokenizer = d['tokenizer'].from_pretrained(cfg.model.checkpoint)
     model = d['model'].from_pretrained(cfg.model.output_path)
     model.to(torch.device('cuda'))
