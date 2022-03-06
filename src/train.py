@@ -100,7 +100,7 @@ def tune(task, tokenizer, model):
 def build_collator(task, cls, tokenizer, model):
     '''Build an appropriate data collator.'''
     if task == 'causal':
-        return cls(tokenizer, model, mlm=False)
+        return cls(tokenizer, mlm=False)
     return cls(tokenizer, model)
 
 
@@ -195,7 +195,6 @@ def parse_args(argv):
         '-e',
         '--evaluate',
         help='evaluate a model with a given yaml config',
-        default='bart.yaml',
     )
     return parser.parse_args(argv[1:])
 
