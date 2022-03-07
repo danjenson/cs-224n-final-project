@@ -150,7 +150,7 @@ def score(cfg, postprocess=None):
             example['pred'], 1.0, example[cfg.dataset.translate.target])
         return example
 
-    return ds.map(score)['score'].mean()
+    return np.mean(ds.map(score)['score'])
 
 
 def max_tokens(example, n=15):
