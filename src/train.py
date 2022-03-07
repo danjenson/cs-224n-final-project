@@ -48,9 +48,14 @@ def build_trainer(cfg, finetuned=False):
     collator = build_collator(cfg.model.task, d['collator'], tokenizer, model)
     trans = cfg.dataset.translate
     ds = hfd.load_from_disk(cfg.dataset.path)
-    ds = ds.map(lambda x: d['tokenize']
-                (tokenizer, x, trans.source, trans.target),
-                batched=True)
+    f = lambda x: d['tokenize'](tokenizer, x, trans.source, trans.target)
+    if cfg.model.type == 'causal':
+        ds['train'] = ds['train'].map(f, batched=True)
+        f = lambda x: d['tokenize'](
+            tokenizer, x, trans.source, trans.target, is_test=True)
+        ds['test'] = ds['test'].map(f, batched=True)
+    else:
+        ds = ds.map(f, batched=True)
     return d['trainer'](
         model=model,
         args=d['args'](**vars(cfg.training)),
@@ -101,7 +106,7 @@ def build_collator(task, cls, tokenizer, model):
     return cls(tokenizer, model)
 
 
-def tokenize_seq2seq(tokenizer, examples, source, target):
+def tokenize_seq2seq(tokenizer, examples, source, target, is_test=False):
     '''Tokenize for a seq2seq model.'''
     inputs = tokenizer(examples[source], truncation=True)
     with tokenizer.as_target_tokenizer():
@@ -110,7 +115,7 @@ def tokenize_seq2seq(tokenizer, examples, source, target):
     return inputs
 
 
-def tokenize_causal(tokenizer, examples, source, target):
+def tokenize_causal(tokenizer, examples, source, target, is_test=False):
     '''Tokenize for a causal model.'''
     t = SimpleNamespace(
         bos=tokenizer.bos_token,
@@ -119,8 +124,12 @@ def tokenize_causal(tokenizer, examples, source, target):
         dst='<|target|>',
     )
 
-    f = lambda a, b: f'{t.bos} {t.src} {a} {t.dst} {b} {t.eos}'
-    encoded = list(map(f, examples[source], examples[target]))
+    if is_test:
+        f = lambda a: f'{t.bos} {t.src} {a} {t.dst}'
+        encoded = list(map(f, examples[source]))
+    else:
+        f = lambda a, b: f'{t.bos} {t.src} {a} {t.dst} {b} {t.eos}'
+        encoded = list(map(f, examples[source], examples[target]))
     return tokenizer(encoded, truncation=True)
 
 
@@ -149,27 +158,20 @@ def predict_seq2seq(trainer, ds):
 
 def predict_causal(trainer, ds):
     '''Predict using causal LM.'''
-    # TODO: clean up, this is hacky code
     eos = trainer.tokenizer.eos_token_id
     loader = trainer.get_eval_dataloader(ds)
     decode = trainer.tokenizer.decode
-    target_token = trainer.tokenizer.additional_special_token_ids[-1]
     preds = []
-    pad_id = -100
+    # pad_id = -100
     for batch in loader:
-        texts = []
-        for v in batch:
-            idx = v.index(target_token)
-            v = np.array(v)
-            np.array(v)[idx + 1:] = pad_id
-            texts.append(v)
         ps = trainer.model.generate(
-            input_ids=torch.tensor(texts).cuda(),
+            input_ids=torch.tensor(batch['input_ids']).cuda(),
             max_length=100,
             do_sample=False,
             eos_token_id=eos,
             pad_token_id=eos,
         )
+        # decode(p[p.where(p != pad_id)], skip_special_tokens=True)
         preds.extend([decode(p, skip_special_tokens=True) for p in ps])
     return preds
 
