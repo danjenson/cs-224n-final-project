@@ -151,7 +151,7 @@ def score(cfg, postprocess=None):
         return example
 
     ds.map(score)
-    return ds
+    return ds['score'].mean()
 
 
 def max_tokens(example, n=15):
