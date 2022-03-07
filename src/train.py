@@ -179,7 +179,7 @@ def score(cfg, postprocess_funcs=[]):
     path = Path(cfg.output_path) / 'preds'
     ds = hfd.load_from_disk(path)
     for func in postprocess_funcs:
-        ds.map(func)
+        ds = ds.map(func)
 
     def score(example):
         example['score'] = metric_utils.compute_metric(
