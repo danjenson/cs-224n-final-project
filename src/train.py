@@ -23,36 +23,33 @@ logging.basicConfig(
     level=logging.DEBUG,
 )
 
-# TODO: table stakes
-# - Write evaluate
-# - Test GPT-2 vs. BART vs. T-5
-
-# TODO: experiments
-# - Different postprocessing
-# - Data augmentation
-# - Try non-templated commands
-# - Beam search with custom eval?
-# - Different metrics: https://huggingface.co/docs/datasets/metrics
-
 
 def train(cfg):
     '''Train a HuffingFace model.'''
+    trainer = build_trainer(cfg)
+    trainer.train()
+    trainer.save_model(cfg.output_path)
+
+
+def build_trainer(cfg, finetuned=False):
+    '''Common setup for various subcommands.'''
     d = resolve(cfg.model.task)
-    tokenizer = d['tokenizer'].from_pretrained(cfg.model.checkpoint)
-    model = d['model'].from_pretrained(cfg.model.checkpoint)
-    tokenizer, model = tune(cfg.model.task, tokenizer, model)
+    t_ckpt = m_ckpt = cfg.model.checkpoint
+    if finetuned:
+        p = Path(cfg.output_path)
+        t_ckpt = Path(p / 'tokenizer')
+        m_ckpt = Path(p / 'model')
+    tokenizer = d['tokenizer'].from_pretrained(t_ckpt)
+    model = d['model'].from_pretrained(m_ckpt)
+    if not finetuned:
+        tokenizer, model = tweak(cfg.model.task, tokenizer, model)
     collator = build_collator(cfg.model.task, d['collator'], tokenizer, model)
     trans = cfg.dataset.translate
     ds = hfd.load_from_disk(cfg.dataset.path)
-    ds = ds.train_test_split(
-        test_size=cfg.dataset.splits.test,
-        seed=cfg.dataset.splits.seed,
-        shuffle=True,
-    )
     ds = ds.map(lambda x: d['tokenize']
                 (tokenizer, x, trans.source, trans.target),
                 batched=True)
-    trainer = d['trainer'](
+    return d['trainer'](
         model=model,
         args=d['args'](**vars(cfg.training)),
         train_dataset=ds['train'],
@@ -60,10 +57,6 @@ def train(cfg):
         tokenizer=tokenizer,
         data_collator=collator,
     )
-    trainer.train()
-    p = Path(cfg.output_path)
-    model.save_pretrained(p / 'model')
-    tokenizer.save_pretrained(p / 'tokenizer')
 
 
 def resolve(task):
@@ -88,8 +81,8 @@ def resolve(task):
     }[task]
 
 
-def tune(task, tokenizer, model):
-    '''Tune model and tokenizer for specific task.'''
+def tweak(task, tokenizer, model):
+    '''Tweak model and tokenizer for specific task.'''
     if task == 'causal':
         tokenizer.add_special_tokens(
             {'additional_special_tokens': ['<|source|>', '<|target|>']})
@@ -129,7 +122,13 @@ def tokenize_causal(tokenizer, examples, source, target):
     return tokenizer(encoded, truncation=True)
 
 
-def build_templated_dataset():
+def predict(cfg):
+    '''Evaluate a model given a config.'''
+    trainer = build_trainer(cfg, finetuned=True)
+    return trainer.predict(trainer.eval_dataset)
+
+
+def build_templated_dataset(p_test=0.02, seed=0):
     '''Build a templated command HuggingFace Dataset from raw NLC2CMD data.'''
     with open('nl2bash-data.json') as f:
         data = json.load(f)
@@ -138,9 +137,10 @@ def build_templated_dataset():
         d['cmd'].append(v['cmd'])
         d['nlc'].append(v['invocation'])
     ds = hfd.Dataset.from_dict(d)
-    return ds.map(
+    ds = ds.map(
         lambda b: {'cmd_templated': [templatize(cmd) for cmd in b["cmd"]]},
         batched=True)
+    return ds.train_test_split(test_size=p_test, seed=seed, shuffle=True)
 
 
 def templatize(cmd):
@@ -150,17 +150,6 @@ def templatize(cmd):
     except:
         logging.debug(f'unable to templatize: {cmd}')
     return cmd
-
-
-def evaluate(cfg):
-    '''Evaluate a model given a config.'''
-    d = resolve(cfg.model.task)
-    p = Path(cfg.output_path)
-    tokenizer = d['tokenizer'].from_pretrained(p / 'tokenizer')
-    model = d['model'].from_pretrained(p / 'model')
-    model.to(torch.device('cuda'))
-    # TODO(yingxiao)
-    raise NotImplementedError()
 
 
 def load_config(yaml_path):
@@ -175,42 +164,72 @@ def load_config(yaml_path):
 
 def parse_args(argv):
     '''Parse command line arguments.'''
-    parser = argparse.ArgumentParser(
-        prog=argv[0], formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument(
-        '-d',
-        '--dataset',
-        help='dataset to use',
+    cls = argparse.ArgumentDefaultsHelpFormatter
+    parser = argparse.ArgumentParser(prog=argv[0], formatter_class=cls)
+    sub = parser.add_subparsers(dest='command')
+    dataset = sub.add_parser('dataset', formatter_class=cls)
+    train = sub.add_parser('train', formatter_class=cls)
+    predict = sub.add_parser('predict', formatter_class=cls)
+    score = sub.add_parser('score', formatter_class=cls)
+    dataset.add_argument(
+        '-t',
+        '--dataset_type',
+        help='type of dataset to create',
+        default='templated',
+        choices=['templated'],
+    )
+    dataset.add_argument(
+        '-p_test',
+        help='proportion of dataset to use for testing',
+        default=0.02,
+    )
+    dataset.add_argument(
+        '-s',
+        '--seed',
+        help='seed to be used when shuffling before train-test split',
+        default=0,
+    )
+    dataset.add_argument(
+        '-o',
+        '--output_path',
+        help='output path for dataset',
         default='tds',
     )
-    parser.add_argument(
-        '-t',
-        '--train',
-        help='train a model with given yaml config',
+    train.add_argument(
+        '-c',
+        '--config',
+        help='yaml config to use',
         default='bart.yaml',
     )
-    parser.add_argument(
-        '-tds',
-        help='build a templated command Dataset',
-        action='store_true',
+    predict.add_argument(
+        '-c',
+        '--config',
+        help='yaml config to use',
+        default='bart.yaml',
     )
-    parser.add_argument(
-        '-p',
-        '--predict',
-        help='predict using a model with a given yaml config',
+    score.add_argument(
+        '-c',
+        '--config',
+        help='yaml config to use',
+        default='bart.yaml',
+    )
+    score.add_argument(
+        '-f',
+        '--postprocessing_func',
+        help='postprocessing function name',
+        default='limit_length',
+        choices=['limit_length'],
     )
     return parser.parse_args(argv[1:])
 
 
 if __name__ == '__main__':
     args = parse_args(sys.argv)
-    if args.tds:
-        tds = build_templated_dataset()
-        tds.save_to_disk('tds')
-        logging.info('saved templated dataset to "tds"')
-    if args.train:
-        cfg = load_config(args.train)
-        train(cfg)
-    if args.predict:
-        cfg = load_config(args.evaluate)
-        predict(cfg)
+    cmd = args.command
+    if cmd == 'dataset':
+        tds = build_templated_dataset(args.p_test, args.seed)
+        tds.save_to_disk(args.output_path)
+        logging.info(f'saved templated dataset to "{args.output_path}"')
+    elif cmd in ['train', 'predict', 'score']:
+        cfg = load_config(args.config)
+        globals()[cmd](cfg)

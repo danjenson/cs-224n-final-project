@@ -1,9 +1,6 @@
 ---
 dataset:
   path: "./tds"
-  splits:
-    seed: 0
-    test: 0.02
   translate:
     source: "nlc"
     target: "cmd_templated"
