@@ -254,7 +254,7 @@ if __name__ == '__main__':
         cfg = load_config(args.config)
         preds = predict(cfg)
         path = Path(cfg.output_path) / 'preds'
-        preds.save(path)
+        preds.save_to_disk(path)
         print(f'saved to {path}')
     elif cmd == 'score':
         cfg = load_config(args.config)
