@@ -49,7 +49,7 @@ def build_trainer(cfg, finetuned=False):
     trans = cfg.dataset.translate
     ds = hfd.load_from_disk(cfg.dataset.path)
     f = lambda x: d['tokenize'](tokenizer, x, trans.source, trans.target)
-    if cfg.model.type == 'causal':
+    if cfg.model.task == 'causal':
         ds['train'] = ds['train'].map(f, batched=True)
         f = lambda x: d['tokenize'](
             tokenizer, x, trans.source, trans.target, is_test=True)
@@ -106,7 +106,7 @@ def build_collator(task, cls, tokenizer, model):
     return cls(tokenizer, model)
 
 
-def tokenize_seq2seq(tokenizer, examples, source, target, is_test=False):
+def tokenize_seq2seq(tokenizer, examples, source, target):
     '''Tokenize for a seq2seq model.'''
     inputs = tokenizer(examples[source], truncation=True)
     with tokenizer.as_target_tokenizer():
