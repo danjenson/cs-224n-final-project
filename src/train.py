@@ -15,7 +15,7 @@ from bashlint.data_tools import (
     bash_parser,
     ast2template,
 )
-from metric_utils import compute_metric
+import metric_utils
 
 logging.basicConfig(
     filename='gs.log',
@@ -131,8 +131,7 @@ def predict(cfg):
     decode = trainer.tokenizer.decode
     # https://huggingface.co/docs/transformers/main_classes/trainer#transformers.Trainer.predict
     preds = [decode(p[np.where(p != -100)]) for p in res.label_ids]
-    ds.add_column('preds', preds)
-    return ds
+    return ds.add_column('pred', preds)
 
 
 def score(cfg, postprocess=None):
@@ -140,9 +139,21 @@ def score(cfg, postprocess=None):
     path = Path(cfg.output_path) / 'preds'
     ds = hfd.load_from_disk(path)
     if postprocess:
-        ds['preds'] = postprocess(ds['preds'])
-    # TODO
-    pass
+        ds.map(postprocess)
+
+    def score(example):
+        example['score'] = metric_utils.compute_metric(
+            example['pred'], 1.0, example[cfg.dataset.translate.target])
+        return example
+
+    ds.map(score)
+    return ds
+
+
+def max_tokens(example, n=15):
+    '''Postprocess: limit number of tokens.'''
+    example['pred'] = ' '.join(example.split()[:n])
+    return example
 
 
 def build_templated_dataset(p_test=0.02, seed=0):
@@ -234,8 +245,7 @@ def parse_args(argv):
         '-f',
         '--postprocessing_func',
         help='postprocessing function name',
-        default='limit_length',
-        choices=['limit_length'],
+        choices=['max_tokens'],
     )
     return parser.parse_args(argv[1:])
 
