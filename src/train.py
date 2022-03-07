@@ -130,7 +130,11 @@ def predict(cfg):
     res = trainer.predict(ds)
     decode = trainer.tokenizer.decode
     # https://huggingface.co/docs/transformers/main_classes/trainer#transformers.Trainer.predict
-    preds = [decode(p[np.where(p != -100)]) for p in res.label_ids]
+    pad_id = -100
+    preds = [
+        decode(p[np.where(p != pad_id)], skip_special_tokens=True)
+        for p in res.label_ids
+    ]
     return ds.add_column('pred', preds)
 
 
