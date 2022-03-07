@@ -30,23 +30,25 @@ def train(cfg):
     trainer = build_trainer(cfg)
     trainer.train()
     p = Path(cfg.output_path)
-    trainer.model.save_pretrained(p / 'model')
-    trainer.tokenizer.save_pretrained(p / 'tokenizer')
+    trainer.save_model(cfg.output_path)
 
 
 def build_trainer(cfg, finetuned=False):
     '''Common setup for various subcommands.'''
     d = resolve(cfg.model.task)
-    t_ckpt = m_ckpt = cfg.model.checkpoint
+    ckpt = cfg.model.checkpoint
     if finetuned:
-        p = Path(cfg.output_path)
-        t_ckpt = Path(p / 'tokenizer')
-        m_ckpt = Path(p / 'model')
-    tokenizer = d['tokenizer'].from_pretrained(t_ckpt)
-    model = d['model'].from_pretrained(m_ckpt)
+        ckpt = cfg.output_path
+    tokenizer = d['tokenizer'].from_pretrained(ckpt)
+    model = d['model'].from_pretrained(ckpt)
     if not finetuned:
         tokenizer, model = tweak(cfg.model.task, tokenizer, model)
-    collator = build_collator(cfg.model.task, d['collator'], tokenizer, model)
+    collator = build_collator(
+        cfg.model.task,
+        d['collator'],
+        tokenizer,
+        model,
+    )
     trans = cfg.dataset.translate
     ds = hfd.load_from_disk(cfg.dataset.path)
     f = lambda x: d['tokenize'](tokenizer, x, trans.source, trans.target)

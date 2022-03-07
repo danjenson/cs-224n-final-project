@@ -2,10 +2,8 @@
 
 ## TODO
 
-- Write predict
-- Write evaluate
+- Write predict_one for CLI use
 - Test different postprocessing methods
-- Different postprocessing + evaluate
 - Data augmentation
 - Try non-templated commands
 - Beam search with custom eval?
