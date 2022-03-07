@@ -2,6 +2,7 @@
 import argparse
 import json
 import logging
+import re
 import sys
 import yaml
 from pathlib import Path
@@ -9,7 +10,6 @@ from types import SimpleNamespace
 
 import datasets as hfd
 import numpy as np
-import torch
 import transformers as hft
 
 from bashlint.data_tools import (
@@ -162,26 +162,24 @@ def predict_causal(trainer, ds):
     loader = trainer.get_eval_dataloader(ds)
     decode = trainer.tokenizer.decode
     preds = []
-    # pad_id = -100
     for batch in loader:
         ps = trainer.model.generate(
-            input_ids=torch.tensor(batch['input_ids']).cuda(),
+            input_ids=batch['input_ids'].clone().detach().cuda(),
             max_length=100,
             do_sample=False,
             eos_token_id=eos,
             pad_token_id=eos,
         )
-        # decode(p[p.where(p != pad_id)], skip_special_tokens=True)
-        preds.extend([decode(p, skip_special_tokens=True) for p in ps])
+        preds.extend([decode(p) for p in ps])
     return preds
 
 
-def score(cfg, postprocess=None):
+def score(cfg, postprocess_funcs=[]):
     '''Score output using optional postprocessing function.'''
     path = Path(cfg.output_path) / 'preds'
     ds = hfd.load_from_disk(path)
-    if postprocess:
-        ds.map(postprocess)
+    for func in postprocess_funcs:
+        ds.map(func)
 
     def score(example):
         example['score'] = metric_utils.compute_metric(
@@ -191,9 +189,13 @@ def score(cfg, postprocess=None):
     return np.mean(ds.map(score)['score'])
 
 
-def max_tokens(example, n=15):
-    '''Postprocess: limit number of tokens.'''
-    example['pred'] = ' '.join(example.split()[:n])
+def clean(example):
+    '''Clean up causal predictions.'''
+    example['pred'] = re.sub(
+        ' +',
+        ' ',
+        example.split('<|target|>')[-1].strip(),
+    )
     return example
 
 
@@ -283,10 +285,10 @@ def parse_args(argv):
         default='bart.yaml',
     )
     score.add_argument(
-        '-f',
-        '--postprocessing_func',
-        help='postprocessing function name',
-        choices=['max_tokens'],
+        '-fs',
+        '--postprocessing_funcs',
+        help='postprocessing function names',
+        default=['clean'],
     )
     return parser.parse_args(argv[1:])
 
@@ -309,8 +311,8 @@ if __name__ == '__main__':
         print(f'saved to {path}')
     elif cmd == 'score':
         cfg = load_config(args.config)
-        postprocess = None
-        if args.postprocessing_func:
-            postprocess = globals()[args.postprocessing_func]
-        s = score(cfg, postprocess)
+        funcs = None
+        if args.postprocessing_funcs:
+            funcs = [globals()[f] for f in args.postprocessing_funcs]
+        s = score(cfg, funcs)
         print(f'Score: {s}')
