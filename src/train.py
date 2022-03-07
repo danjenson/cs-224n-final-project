@@ -7,7 +7,7 @@ import yaml
 from pathlib import Path
 from types import SimpleNamespace
 
-import torch
+import numpy as np
 import datasets as hfd
 import transformers as hft
 
@@ -29,6 +29,7 @@ def train(cfg):
     trainer = build_trainer(cfg)
     trainer.train()
     trainer.save_model(cfg.output_path)
+    print(f'saved to {cfg.output_path}')
 
 
 def build_trainer(cfg, finetuned=False):
@@ -125,7 +126,22 @@ def tokenize_causal(tokenizer, examples, source, target):
 def predict(cfg):
     '''Evaluate a model given a config.'''
     trainer = build_trainer(cfg, finetuned=True)
-    return trainer.predict(trainer.eval_dataset)
+    ds = trainer.eval_dataset
+    res = trainer.predict(ds)
+    decode = trainer.tokenizer.decode
+    # https://huggingface.co/docs/transformers/main_classes/trainer#transformers.Trainer.predict
+    ds['preds'] = [decode(p[np.where(p != -100)]) for p in res.label_ids]
+    return ds
+
+
+def score(cfg, postprocess=None):
+    '''Score output using optional postprocessing function.'''
+    path = Path(cfg.output_path) / 'preds'
+    ds = hfd.load_from_disk(path)
+    if postprocess:
+        ds['preds'] = postprocess(ds['preds'])
+    # TODO
+    pass
 
 
 def build_templated_dataset(p_test=0.02, seed=0):
@@ -229,7 +245,20 @@ if __name__ == '__main__':
     if cmd == 'dataset':
         tds = build_templated_dataset(args.p_test, args.seed)
         tds.save_to_disk(args.output_path)
-        logging.info(f'saved templated dataset to "{args.output_path}"')
-    elif cmd in ['train', 'predict', 'score']:
+        print(f'saved to {args.output_path}')
+    elif cmd == 'train':
         cfg = load_config(args.config)
-        globals()[cmd](cfg)
+        train(cfg)
+    elif cmd == 'predict':
+        cfg = load_config(args.config)
+        preds = predict(cfg)
+        path = Path(cfg.output_path) / 'preds'
+        preds.save(path)
+        print(f'saved to {path}')
+    elif cmd == 'score':
+        cfg = load_config(args.config)
+        postprocess = None
+        if args.postprocessing_func:
+            postprocess = globals()[args.postprocessing_func]
+        s = score(cfg, postprocess)
+        print(f'Score: {s}')
