@@ -194,7 +194,7 @@ def clean(example):
     example['pred'] = re.sub(
         ' +',
         ' ',
-        example.split('<|target|>')[-1].strip(),
+        example['pred'].split('<|target|>')[-1].strip(),
     )
     return example
 
