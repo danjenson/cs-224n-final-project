@@ -1,4 +1,4 @@
-#!/bin/bsah
+#!/bin/bash
 NAME=$1
 ./model.py dataset
 ./model.py train -c $NAME.yaml
