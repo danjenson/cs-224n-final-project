@@ -1,36 +1,15 @@
 # Project Ghost Shell
 
-## Literature Review
+## TODO
 
-- semantic parsing to query languages
-- Salesforce semantic parsing
-- converting text to code
-- https://towardsdatascience.com/building-a-python-code-generator-4b476eec5804
-- [translation](https://github.com/huggingface/transformers/blob/master/examples/pytorch/translation/run_translation.py)
+- Write predict_one for CLI use
+- Test different postprocessing methods
+- Data augmentation
+- Try non-templated commands
+- Beam search with custom eval?
+- Different metrics: https://huggingface.co/docs/datasets/metrics
 
-## Tasks
-
-1. Get data
-
-- modularize this
-
-2. Repurpose code:
-
-- extract parts:
-  - `config.py`
-  - `data_utils.py`
-  - `generate.py`
-  - `preprocess.py`
-  - `run.py`
-  - `tune.py`
-
-3. Steps:
-
-- ensure using gpu
-- load data
-- process data
-- score predictions
-- load BART
+## Example code
 
 - [starter code](https://github.com/nokia/nlc2cmd-submission-hubris)
 
@@ -55,32 +34,3 @@
   - `eval.py`: used for predictions using the model on hugging face
   - `requirements.txt`: python requirements
   - `train.py`: runs `experiments()` from `src/tune.py`
-
-# Old Tasks
-
-- data
-  - loading
-  - augmentation
-  - placeholders, i.e. paths, names, etc
-    - BART may solve this
-    - get me weather in Burma
-      - train model to translate to `get me weather in STR1`
-      - train model to translate previous sentence to `./get_me_weather.sh --loc STR1`
-      - translate back STR1 to Burma
-- embeddings
-  - loading
-  - training
-- transformer composition
-  - hugging face transformers
-    - BART: seq2seq
-    - T5: another model
-- experimentation framework
-  - when to checkpoint models
-  - grid search across which parameters/model types?
-  - evaluation
-    - use existing API/function?
-
-## Questions
-
-- pipes -- composable commands
-  - smash together pipes in dataset?

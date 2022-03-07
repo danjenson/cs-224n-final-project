@@ -5,8 +5,8 @@ dataset:
     source: "nlc"
     target: "cmd_templated"
 model:
-  task: "seq2seq"
-  checkpoint: "facebook/bart-large"
+  task: "causal"
+  checkpoint: "gpt2"
 training:
   output_dir: "./results"
   overwrite_output_dir: True
@@ -17,4 +17,5 @@ training:
   save_steps: 10000
   warmup_steps: 100
   logging_steps: 100
-output_path: "./results/bart"
+  prediction_loss_only: True
+output_path: "./results/gpt2"
