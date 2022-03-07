@@ -7,8 +7,9 @@ import yaml
 from pathlib import Path
 from types import SimpleNamespace
 
-import numpy as np
 import datasets as hfd
+import numpy as np
+import torch
 import transformers as hft
 
 from bashlint.data_tools import (
@@ -127,15 +128,50 @@ def predict(cfg):
     '''Evaluate a model given a config.'''
     trainer = build_trainer(cfg, finetuned=True)
     ds = trainer.eval_dataset
-    res = trainer.predict(ds)
-    decode = trainer.tokenizer.decode
+    predict = predict_seq2seq
+    if cfg.model.task == 'causal':
+        predict = predict_causal
+    preds = predict(trainer, ds)
+    return ds.add_column('pred', preds)
+
+
+def predict_seq2seq(trainer, ds):
+    '''Predict using seq2seq LM.'''
     # https://huggingface.co/docs/transformers/main_classes/trainer#transformers.Trainer.predict
     pad_id = -100
-    preds = [
+    res = trainer.predict(ds)
+    decode = trainer.tokenizer.decode
+    return [
         decode(p[np.where(p != pad_id)], skip_special_tokens=True)
         for p in res.label_ids
     ]
-    return ds.add_column('pred', preds)
+
+
+def predict_causal(trainer, ds):
+    '''Predict using causal LM.'''
+    # TODO: clean up, this is hacky code
+    eos = trainer.tokenizer.eos_token_id
+    loader = trainer.get_eval_dataloader(ds)
+    decode = trainer.tokenizer.decode
+    target_token = trainer.tokenizer.additional_special_token_ids[-1]
+    preds = []
+    pad_id = -100
+    for batch in loader:
+        texts = []
+        for v in batch:
+            idx = v.index(target_token)
+            v = np.array(v)
+            np.array(v)[idx + 1:] = pad_id
+            texts.append(v)
+        ps = trainer.model.generate(
+            input_ids=torch.tensor(texts).cuda(),
+            max_length=100,
+            do_sample=False,
+            eos_token_id=eos,
+            pad_token_id=eos,
+        )
+        preds.extend([decode(p, skip_special_tokens=True) for p in ps])
+    return preds
 
 
 def score(cfg, postprocess=None):
