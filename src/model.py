@@ -29,8 +29,9 @@ def train(cfg):
     '''Train a HuffingFace model.'''
     trainer = build_trainer(cfg)
     trainer.train()
-    trainer.save_model(cfg.output_path)
-    print(f'saved to {cfg.output_path}')
+    p = Path(cfg.output_path)
+    trainer.model.save_pretrained(p / 'model')
+    trainer.tokenizer.save_pretrained(p / 'tokenizer')
 
 
 def build_trainer(cfg, finetuned=False):
