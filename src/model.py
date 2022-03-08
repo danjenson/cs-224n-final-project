@@ -181,6 +181,7 @@ def score(cfg, postprocess_funcs=[]):
     '''Score output using optional postprocessing function.'''
     path = Path(cfg.output_path) / 'preds'
     ds = hfd.load_from_disk(path)
+    # it seems that only the last func from the list will be in effect
     for func in postprocess_funcs:
         ds = ds.map(func)
 
@@ -205,7 +206,27 @@ def clean(example):
 def max_len(example):
     '''Limit length of prediction.'''
     # TODO(Yingxiao): refactor `post_process`
-    pass
+    special_char = "|"
+    max_words = 15;
+    input = example['pred'].split()
+    if len(input) == 0:
+        return None
+    output = [input[0]]
+    counter = 0
+    for i in range(len(input) - 1):
+        if input[i + 1] != input[i]:
+            if input[i + 1] == special_char:
+                counter += 1
+                if counter >= 4:
+                    break
+            output.append(input[i + 1])
+            if(input[i+1][-1] == ";"):
+                break
+    #truncate string
+    if len(output) > max_words:
+        output = output[:max_words]
+    example['pred'] = " ".join(output)
+    return example
 
 
 def build_templated_dataset(p_test=0.02, seed=0):
