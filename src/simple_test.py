@@ -189,6 +189,7 @@ def score(cfg, postprocess_funcs=[]):
         example['score'] = metric_utils.compute_metric(
             # example['pred'], 1.0, example[cfg.dataset.translate.target])
             example['pred'], 1.0, example['cmd'])
+        print(f"t: {example['cmd']}\np: {example['pred']}\n")
         return example
 
     return np.mean(ds.map(score)['score'])
