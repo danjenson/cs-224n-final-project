@@ -1,0 +1,1750 @@
+{
+  "1": {
+    "invocation": "recursively search for files and dirs named word.txt",
+    "cmd": "find . -name \"word.txt\""
+  },
+  "2": {
+    "invocation": "recursively find all files and dirs named word.txt",
+    "cmd": "find . -name \"word.txt\""
+  },
+  "3": {
+    "invocation": "print files and directories named \"word.txt\" recursive",
+    "cmd": "find . -name \"word.txt\""
+  },
+  "4": {
+    "invocation": "what are all the directories anywhere on this path?",
+    "cmd": "find . -type d"
+  },
+  "5": {
+    "invocation": "recursively print all directories here",
+    "cmd": "find . -type d"
+  },
+  "6": {
+    "invocation": "recursively find all files that end with \"word\"",
+    "cmd": "find . -name \"*word\" -type f"
+  },
+  "7": {
+    "invocation": "find files that end with \"word\" starting here",
+    "cmd": "find . -name \"*word\" -type f"
+  },
+  "8": {
+    "invocation": "Starting here, find all files which end with \"word\"",
+    "cmd": "find . -name \"*word\" -type f"
+  },
+  "9": {
+    "invocation": "recursively find all directories that end with \"word\" starting here",
+    "cmd": "find . -name \"*word\" -type d"
+  },
+  "10": {
+    "invocation": "recursively find all python files",
+    "cmd": "find . -name \"*.py\" -type f"
+  },
+  "11": {
+    "invocation": "find all python files here and in all subdirs",
+    "cmd": "find . -name \"*.py\" -type f"
+  },
+  "12": {
+    "invocation": "recursively find all javascript files",
+    "cmd": "find . -name \"*.js\" -type f"
+  },
+  "13": {
+    "invocation": "find all javascript files starting here",
+    "cmd": "find . -name \"*.js\" -type f"
+  },
+  "14": {
+    "invocation": "recursively find all txt files starting here",
+    "cmd": "find . -name \"*.txt\" -type f"
+  },
+  "15": {
+    "invocation": "find all txt files",
+    "cmd": "find . -name \"*.txt\" -type f"
+  },
+  "16": {
+    "invocation": "find all \"txt\" files",
+    "cmd": "find . -name \"*.txt\" -type f"
+  },
+  "17": {
+    "invocation": "recursively find all files with a \"txt\" extension",
+    "cmd": "find . -name \"*.txt\" -type f"
+  },
+  "18": {
+    "invocation": "recursively find all txt files",
+    "cmd": "find . -name \"*.txt\" -type f"
+  },
+  "19": {
+    "invocation": "recursively find all .txt files starting here",
+    "cmd": "find . -name \"*.txt\" -type f"
+  },
+  "20": {
+    "invocation": "find all .txt files",
+    "cmd": "find . -name \"*.txt\" -type f"
+  },
+  "21": {
+    "invocation": "recursively find all \".txt\" files starting here",
+    "cmd": "find . -name \"*.txt\" -type f"
+  },
+  "22": {
+    "invocation": "find all hidden files starting here",
+    "cmd": "find . -name \".*\" -type f"
+  },
+  "23": {
+    "invocation": "recursively find all hidden files",
+    "cmd": "find . -name \".*\" -type f"
+  },
+  "24": {
+    "invocation": "recursively list all hidden files here",
+    "cmd": "find . -name \".*\" -type f"
+  },
+  "25": {
+    "invocation": "find all hidden files starting in folder",
+    "cmd": "find folder -name \".*\" -type f"
+  },
+  "26": {
+    "invocation": "find all hidden files starting in my tmp directory",
+    "cmd": "find \\tmp -name \".*\" -type f"
+  },
+  "27": {
+    "invocation": "what files here belong to username?",
+    "cmd": "find . -type f -user username"
+  },
+  "28": {
+    "invocation": "find all files starting here which belong to username",
+    "cmd": "find . -type f -user username"
+  },
+  "29": {
+    "invocation": "recursively find files that belong to username",
+    "cmd": "find . -type f -user username"
+  },
+  "30": {
+    "invocation": "search for all files in the whole system that belong to username",
+    "cmd": "find / -type f -user username"
+  },
+  "31": {
+    "invocation": "starting from root find all files that belong to username",
+    "cmd": "find / -type f -user username"
+  },
+  "32": {
+    "invocation": "look for files with group name groupname",
+    "cmd": "find . -type f -user groupname"
+  },
+  "33": {
+    "invocation": "find all files here which belong to group groupname",
+    "cmd": "find . -type f -user groupname"
+  },
+  "34": {
+    "invocation": "how many txt files are here",
+    "cmd": "find . -name \"*.txt\" -type f -maxdepth 1 | wc -l"
+  },
+  "35": {
+    "invocation": "how many *.txt files are in this dir",
+    "cmd": "find . -name \"*.txt\" -type f -maxdepth 1 | wc -l"
+  },
+  "36": {
+    "invocation": "how many .txt files are here",
+    "cmd": "find . -name \"*.txt\" -type f -maxdepth 1 | wc -l"
+  },
+  "37": {
+    "invocation": "count the number of txt files are here",
+    "cmd": "find . -name \"*.txt\" -type f -maxdepth 1 | wc -l"
+  },
+  "38": {
+    "invocation": "how many files are here",
+    "cmd": "find . -type f -maxdepth 1 | wc -l"
+  },
+  "39": {
+    "invocation": "how many files are in this directory nonrecursive",
+    "cmd": "find . -type f -maxdepth 1 | wc -l"
+  },
+  "40": {
+    "invocation": "count number of files here",
+    "cmd": "find . -type f -maxdepth 1 | wc -l"
+  },
+  "41": {
+    "invocation": "get a list of files here and count the number lines returned.",
+    "cmd": "find . -type f -maxdepth 1 | wc -l"
+  },
+  "42": {
+    "invocation": "how many files in this directory",
+    "cmd": "find . -type f -maxdepth 1 | wc -l"
+  },
+  "43": {
+    "invocation": "recursively count number files here",
+    "cmd": "find . -type f | wc -l"
+  },
+  "44": {
+    "invocation": "how many files are here recursive",
+    "cmd": "find . -type f | wc -l"
+  },
+  "45": {
+    "invocation": "how many files in this folder or all subfolders",
+    "cmd": "find . -type f | wc -l"
+  },
+  "46": {
+    "invocation": "how many files are in this directory and all subdirectories",
+    "cmd": "find . -type f | wc -l"
+  },
+  "47": {
+    "invocation": "how many empty files are here nonrecursive",
+    "cmd": "find . -type f -empty -maxdepth 1 | wc -l"
+  },
+  "48": {
+    "invocation": "how many empty files are here recursive",
+    "cmd": "find . -type f -empty | wc -l"
+  },
+  "49": {
+    "invocation": "print working dir",
+    "cmd": "pwd"
+  },
+  "50": {
+    "invocation": "print current dir",
+    "cmd": "pwd"
+  },
+  "51": {
+    "invocation": "get current path",
+    "cmd": "pwd"
+  },
+  "52": {
+    "invocation": "where am I",
+    "cmd": "pwd"
+  },
+  "53": {
+    "invocation": "print current working directory",
+    "cmd": "pwd"
+  },
+  "54": {
+    "invocation": "what file am I in",
+    "cmd": "pwd"
+  },
+  "55": {
+    "invocation": "get my current directory",
+    "cmd": "pwd"
+  },
+  "56": {
+    "invocation": "print working directory",
+    "cmd": "pwd"
+  },
+  "57": {
+    "invocation": "print out what directory am in",
+    "cmd": "pwd"
+  },
+  "58": {
+    "invocation": "prnt working dir",
+    "cmd": "pwd"
+  },
+  "59": {
+    "invocation": "print cur dir",
+    "cmd": "pwd"
+  },
+  "60": {
+    "invocation": "what directory am I in",
+    "cmd": "pwd"
+  },
+  "61": {
+    "invocation": "get my cur path",
+    "cmd": "pwd"
+  },
+  "62": {
+    "invocation": "list files with no extra info",
+    "cmd": "ls"
+  },
+  "63": {
+    "invocation": "list",
+    "cmd": "ls"
+  },
+  "64": {
+    "invocation": "print the contents of this directory",
+    "cmd": "ls -t"
+  },
+  "65": {
+    "invocation": "list all files and directories here",
+    "cmd": "ls -l"
+  },
+  "66": {
+    "invocation": "list all files here please",
+    "cmd": "ls -lS"
+  },
+  "67": {
+    "invocation": "list all files here",
+    "cmd": "ls -S"
+  },
+  "68": {
+    "invocation": "list directory contents",
+    "cmd": "ls"
+  },
+  "69": {
+    "invocation": "display a list of files and or directories only",
+    "cmd": "ls -lt"
+  },
+  "70": {
+    "invocation": "print all files and directories here",
+    "cmd": "ls -t"
+  },
+  "71": {
+    "invocation": "list what is here",
+    "cmd": "ls -l"
+  },
+  "72": {
+    "invocation": "list files and dirs here",
+    "cmd": "ls -lS"
+  },
+  "73": {
+    "invocation": "list all files and dirs in this dir",
+    "cmd": "ls -S"
+  },
+  "74": {
+    "invocation": "what files are here",
+    "cmd": "ls"
+  },
+  "75": {
+    "invocation": "what files and dirs are here?",
+    "cmd": "ls -lt"
+  },
+  "76": {
+    "invocation": "list all files",
+    "cmd": "ls -t"
+  },
+  "77": {
+    "invocation": "list my files",
+    "cmd": "ls -l"
+  },
+  "78": {
+    "invocation": "list files largest files first",
+    "cmd": "ls -S"
+  },
+  "79": {
+    "invocation": "display files in order of size",
+    "cmd": "ls -lS"
+  },
+  "80": {
+    "invocation": "show files here largest first",
+    "cmd": "ls -S"
+  },
+  "81": {
+    "invocation": "ls sorted smallest to biggest",
+    "cmd": "ls -lS"
+  },
+  "82": {
+    "invocation": "ls sort files with size",
+    "cmd": "ls -S"
+  },
+  "83": {
+    "invocation": "list files sort by the largest file size first",
+    "cmd": "ls -lS"
+  },
+  "84": {
+    "invocation": "list files here biggest files first",
+    "cmd": "ls -S"
+  },
+  "85": {
+    "invocation": "display files biggest files first",
+    "cmd": "ls -lS"
+  },
+  "86": {
+    "invocation": "ls sorted by file size",
+    "cmd": "ls -S"
+  },
+  "87": {
+    "invocation": "list filese here sorted by files size decending",
+    "cmd": "ls -lS"
+  },
+  "88": {
+    "invocation": "ls in order of decreasing size",
+    "cmd": "ls -S"
+  },
+  "89": {
+    "invocation": "show my files sorted by size",
+    "cmd": "ls -lS"
+  },
+  "90": {
+    "invocation": "list files big to small",
+    "cmd": "ls -S"
+  },
+  "91": {
+    "invocation": "list my files long format sorted by size",
+    "cmd": "ls -lS"
+  },
+  "92": {
+    "invocation": "ls biggest files first",
+    "cmd": "ls -S"
+  },
+  "93": {
+    "invocation": "ls order with decreasing file size",
+    "cmd": "ls -lS"
+  },
+  "94": {
+    "invocation": "run ls -l sorted by size",
+    "cmd": "ls -lS"
+  },
+  "95": {
+    "invocation": "ls -l sorted by size",
+    "cmd": "ls -lS"
+  },
+  "96": {
+    "invocation": "ls -l largest files first",
+    "cmd": "ls -lS"
+  },
+  "97": {
+    "invocation": "list files here by files size ascending",
+    "cmd": "ls -lSr"
+  },
+  "98": {
+    "invocation": "list files smallest files first",
+    "cmd": "ls -S -r"
+  },
+  "99": {
+    "invocation": "display files smallest to largest",
+    "cmd": "ls -lSr"
+  },
+  "100": {
+    "invocation": "show files. Sort by file size small first",
+    "cmd": "ls -S -r"
+  },
+  "101": {
+    "invocation": "list files with smallest first",
+    "cmd": "ls -lSr"
+  },
+  "102": {
+    "invocation": "display files in order of reverse size",
+    "cmd": "ls -S -r"
+  },
+  "103": {
+    "invocation": "list files small to big",
+    "cmd": "ls -lSr"
+  },
+  "104": {
+    "invocation": "list files long format",
+    "cmd": "ls -lSr"
+  },
+  "105": {
+    "invocation": "ls smallest files at top",
+    "cmd": "ls -lSr"
+  },
+  "106": {
+    "invocation": "ls -l smallest files first",
+    "cmd": "ls -lSr"
+  },
+  "107": {
+    "invocation": "ls -l sorted by size reversed",
+    "cmd": "ls -lSr"
+  },
+  "108": {
+    "invocation": "ls with long format",
+    "cmd": "ls -l"
+  },
+  "109": {
+    "invocation": "display a long list of the content of current directory",
+    "cmd": "ls -l"
+  },
+  "110": {
+    "invocation": "show long listing information about each file/directory here",
+    "cmd": "ls -l"
+  },
+  "111": {
+    "invocation": "display total information about Files/Directories",
+    "cmd": "ls -l"
+  },
+  "112": {
+    "invocation": "what files are here with file information",
+    "cmd": "ls -l"
+  },
+  "113": {
+    "invocation": "show info about files here",
+    "cmd": "ls -l"
+  },
+  "114": {
+    "invocation": "ls with date changed and size",
+    "cmd": "ls -l"
+  },
+  "115": {
+    "invocation": "ls in long format",
+    "cmd": "ls -l"
+  },
+  "116": {
+    "invocation": "list all files with stuff like file size",
+    "cmd": "ls -l"
+  },
+  "117": {
+    "invocation": "list all files in long format",
+    "cmd": "ls -l"
+  },
+  "118": {
+    "invocation": "list all files including hidden file starting with '.'",
+    "cmd": "ls -a"
+  },
+  "119": {
+    "invocation": "list all files with dot files",
+    "cmd": "ls -a"
+  },
+  "120": {
+    "invocation": "list with dot files",
+    "cmd": "ls -a"
+  },
+  "121": {
+    "invocation": "list all including dot files",
+    "cmd": "ls -a"
+  },
+  "122": {
+    "invocation": "ls with hidden files",
+    "cmd": "ls -a"
+  },
+  "123": {
+    "invocation": "list all files with hidden files",
+    "cmd": "ls -a"
+  },
+  "124": {
+    "invocation": "ls with dot files",
+    "cmd": "ls -a"
+  },
+  "125": {
+    "invocation": "ls sorted newest to oldest",
+    "cmd": "ls -lt"
+  },
+  "126": {
+    "invocation": "list files here sorted by modified date",
+    "cmd": "ls -t"
+  },
+  "127": {
+    "invocation": "ls -l sort the list by modification time with the newest first",
+    "cmd": "ls -lt"
+  },
+  "128": {
+    "invocation": "ls -l sort by mod date",
+    "cmd": "ls -lt"
+  },
+  "129": {
+    "invocation": "ls -l sorted by mod data",
+    "cmd": "ls -lt"
+  },
+  "130": {
+    "invocation": "ls -l sorted by modification date",
+    "cmd": "ls -lt"
+  },
+  "131": {
+    "invocation": "ls -l sorted by change date",
+    "cmd": "ls -lt"
+  },
+  "132": {
+    "invocation": "find inode numbers of files",
+    "cmd": "ls -i"
+  },
+  "133": {
+    "invocation": "list file's inode index number",
+    "cmd": "ls -i"
+  },
+  "134": {
+    "invocation": "check inode number of files and directories",
+    "cmd": "ls -i"
+  },
+  "135": {
+    "invocation": "print inode numbers of files here",
+    "cmd": "ls -i"
+  },
+  "136": {
+    "invocation": "ls with inode numbers",
+    "cmd": "ls -i"
+  },
+  "137": {
+    "invocation": "list inode numbers of files here",
+    "cmd": "ls -i"
+  },
+  "138": {
+    "invocation": "show all files recursively",
+    "cmd": "ls -R"
+  },
+  "139": {
+    "invocation": "ls recursively down all dirs",
+    "cmd": "ls -R"
+  },
+  "140": {
+    "invocation": "list recursively directory tree",
+    "cmd": "ls -R"
+  },
+  "141": {
+    "invocation": "list files recursively exploring directories",
+    "cmd": "ls -R"
+  },
+  "142": {
+    "invocation": "ls sort by extension name",
+    "cmd": "ls -X"
+  },
+  "143": {
+    "invocation": "ls group extension together",
+    "cmd": "ls -X"
+  },
+  "144": {
+    "invocation": "list files grouped by file extension",
+    "cmd": "ls -X"
+  },
+  "145": {
+    "invocation": "ls sort list by extension",
+    "cmd": "ls -X"
+  },
+  "146": {
+    "invocation": "list files with newest file first",
+    "cmd": "ls -t"
+  },
+  "147": {
+    "invocation": "ls order files based on last modified time",
+    "cmd": "ls -t"
+  },
+  "148": {
+    "invocation": "ls sort by time & date",
+    "cmd": "ls -t"
+  },
+  "149": {
+    "invocation": "list files sort by date/time",
+    "cmd": "ls -t"
+  },
+  "150": {
+    "invocation": "ls single entry per line",
+    "cmd": "ls -1"
+  },
+  "151": {
+    "invocation": "ls one file per line",
+    "cmd": "ls -1"
+  },
+  "152": {
+    "invocation": "display files one file per line",
+    "cmd": "ls -1"
+  },
+  "153": {
+    "invocation": "list in reverse order",
+    "cmd": "ls -r"
+  },
+  "154": {
+    "invocation": "ls in reverse alphabetical order",
+    "cmd": "ls -r"
+  },
+  "155": {
+    "invocation": "ls in reverse order",
+    "cmd": "ls -r"
+  },
+  "156": {
+    "invocation": "ls -l showing gigabytes and mb kb",
+    "cmd": "ls -lh"
+  },
+  "157": {
+    "invocation": "ls -l with human readable file sizes",
+    "cmd": "ls -lh"
+  },
+  "158": {
+    "invocation": "display files with file size in human readable form",
+    "cmd": "ls -lh"
+  },
+  "159": {
+    "invocation": "ls -l human readable",
+    "cmd": "ls -lh"
+  },
+  "160": {
+    "invocation": "list long format with readable file size",
+    "cmd": "ls -lh"
+  },
+  "161": {
+    "invocation": "list all subdirectories",
+    "cmd": "ls *"
+  },
+  "162": {
+    "invocation": "list files in home dir",
+    "cmd": "ls ~"
+  },
+  "163": {
+    "invocation": "list my home directory",
+    "cmd": "ls ~"
+  },
+  "164": {
+    "invocation": "list hidden files but dont include . or ..",
+    "cmd": "ls -A"
+  },
+  "165": {
+    "invocation": "ls -a but dont include . or ..",
+    "cmd": "ls -A"
+  },
+  "166": {
+    "invocation": "list all files in ..",
+    "cmd": "ls .."
+  },
+  "167": {
+    "invocation": "list parent directory",
+    "cmd": "ls .."
+  },
+  "168": {
+    "invocation": "ls with latest modified file or directory date as last",
+    "cmd": "ls -ltr"
+  },
+  "169": {
+    "invocation": "ls sorted oldest to newest",
+    "cmd": "ls -ltr"
+  },
+  "170": {
+    "invocation": "ls sorted oldest to newest modified date",
+    "cmd": "ls -ltr"
+  },
+  "171": {
+    "invocation": "list only text files",
+    "cmd": "ls *.txt"
+  },
+  "172": {
+    "invocation": "what text files are here?",
+    "cmd": "ls *.txt"
+  },
+  "173": {
+    "invocation": "list all text files here",
+    "cmd": "ls *.txt"
+  },
+  "174": {
+    "invocation": "ls but only list directories",
+    "cmd": "ls -d */"
+  },
+  "175": {
+    "invocation": "list directories only",
+    "cmd": "ls -d */"
+  },
+  "176": {
+    "invocation": "list directory entries only",
+    "cmd": "ls -d */"
+  },
+  "177": {
+    "invocation": "list root directory",
+    "cmd": "ls /"
+  },
+  "178": {
+    "invocation": "list files with file size",
+    "cmd": "ls -ls"
+  },
+  "179": {
+    "invocation": "list files with file size",
+    "cmd": "ls -s"
+  },
+  "180": {
+    "invocation": "ls -a with inode index number",
+    "cmd": "ls -ai"
+  },
+  "181": {
+    "invocation": "list long format including hidden files",
+    "cmd": "ls -la"
+  },
+  "182": {
+    "invocation": "ls in long format with dot files",
+    "cmd": "ls -la"
+  },
+  "183": {
+    "invocation": "ls -r with i-node numbers",
+    "cmd": "ls -ir"
+  },
+  "184": {
+    "invocation": "ls -l sort by file extension",
+    "cmd": "ls -lX"
+  },
+  "185": {
+    "invocation": "list files sort by extension with hidden files",
+    "cmd": "ls -Xa"
+  },
+  "186": {
+    "invocation": "ls order files based on last modified time in dec-ending order",
+    "cmd": "ls -lrt"
+  },
+  "187": {
+    "invocation": "list files here ordering by last mod time with oldest files first",
+    "cmd": "ls -rt"
+  },
+  "188": {
+    "invocation": "ls -lr by modified date",
+    "cmd": "ls -lrt"
+  },
+  "189": {
+    "invocation": "ls -l sorted by last modified time oldest first",
+    "cmd": "ls -rt"
+  },
+  "190": {
+    "invocation": "ls -lt in reverse",
+    "cmd": "ls -lrt"
+  },
+  "191": {
+    "invocation": "what file here was modified the longest ago?",
+    "cmd": "ls -rt -1 | head -n 1"
+  },
+  "192": {
+    "invocation": "what is the oldest file or directory (by last modified time) in current directory",
+    "cmd": "ls -rt -1 | head -n 1"
+  },
+  "193": {
+    "invocation": "what is the oldest file here",
+    "cmd": "ls -rt -1 | head -n 1"
+  },
+  "194": {
+    "invocation": "what is the most recently changed file here",
+    "cmd": "ls -t -1 | head -n 1"
+  },
+  "195": {
+    "invocation": "what file or directory here was last modified most recently",
+    "cmd": "ls -t -1 | head -n 1"
+  },
+  "196": {
+    "invocation": "most recently modified file or directory here",
+    "cmd": "ls -t -1 | head -n 1"
+  },
+  "197": {
+    "invocation": "what is the file or directory here has the most recent last modified time",
+    "cmd": "ls -t -1 | head -n 1"
+  },
+  "198": {
+    "invocation": "list all jpg files here",
+    "cmd": "ls *.jpg"
+  },
+  "199": {
+    "invocation": "ls all jpg files",
+    "cmd": "ls *.jpg"
+  },
+  "200": {
+    "invocation": "list display file Inode number one per line",
+    "cmd": "ls -i -1"
+  },
+  "201": {
+    "invocation": "list inode numbers of *.txt",
+    "cmd": "ls -i *.txt"
+  },
+  "202": {
+    "invocation": "list all files in pictures",
+    "cmd": "ls pictures"
+  },
+  "203": {
+    "invocation": "ls *.txt sorted by file size",
+    "cmd": "ls -lS *.txt"
+  },
+  "204": {
+    "invocation": "get the inode numbers of *.txt",
+    "cmd": "ls -i *.txt"
+  },
+  "205": {
+    "invocation": "ls all files in pictures and home",
+    "cmd": "ls pictures ~"
+  },
+  "206": {
+    "invocation": "what files are in folder",
+    "cmd": "ls folder"
+  },
+  "207": {
+    "invocation": "list the files that are in folder",
+    "cmd": "ls folder"
+  },
+  "208": {
+    "invocation": "list the files in folder sorted by file size",
+    "cmd": "ls -lS folder"
+  },
+  "209": {
+    "invocation": "ls sort by fsize one line per file",
+    "cmd": "ls -1 -S"
+  },
+  "210": {
+    "invocation": "ls -1 sorted by size",
+    "cmd": "ls -1 -S"
+  },
+  "211": {
+    "invocation": "ls -1 largest file first",
+    "cmd": "ls -1 -S"
+  },
+  "212": {
+    "invocation": "list with inodes number and long format",
+    "cmd": "ls -l -i"
+  },
+  "213": {
+    "invocation": "output the content of file.txt",
+    "cmd": "cat file.txt"
+  },
+  "214": {
+    "invocation": "print the content of file.txt",
+    "cmd": "cat file.txt"
+  },
+  "215": {
+    "invocation": "output the stuff in file.txt",
+    "cmd": "cat file.txt"
+  },
+  "216": {
+    "invocation": "print the contents of file.txt",
+    "cmd": "cat file.txt"
+  },
+  "217": {
+    "invocation": "print whats in file.txt",
+    "cmd": "cat file.txt"
+  },
+  "218": {
+    "invocation": "print what's in file.txt",
+    "cmd": "cat file.txt"
+  },
+  "219": {
+    "invocation": "print out file.txt",
+    "cmd": "cat file.txt"
+  },
+  "220": {
+    "invocation": "cat file.txt with line numbers",
+    "cmd": "cat -n file.txt"
+  },
+  "221": {
+    "invocation": "write out the contents of file.txt with line numbers",
+    "cmd": "cat -n file.txt"
+  },
+  "222": {
+    "invocation": "print the contents of file.txt with line numbers",
+    "cmd": "cat -n file.txt"
+  },
+  "223": {
+    "invocation": "cat the contents of file.txt with line numbers",
+    "cmd": "cat -n file.txt"
+  },
+  "224": {
+    "invocation": "concatenate * together",
+    "cmd": "cat *"
+  },
+  "225": {
+    "invocation": "concatenate all csv files here together",
+    "cmd": "cat *.csv"
+  },
+  "226": {
+    "invocation": "concat all comma separated files here",
+    "cmd": "cat *.csv"
+  },
+  "227": {
+    "invocation": "concatenate file1.txt and file2.txt together",
+    "cmd": "cat arg1 arg2"
+  },
+  "228": {
+    "invocation": "concatenate file1.txt, file2.txt, and file3.txt together",
+    "cmd": "cat arg1 arg2 arg3"
+  },
+  "229": {
+    "invocation": "first dozen lines of file1.txt",
+    "cmd": "head -n 12 arg1"
+  },
+  "230": {
+    "invocation": "print the first 12 lines of file1.txt",
+    "cmd": "head -n 12 arg1"
+  },
+  "231": {
+    "invocation": "get first 8 lines of file1.txt",
+    "cmd": "head -n 8 arg1"
+  },
+  "232": {
+    "invocation": "what are the top 20 lines of file1.txt",
+    "cmd": "head -n 20 arg1"
+  },
+  "233": {
+    "invocation": "prnt first one hundred lines of file1.txt",
+    "cmd": "head -n 100 arg1"
+  },
+  "234": {
+    "invocation": "print first fifty bytes of file1.txt",
+    "cmd": "head -c 50 arg1"
+  },
+  "235": {
+    "invocation": "print first 13 bytes of file1.txt",
+    "cmd": "head -c 13 arg1"
+  },
+  "236": {
+    "invocation": "print first 13 characters of file1.txt",
+    "cmd": "head -c 13 arg1"
+  },
+  "237": {
+    "invocation": "first five characters of file1.txt",
+    "cmd": "head -c 5 arg1"
+  },
+  "238": {
+    "invocation": "print the first ten characters of file1.txt",
+    "cmd": "head -c 10 arg1"
+  },
+  "239": {
+    "invocation": "make a new version file1.txt named file2.txt",
+    "cmd": "cp arg1 arg2"
+  },
+  "240": {
+    "invocation": "create a copy of file1.txt as file2.txt",
+    "cmd": "cp arg1 arg2"
+  },
+  "241": {
+    "invocation": "make a copy of file1.txt named file2.txt",
+    "cmd": "cp arg1 arg2"
+  },
+  "242": {
+    "invocation": "copy file1.txt to file2.txt",
+    "cmd": "cp arg1 arg2"
+  },
+  "243": {
+    "invocation": "copy file1.txt into folder2",
+    "cmd": "cp arg1 arg2"
+  },
+  "244": {
+    "invocation": "make a copy of file1.txt in parent dir",
+    "cmd": "cp arg1 .."
+  },
+  "245": {
+    "invocation": "copy file1.txt to parent directory",
+    "cmd": "cp arg1 .."
+  },
+  "246": {
+    "invocation": "copy file1.txt up to parent dir",
+    "cmd": "cp arg1 .."
+  },
+  "247": {
+    "invocation": "copy file1.txt up one directory",
+    "cmd": "cp arg1 .."
+  },
+  "248": {
+    "invocation": "recursive copy folder1 to folder2",
+    "cmd": "cp -r arg1 arg2"
+  },
+  "249": {
+    "invocation": "copy folder1 to folder2",
+    "cmd": "cp -r arg1 arg2"
+  },
+  "250": {
+    "invocation": "create a copy of everything in folder1 to folder2",
+    "cmd": "cp -r arg1 arg2"
+  },
+  "251": {
+    "invocation": "cp for directories folder1 folder2",
+    "cmd": "cp -r arg1 arg2"
+  },
+  "252": {
+    "invocation": "cp folder1 folder2 but recursively",
+    "cmd": "cp -r arg1 arg2"
+  },
+  "253": {
+    "invocation": "cp a folder folder1 into folder2",
+    "cmd": "cp -r arg1 arg2"
+  },
+  "254": {
+    "invocation": "copy everything in foos dir to arg1copy",
+    "cmd": "cp -r arg1/* arg1copy"
+  },
+  "255": {
+    "invocation": "cp all files in src to current directory",
+    "cmd": "cp -r src/* ."
+  },
+  "256": {
+    "invocation": "copy folder1 to folder2 displaying the name of every file copied",
+    "cmd": "cp -vr arg1 arg2"
+  },
+  "257": {
+    "invocation": "cp -r folder1 folder2 but print each file copied",
+    "cmd": "cp -vr arg1 arg2"
+  },
+  "258": {
+    "invocation": "cp -r folder1 folder2 but prompt before every copy",
+    "cmd": "cp -ir arg1 arg2"
+  },
+  "259": {
+    "invocation": "copy recursive folder1 folder2 ask me first",
+    "cmd": "cp -ir arg1 arg2"
+  },
+  "260": {
+    "invocation": "cp everything here to home dir",
+    "cmd": "cp -r * ~"
+  },
+  "261": {
+    "invocation": "cp everything here to folder1",
+    "cmd": "cp -r * arg1"
+  },
+  "262": {
+    "invocation": "line count of file1.txt",
+    "cmd": "wc -l arg1"
+  },
+  "263": {
+    "invocation": "how many lines file1.txt",
+    "cmd": "wc -l arg1"
+  },
+  "264": {
+    "invocation": "how many lines in file1.txt",
+    "cmd": "wc -l arg1"
+  },
+  "265": {
+    "invocation": "get the line count of file1.txt",
+    "cmd": "wc -l arg1"
+  },
+  "266": {
+    "invocation": "Counts lines of file1.txt",
+    "cmd": "wc -l arg1"
+  },
+  "267": {
+    "invocation": "how many lines are in file1.txt",
+    "cmd": "wc -l arg1"
+  },
+  "268": {
+    "invocation": "count the number of lines file1.txt",
+    "cmd": "wc -l arg1"
+  },
+  "269": {
+    "invocation": "get line count of file1.txt",
+    "cmd": "wc -l arg1"
+  },
+  "270": {
+    "invocation": "how many lines \"file1.txt\"",
+    "cmd": "wc -l arg1"
+  },
+  "271": {
+    "invocation": "how many lines are in file1.txt?",
+    "cmd": "wc -l arg1"
+  },
+  "272": {
+    "invocation": "count the number of lines in file1.txt",
+    "cmd": "wc -l arg1"
+  },
+  "273": {
+    "invocation": "file1.txt line count",
+    "cmd": "wc -l arg1"
+  },
+  "274": {
+    "invocation": "word count file1.txt",
+    "cmd": "wc -w arg1"
+  },
+  "275": {
+    "invocation": "get the word count of file1.txt",
+    "cmd": "wc -w arg1"
+  },
+  "276": {
+    "invocation": "file1.txt word count",
+    "cmd": "wc -w arg1"
+  },
+  "277": {
+    "invocation": "how many words are in file1.txt",
+    "cmd": "wc -w arg1"
+  },
+  "278": {
+    "invocation": "how many bytes are in file1.txt?",
+    "cmd": "wc -c arg1"
+  },
+  "279": {
+    "invocation": "character count of file1.txt",
+    "cmd": "wc -m arg1"
+  },
+  "280": {
+    "invocation": "file1.txt character count",
+    "cmd": "wc -m arg1"
+  },
+  "281": {
+    "invocation": "how many characters are in file1.txt",
+    "cmd": "wc -m arg1"
+  },
+  "282": {
+    "invocation": "count the number of files and directories in current directory without recursion",
+    "cmd": "ls -1 | wc -l"
+  },
+  "283": {
+    "invocation": "ls -1 | count the number of lines",
+    "cmd": "ls | wc -l"
+  },
+  "284": {
+    "invocation": "how many files or dirs are here?",
+    "cmd": "ls -1 | wc -l"
+  },
+  "285": {
+    "invocation": "ls -1 | count num of outputs",
+    "cmd": "ls | wc -l"
+  },
+  "286": {
+    "invocation": "ls but only one per line | wc -l",
+    "cmd": "ls -1 | wc -l"
+  },
+  "287": {
+    "invocation": "print each file or directory here but only one per line | wc -l",
+    "cmd": "ls | wc -l"
+  },
+  "288": {
+    "invocation": "ls count number of results",
+    "cmd": "ls -1 | wc -l"
+  },
+  "289": {
+    "invocation": "ls and count the number of lines of the output",
+    "cmd": "ls | wc -l"
+  },
+  "290": {
+    "invocation": "how many things are here",
+    "cmd": "ls -1 | wc -l"
+  },
+  "291": {
+    "invocation": "how many files or directories are here",
+    "cmd": "ls | wc -l"
+  },
+  "292": {
+    "invocation": "how many letters are in \"foolumboo\"",
+    "cmd": "echo foolumboo | wc -c"
+  },
+  "293": {
+    "invocation": "how many letters are in \"foo\"",
+    "cmd": "echo arg1 | wc -c"
+  },
+  "294": {
+    "invocation": "how many letters are in \"foobar\"",
+    "cmd": "echo arg1arg2 | wc -c"
+  },
+  "295": {
+    "invocation": "how many letters are in foobar",
+    "cmd": "echo arg1arg2 | wc -c"
+  },
+  "296": {
+    "invocation": "count number of letters in \"foobar\"",
+    "cmd": "echo arg1arg2 | wc -c"
+  },
+  "297": {
+    "invocation": "Get letter count of \"foobar\"",
+    "cmd": "echo arg1arg2 | wc -c"
+  },
+  "298": {
+    "invocation": "change directory to home directory",
+    "cmd": "cd ~"
+  },
+  "299": {
+    "invocation": "cd to my home dir",
+    "cmd": "cd ~"
+  },
+  "300": {
+    "invocation": "go home",
+    "cmd": "cd ~"
+  },
+  "301": {
+    "invocation": "cd to home directory",
+    "cmd": "cd ~"
+  },
+  "302": {
+    "invocation": "cd to my home directory",
+    "cmd": "cd ~"
+  },
+  "303": {
+    "invocation": "go up one directory",
+    "cmd": "cd .."
+  },
+  "304": {
+    "invocation": "cd to parent dir",
+    "cmd": "cd .."
+  },
+  "305": {
+    "invocation": "cd up one directory",
+    "cmd": "cd .."
+  },
+  "306": {
+    "invocation": "go up to parent directory",
+    "cmd": "cd .."
+  },
+  "307": {
+    "invocation": "go back to directory was in before last cd",
+    "cmd": "cd -"
+  },
+  "308": {
+    "invocation": "go back to where I was",
+    "cmd": "cd -"
+  },
+  "309": {
+    "invocation": "cd to where I was before",
+    "cmd": "cd -"
+  },
+  "310": {
+    "invocation": "change directory to my tmp dir",
+    "cmd": "cd /tmp"
+  },
+  "311": {
+    "invocation": "go to my tmp directory",
+    "cmd": "cd /tmp"
+  },
+  "312": {
+    "invocation": "go up two directories",
+    "cmd": "cd ../.."
+  },
+  "313": {
+    "invocation": "cd up three directories",
+    "cmd": "cd ../../.."
+  },
+  "314": {
+    "invocation": "go into pictures dir",
+    "cmd": "cd pictures"
+  },
+  "315": {
+    "invocation": "change directory to folder dir",
+    "cmd": "cd folder"
+  },
+  "316": {
+    "invocation": "go to folder directory",
+    "cmd": "cd folder"
+  },
+  "317": {
+    "invocation": "make an empty \"word\" directory",
+    "cmd": "mkdir word"
+  },
+  "318": {
+    "invocation": "make a \"word\" directory",
+    "cmd": "mkdir word"
+  },
+  "319": {
+    "invocation": "make an empty directory named \"word\"",
+    "cmd": "mkdir word"
+  },
+  "320": {
+    "invocation": "make a directory named word",
+    "cmd": "mkdir word"
+  },
+  "321": {
+    "invocation": "make a dir named \"word\"",
+    "cmd": "mkdir word"
+  },
+  "322": {
+    "invocation": "make a directory named folder",
+    "cmd": "mkdir folder"
+  },
+  "323": {
+    "invocation": "make an empty directory named \"folder\"",
+    "cmd": "mkdir folder"
+  },
+  "324": {
+    "invocation": "make a hidden directory named cache",
+    "cmd": "mkdir .cache"
+  },
+  "325": {
+    "invocation": "make a hidden directory named word",
+    "cmd": "mkdir .word"
+  },
+  "326": {
+    "invocation": "make a directory named word in ~",
+    "cmd": "mkdir ~/word"
+  },
+  "327": {
+    "invocation": "make a directory named \"foo\" inside the \"bar\" dir",
+    "cmd": "mkdir arg1/arg2"
+  },
+  "328": {
+    "invocation": "make a directory named \"foo\" inside the \"bar\" dir",
+    "cmd": "mkdir -p arg1/arg2"
+  },
+  "329": {
+    "invocation": "create new directories named foo/bar",
+    "cmd": "mkdir -p arg1/arg2"
+  },
+  "330": {
+    "invocation": "make a directory named foo/bar",
+    "cmd": "mkdir -p arg1/arg2"
+  },
+  "331": {
+    "invocation": "verbose mkdir word",
+    "cmd": "mkdir -v word"
+  },
+  "332": {
+    "invocation": "make a directory named \"word\" printing each directory created",
+    "cmd": "mkdir -v word"
+  },
+  "333": {
+    "invocation": "print an empty line",
+    "cmd": "echo"
+  },
+  "334": {
+    "invocation": "output empty line",
+    "cmd": "echo"
+  },
+  "335": {
+    "invocation": "print an empty new line",
+    "cmd": "echo"
+  },
+  "336": {
+    "invocation": "print out hello world",
+    "cmd": "echo \"hello world\""
+  },
+  "337": {
+    "invocation": "print out \"hello world\"",
+    "cmd": "echo hello world"
+  },
+  "338": {
+    "invocation": "write to stdout \"foo bar spam\"",
+    "cmd": "echo arg1 arg2 arg3"
+  },
+  "339": {
+    "invocation": "print out \"foo bar spam\"",
+    "cmd": "echo \"arg1 arg2 arg3\""
+  },
+  "340": {
+    "invocation": "say hello",
+    "cmd": "echo hello"
+  },
+  "341": {
+    "invocation": "print my home directory",
+    "cmd": "echo ~"
+  },
+  "342": {
+    "invocation": "where is my home directory",
+    "cmd": "echo ~"
+  },
+  "343": {
+    "invocation": "rename file1.txt to be file2.txt",
+    "cmd": "mv arg1 arg2"
+  },
+  "344": {
+    "invocation": "change the name of file1.txt to be file2.txt",
+    "cmd": "mv arg1 arg2"
+  },
+  "345": {
+    "invocation": "set the name of file1.txt to file2.txt",
+    "cmd": "mv arg1 arg2"
+  },
+  "346": {
+    "invocation": "move file1.txt to file2.txt",
+    "cmd": "mv arg1 arg2"
+  },
+  "347": {
+    "invocation": "move folder1 to folder2",
+    "cmd": "mv arg1 arg2"
+  },
+  "348": {
+    "invocation": "set the name of folder1 to folder2",
+    "cmd": "mv arg1 arg2"
+  },
+  "349": {
+    "invocation": "rename folder1 to be folder2",
+    "cmd": "mv arg1 arg2"
+  },
+  "350": {
+    "invocation": "move file1.txt to folder2",
+    "cmd": "mv arg1 arg2"
+  },
+  "351": {
+    "invocation": "move file1.txt into folder2",
+    "cmd": "mv arg1 arg2"
+  },
+  "352": {
+    "invocation": "move file1.txt file2.txt into folder",
+    "cmd": "mv arg1 arg2 folder"
+  },
+  "353": {
+    "invocation": "mv both file1.txt and file2.txt to folder",
+    "cmd": "mv arg1 arg2 folder"
+  },
+  "354": {
+    "invocation": "move file1.txt and file2.txt to folder",
+    "cmd": "mv arg1 arg2 folder"
+  },
+  "355": {
+    "invocation": "move file1.txt to parent directory",
+    "cmd": "mv arg1 .."
+  },
+  "356": {
+    "invocation": "move file1.txt up one dir",
+    "cmd": "mv arg1 .."
+  },
+  "357": {
+    "invocation": "move all text files into folder",
+    "cmd": "mv *.txt folder"
+  },
+  "358": {
+    "invocation": "mv al txt files into folder",
+    "cmd": "mv *.txt folder"
+  },
+  "359": {
+    "invocation": "move all js files in parent directory into folder",
+    "cmd": "mv ../*.js folder"
+  },
+  "360": {
+    "invocation": "move all png and jpg files into folder",
+    "cmd": "mv *.png *.jpg folder"
+  },
+  "361": {
+    "invocation": "move all python files here into folder",
+    "cmd": "mv *.py folder"
+  },
+  "362": {
+    "invocation": "change the extension of word.txt to be csv",
+    "cmd": "mv word.txt word.csv"
+  },
+  "363": {
+    "invocation": "move file.txt up two dirs",
+    "cmd": "mv file.txt ../.."
+  },
+  "364": {
+    "invocation": "move file.txt up two directories",
+    "cmd": "mv file.txt ../.."
+  },
+  "365": {
+    "invocation": "make word.txt a hidden file",
+    "cmd": "mv word.txt .word.txt"
+  },
+  "366": {
+    "invocation": "change word.txt to be a hidden file",
+    "cmd": "mv word.txt .word.txt"
+  },
+  "367": {
+    "invocation": "convert word.txt to a dot file",
+    "cmd": "mv word.txt .word.txt"
+  },
+  "368": {
+    "invocation": "change word.txt to a dot file",
+    "cmd": "mv word.txt .word.txt"
+  },
+  "369": {
+    "invocation": "add empty file named file.txt here",
+    "cmd": "touch file.txt"
+  },
+  "370": {
+    "invocation": "set the last mod time and access time of file.txt to now",
+    "cmd": "touch file.txt"
+  },
+  "371": {
+    "invocation": "reset the modified time and access time of file.txt to now",
+    "cmd": "touch file.txt"
+  },
+  "372": {
+    "invocation": "create a file named file.txt",
+    "cmd": "touch file.txt"
+  },
+  "373": {
+    "invocation": "create an empty file named file.txt",
+    "cmd": "touch file.txt"
+  },
+  "374": {
+    "invocation": "set the last accessed and modified time of file.txt to now",
+    "cmd": "touch file.txt"
+  },
+  "375": {
+    "invocation": "make a file named file.txt",
+    "cmd": "touch file.txt"
+  },
+  "376": {
+    "invocation": "make a gitignore",
+    "cmd": "touch .gitignore"
+  },
+  "377": {
+    "invocation": "create an empty gitignore",
+    "cmd": "touch .gitignore"
+  },
+  "378": {
+    "invocation": "make a blank gitignore",
+    "cmd": "touch .gitignore"
+  },
+  "379": {
+    "invocation": "make a .gitignore file",
+    "cmd": "touch .gitignore"
+  },
+  "380": {
+    "invocation": "make a file named __init__.py",
+    "cmd": "touch __init__.py"
+  },
+  "381": {
+    "invocation": "make this a python module",
+    "cmd": "touch __init__.py"
+  },
+  "382": {
+    "invocation": "create a __init__.py",
+    "cmd": "touch __init__.py"
+  },
+  "383": {
+    "invocation": "setup this dir as a python module",
+    "cmd": "touch __init__.py"
+  },
+  "384": {
+    "invocation": "create a file name file.txt in ..",
+    "cmd": "touch ../file.txt"
+  },
+  "385": {
+    "invocation": "make a file called file.txt in parent dir",
+    "cmd": "touch ../file.txt"
+  },
+  "386": {
+    "invocation": "make an empty file name file.txt in my parent directory",
+    "cmd": "touch ../file.txt"
+  },
+  "387": {
+    "invocation": "make file1.txt and file2.txt have the same timestamp",
+    "cmd": "touch -r arg2 arg1"
+  },
+  "388": {
+    "invocation": "set the last modified time of file1.txt to be the same as file2.txt",
+    "cmd": "touch -r arg2 arg1"
+  },
+  "389": {
+    "invocation": "touch file1.txt using last modified and access times of file2.txt",
+    "cmd": "touch -r arg2 arg1"
+  },
+  "390": {
+    "invocation": "set the modified time of file1.txt to now",
+    "cmd": "touch arg1"
+  },
+  "391": {
+    "invocation": "reset the last mod time of file1.txt to now.",
+    "cmd": "touch -m arg1"
+  },
+  "392": {
+    "invocation": "change the modified time of file1.txt to now",
+    "cmd": "touch arg1"
+  },
+  "393": {
+    "invocation": "touch file1.txt but only update the modified time, not the access time",
+    "cmd": "touch -m arg1"
+  },
+  "394": {
+    "invocation": "touch file1.txt but only change modified time",
+    "cmd": "touch -m arg1"
+  },
+  "395": {
+    "invocation": "touch file1.txt but don't change access time.",
+    "cmd": "touch -m arg1"
+  },
+  "396": {
+    "invocation": "wait for 5 seconds",
+    "cmd": "sleep 5"
+  },
+  "397": {
+    "invocation": "pause for five sec",
+    "cmd": "sleep 5"
+  },
+  "398": {
+    "invocation": "do nothing for 5 seconds",
+    "cmd": "sleep 5"
+  },
+  "399": {
+    "invocation": "sleep for five seconds",
+    "cmd": "sleep 5"
+  },
+  "400": {
+    "invocation": "split up file.txt into chunks of 10 lines",
+    "cmd": "split -l 10 file.txt"
+  },
+  "401": {
+    "invocation": "split file.txt into different files with 10 lines each",
+    "cmd": "split -l 10 file.txt"
+  },
+  "402": {
+    "invocation": "split file.txt into files with 100 lines with prefix \"splitfile\"",
+    "cmd": "split -l 100 file.txt splitfile"
+  },
+  "403": {
+    "invocation": "make a tarball of everything here into word.tar.gz",
+    "cmd": "tar -c -z -f word.tar.gz *"
+  },
+  "404": {
+    "invocation": "Compress all the files here into a tarball named word.tar.gz",
+    "cmd": "tar -c -z -f word.tar.gz *"
+  },
+  "405": {
+    "invocation": "make a tar.gz of everything here into word.tar.gz",
+    "cmd": "tar -c -z -f word.tar.gz *"
+  },
+  "406": {
+    "invocation": "tarball all files here into word.tar.gz",
+    "cmd": "tar -c -z -f word.tar.gz *"
+  },
+  "407": {
+    "invocation": "move folder into a tarball named word.tar.gz",
+    "cmd": "tar -c -z -f word.tar.gz folder"
+  },
+  "408": {
+    "invocation": "Compress folder into a tarball named word.tar.gz",
+    "cmd": "tar -c -z -f word.tar.gz folder"
+  },
+  "409": {
+    "invocation": "move all my files here into a tarball",
+    "cmd": "tar -c -z -f data.tar.gz *"
+  },
+  "410": {
+    "invocation": "compress all my files here",
+    "cmd": "tar -c -z -f data.tar.gz *"
+  },
+  "411": {
+    "invocation": "tar all my files here",
+    "cmd": "tar -c -z -f data.tar.gz *"
+  },
+  "412": {
+    "invocation": "compress all my files here into a archive",
+    "cmd": "tar -c -z -f data.tar.gz *"
+  },
+  "413": {
+    "invocation": "move folder to a tarfile",
+    "cmd": "tar -c -z -f folder.tar.gz folder"
+  },
+  "414": {
+    "invocation": "move folder to a tarball",
+    "cmd": "tar -c -z -f folder.tar.gz folder"
+  },
+  "415": {
+    "invocation": "make a tarball for folder",
+    "cmd": "tar -c -z -f folder.tar.gz folder"
+  },
+  "416": {
+    "invocation": "make a compressed archive for folder",
+    "cmd": "tar -c -z -f folder.tar.gz folder"
+  },
+  "417": {
+    "invocation": "compress folder into a tarball",
+    "cmd": "tar -c -z -f folder.tar.gz folder"
+  },
+  "418": {
+    "invocation": "compress folder into a tarfile",
+    "cmd": "tar -c -z -f folder.tar.gz folder"
+  },
+  "419": {
+    "invocation": "make folder a tar file",
+    "cmd": "tar -c -z -f folder.tar.gz folder"
+  },
+  "420": {
+    "invocation": "extract word.tar.gz here",
+    "cmd": "tar -x -z -f word.tar.gz"
+  },
+  "421": {
+    "invocation": "unzip word.tar.gz",
+    "cmd": "tar -x -f word.tar.gz"
+  },
+  "422": {
+    "invocation": "extract word.tar.gz",
+    "cmd": "tar -x -z -f word.tar.gz"
+  },
+  "423": {
+    "invocation": "extract word.tar.gz into current directory",
+    "cmd": "tar -x -f word.tar.gz"
+  },
+  "424": {
+    "invocation": "untar word.tar",
+    "cmd": "tar -x -f word.tar"
+  },
+  "425": {
+    "invocation": "extract word.tar into current directory",
+    "cmd": "tar -x -z -f word.tar"
+  },
+  "426": {
+    "invocation": "extract word.tar",
+    "cmd": "tar -x -f word.tar"
+  },
+  "427": {
+    "invocation": "extract foobar.tar into current directory",
+    "cmd": "tar -x -z -f arg1arg2.tar"
+  },
+  "428": {
+    "invocation": "extract foobar.tar into current directory",
+    "cmd": "tar -x -f arg1arg2.tar"
+  },
+  "429": {
+    "invocation": "move all txt files into word.tar.gz",
+    "cmd": "tar -c -z -f word.tar.gz *.txt"
+  },
+  "430": {
+    "invocation": "Compress all txt files into word.tar.gz",
+    "cmd": "tar -c -z -f word.tar.gz *.txt"
+  },
+  "431": {
+    "invocation": "extract foo/bar.tar.gz into current directory",
+    "cmd": "tar -x -f arg1/arg2.tar.gz"
+  },
+  "432": {
+    "invocation": "extract foo/bar.tar.gz",
+    "cmd": "tar -x -z -f arg1/arg2.tar.gz"
+  },
+  "433": {
+    "invocation": "extract word.tar.gz into folder",
+    "cmd": "tar -x -z -f word.tar.gz -C folder"
+  },
+  "434": {
+    "invocation": "uncompress word.tar.gz into folder",
+    "cmd": "tar -x -f word.tar.gz -C folder"
+  },
+  "435": {
+    "invocation": "get the contents of ./word.tar without extracting",
+    "cmd": "tar -t -v -f ./word.tar"
+  },
+  "436": {
+    "invocation": "show the contents of word.tar.gz",
+    "cmd": "tar -t -v -f ./word.tar.gz"
+  },
+  "437": {
+    "invocation": "show what's in ./word.tar.gz without extracting",
+    "cmd": "tar -t -v -f ./word.tar.gz"
+  }
+}

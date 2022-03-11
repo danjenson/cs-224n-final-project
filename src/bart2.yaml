@@ -1,0 +1,20 @@
+---
+dataset:
+  path: "./additional_test/tds"
+  translate:
+    source: "nlc"
+    target: "cmd_templated"
+model:
+  task: "seq2seq"
+  checkpoint: "facebook/bart-large"
+training:
+  output_dir: "./additional_test/results"
+  overwrite_output_dir: True
+  num_train_epochs: 5
+  per_device_train_batch_size: 10
+  per_device_eval_batch_size: 10
+  eval_steps: 100
+  save_steps: 10000
+  warmup_steps: 100
+  logging_steps: 100
+output_path: "./results/bart"
