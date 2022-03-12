@@ -223,6 +223,7 @@ def max_len(example):
         input = input[1:]
     else:
         input[0] = closest_math[0]
+    
     output = [input[0]]
     counter = 0
     for i in range(len(input) - 1):
