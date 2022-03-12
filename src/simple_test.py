@@ -156,9 +156,10 @@ def predict_seq2seq(trainer, ds):
     pad_id = -100
     res = trainer.predict(ds)
     decode = trainer.tokenizer.decode
+    output_ids = np.argmax(res.predictions[0], axis=-1)
     return [
         decode(p[np.where(p != pad_id)], skip_special_tokens=True)
-        for p in res.label_ids
+        for p in output_ids
     ]
 
 
