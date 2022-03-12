@@ -16,6 +16,9 @@ from bashlint.data_tools import (
     bash_parser,
     ast2template,
 )
+
+import bashlint.bash
+import difflib
 import metric_utils
 
 logging.basicConfig(
@@ -187,8 +190,8 @@ def score(cfg, postprocess_funcs=[]):
 
     def score(example):
         example['score'] = metric_utils.compute_metric(
-            # example['pred'], 1.0, example[cfg.dataset.translate.target])
-            example['pred'], 1.0, example['cmd'])
+            example['pred'], 1.0, example[cfg.dataset.translate.target])
+            # example['pred'], 1.0, example['cmd'])
         print(f"t: {example['cmd']}\np: {example['pred']}\n")
         return example
 
@@ -213,6 +216,12 @@ def max_len(example):
     input = example['pred'].split()
     if len(input) == 0:
         return None
+    head = input[0]
+    closest_match = difflib.get_close_matches(input[0], top_100_utilities)
+    if len(closest_math) == 0:
+        input = input[1:]
+    else:
+        input[0] = closest_math[0]
     output = [input[0]]
     counter = 0
     for i in range(len(input) - 1):
