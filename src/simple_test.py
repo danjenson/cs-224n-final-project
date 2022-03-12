@@ -330,7 +330,7 @@ def parse_args(argv):
         '-fs',
         '--postprocessing_funcs',
         help='postprocessing function names',
-        default=['clean'],
+        default=['max_len'],
     )
     return parser.parse_args(argv[1:])
 
