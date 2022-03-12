@@ -31,6 +31,16 @@ logging.basicConfig(
 def train(cfg):
     '''Train a HuffingFace model.'''
     trainer = build_trainer(cfg)
+    # additional code here for callback
+    class CustomCallback(hft.TrainerCallback):
+        def __init__(self, trainer) -> None:
+            super().__init__()
+            self._trainer = trainer
+            self.epoch_counter = 0
+        def on_epoch_end(self, args, state, control, **kwargs):
+            self.epoch_counter += 1
+            self._trainer.save_model(cfg.output_path + f"/epoch{self.epoch_counter}")
+    trainer.add_callback(CustomCallback(trainer))
     trainer.train()
     p = Path(cfg.output_path)
     trainer.save_model(cfg.output_path)
@@ -62,6 +72,7 @@ def build_trainer(cfg, finetuned=False):
         ds['test'] = ds['test'].map(f, batched=True)
     else:
         ds = ds.map(f, batched=True)
+
     return d['trainer'](
         model=model,
         args=d['args'](**vars(cfg.training)),
