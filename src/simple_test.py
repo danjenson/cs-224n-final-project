@@ -227,13 +227,17 @@ def max_len(example):
     max_words = 15;
     input = example['pred'].split()
     if len(input) == 0:
-        return None
+        return example
     head = input[0]
-    closest_match = difflib.get_close_matches(input[0], top_100_utilities)
-    if len(closest_math) == 0:
-        input = input[1:]
+    closest_match = difflib.get_close_matches(input[0], bashlint.bash.top_100_utilities)
+    
+    if len(closest_match) == 0:
+        if len(input) > 1:
+            input = input[1:]
+        else:
+            return example
     else:
-        input[0] = closest_math[0]
+        input[0] = closest_match[0]
     
     output = [input[0]]
     counter = 0
