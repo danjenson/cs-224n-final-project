@@ -359,10 +359,13 @@ if __name__ == '__main__':
         train(cfg)
     elif cmd == 'predict':
         cfg = load_config(args.config)
-        preds = predict(cfg)
-        path = Path(cfg.output_path) / 'preds'
-        preds.save_to_disk(path)
-        print(f'saved to {path}')
+        plain_cfg_path = cfg.output_path
+        for i in range(10):
+            cfg.output_path = plain_cfg_path + f"/epoch{i+1}"
+            preds = predict(cfg)
+            path = Path(cfg.output_path) / 'preds'
+            preds.save_to_disk(path)
+            print(f'saved to {path}')
     elif cmd == 'score':
         cfg = load_config(args.config)
         funcs = None
