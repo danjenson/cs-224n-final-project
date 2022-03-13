@@ -10,9 +10,9 @@ def build_trainer(cfg):
     if not tokenizer.pad_token:
         tokenizer.add_special_tokens({'pad_token': tokenizer.eos_token})
     # TODO: could this be the problem?
-    tokenizer.add_special_tokens(
-        {'additional_special_tokens': ['<|source|>', '<|target|>']})
-    model.resize_token_embeddings(len(tokenizer))
+    # tokenizer.add_special_tokens(
+    #     {'additional_special_tokens': ['<|source|>', '<|target|>']})
+    # model.resize_token_embeddings(len(tokenizer))
     collator = hft.DataCollatorForLanguageModeling(tokenizer, mlm=False)
     trans = cfg.dataset.translate
     ds = hfd.load_from_disk(cfg.dataset.path)
