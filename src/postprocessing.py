@@ -8,7 +8,7 @@ def clean(prediction):
     return re.sub(' +', ' ', prediction.split('<|target|>')[-1].strip())
 
 
-def top_100(prediction):
+def binary(prediction):
     top_100 = bashlint.bash.top_100_utilities
     tokens = prediction.split()
     for idx, token in enumerate(tokens):
