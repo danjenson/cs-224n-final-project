@@ -1,3 +1,6 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:8e724d7e7c7429821490e7d20cac925f9355b6fda4e1ae36dbd7af34167f6900
-size 54
+datasets
+ipython
+pandas
+tokenizers
+torch
+transformers

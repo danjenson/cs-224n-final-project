@@ -1,3 +1,20 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:5b7372481648fbc635626e258de8636c3755c703718b63b77abfd284948a3a3b
-size 1713
+<|endoftext|> english: Search for Subscription.java under current directory, and go to directory containing it.
+bash: cd $( find Path -name Regex -printf '%h\n' ) <|endoftext|>
+<|endoftext|> english: Output the base name of first argument to script or function, that is the part following the last slash.
+bash: echo $( basename Regex ) <|endoftext|>
+<|endoftext|> english: find regular files in the "mail" folder under the user's home directory, displaying filenames and lines that contain the text "Linux"
+bash: find Path -type f | xargs -I {} grep Regex {} <|endoftext|>
+<|endoftext|> english: change owner of the file process to user root
+bash: chown Regex File <|endoftext|>
+<|endoftext|> english: Find all symbolic links under '/some/directory' driectory tree
+bash: find Path -type l -print <|endoftext|>
+<|endoftext|> english: List each unique case insensitive character in "file" prefixed by number of occurrences and sorted from most frequent to least frequent
+bash: grep -o Regex File | tr Regex Regex | sort | uniq -c | sort -n -r <|endoftext|>
+<|endoftext|> english: Write out the entire directory hierarchy from the current directory
+bash: find Path <|endoftext|>
+<|endoftext|> english: Find all *shp* files/directories under current directory and move them to ../shp_all/
+bash: find Path -name Regex -exec mv {} File \; <|endoftext|>
+<|endoftext|> english: Change directory to the download directory specified in the current user's user-dirs.dirs file
+bash: cd $( grep Regex File | cut -f Number -d Regex | tr Regex Regex ) <|endoftext|>
+<|endoftext|> english: Display differences between directories dir1 and dir2, treating absent files as empty.
+bash: diff -N -a -u Quantity File File <|endoftext|>
