@@ -1,3 +1,4 @@
+from pathlib import Path
 import json
 
 import pandas as pd
@@ -21,18 +22,22 @@ def build_epoch_predict_callback(
     target,
     output_path,
 ):
+    output_path = Path(output_path)
+    if not output_path.exists():
+        output_path.mkdir(parents=True)
+    preds_path = output_path / 'predictions.json'
 
     def callback(epoch):
         d = {}
-        if output_path.exists():
-            with open(output_path) as f:
+        if preds_path.exists():
+            with preds_path.open() as f:
                 d = json.load(f)
         d[epoch] = pd.DataFrame({
             'source': trainer.eval_dataset[source],
             'target': trainer.eval_dataset[target],
             'prediction': predict(trainer),
         }).to_dict('records')
-        with open(output_path, 'w') as f:
+        with open(preds_path, 'w') as f:
             json.dump(d, f, indent=2)
 
     return EpochCallback(callback)

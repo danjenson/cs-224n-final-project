@@ -35,7 +35,7 @@ def train(args):
             task.predict,
             cfg.dataset.translate.source,
             cfg.dataset.translate.target,
-            Path(cfg.output_path) / 'predictions.json',
+            cfg.output_path,
         ))
     trainer.train()
     trainer.save_model(cfg.output_path)
