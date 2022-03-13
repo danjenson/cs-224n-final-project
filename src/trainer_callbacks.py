@@ -10,8 +10,8 @@ class EpochCallback(hft.TrainerCallback):
         super().__init__()
         self.func = func
 
-    def on_epoch_end(self, **kwargs):
-        self.func(kwargs['state'].epoch)
+    def on_epoch_end(self, args, state, control, **kwargs):
+        self.func(state.epoch)
 
 
 def build_epoch_predict_callback(
