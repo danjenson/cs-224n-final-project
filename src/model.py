@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 from importlib import import_module
 from types import SimpleNamespace
-from pathlib import Path
 import argparse
 import json
 import logging
@@ -46,14 +45,13 @@ def train(args):
 def score(args):
     import postprocessing as pp
     import metric_utils as mu
-    pp_funcs = [getattr(pp, func) for func in args.postprocessing_funcs]
     with open(args.predictions_path) as f:
         d = json.load(f)
     scores = {}
     for epoch, data in d.items():
         df = pd.DataFrame(data)
-        for pp_func in pp_funcs:
-            df['prediction'] = df['prediction'].apply(pp_func)
+        for func in args.postprocessing_funcs:
+            df['prediction'] = df['prediction'].apply(getattr(pp, func))
         df['score'] = df.apply(
             lambda row: mu.compute_metric(
                 row['prediction'],
