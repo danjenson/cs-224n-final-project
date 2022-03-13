@@ -204,7 +204,7 @@ def score(cfg, postprocess_funcs=[]):
         example['score'] = metric_utils.compute_metric(
             example['pred'], 1.0, example[cfg.dataset.translate.target])
             # example['pred'], 1.0, example['cmd'])
-        print(f"t: {example['cmd']}\np: {example['pred']}\n")
+        # print(f"t: {example['cmd']}\np: {example['pred']}\n")
         return example
 
     return np.mean(ds.map(score)['score'])
@@ -224,10 +224,11 @@ def max_len(example):
     '''Limit length of prediction.'''
     # TODO(Yingxiao): refactor `post_process`
     special_char = "|"
-    max_words = 15;
+    max_words = 10;
     input = example['pred'].split()
     if len(input) == 0:
         return example
+    """
     head = input[0]
     closest_match = difflib.get_close_matches(input[0], bashlint.bash.top_100_utilities)
     
@@ -238,7 +239,7 @@ def max_len(example):
             return example
     else:
         input[0] = closest_match[0]
-    
+    """
     output = [input[0]]
     counter = 0
     for i in range(len(input) - 1):
@@ -346,7 +347,7 @@ def parse_args(argv):
         '-fs',
         '--postprocessing_funcs',
         help='postprocessing function names',
-        default=['max_len'],
+        default=['clean'],
     )
     return parser.parse_args(argv[1:])
 
