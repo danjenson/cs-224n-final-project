@@ -114,7 +114,7 @@ def parse_args(argv):
         '-fs',
         '--postprocessing_funcs',
         help='postprocessing function names',
-        default=[],
+        default=['clean'],
     )
     return parser.parse_args(argv[1:])
 
