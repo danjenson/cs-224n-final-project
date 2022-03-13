@@ -54,7 +54,13 @@ def tokenize(
     else:
         f = lambda source, target: f'{t.bos} {t.source} {source} {t.target} {target} {t.eos}'
         encoded = list(map(f, examples[source], examples[target]))
-    return tokenizer(encoded, truncation=True)
+    return tokenizer(
+        encoded,
+        truncation=True,
+        padding=True,
+        add_special_tokens=True,
+        max_length=100,
+    )
 
 
 def predict(trainer):
