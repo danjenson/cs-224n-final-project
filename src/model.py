@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from importlib import load_module
+from importlib import import_module
 from types import SimpleNamespace
 from pathlib import Path
 import argparse
@@ -18,26 +18,28 @@ logging.basicConfig(
 
 
 def dataset(args):
-    ds = load_module('dataset').build_templated_dataset(args.p_test, args.seed)
+    from dataset import build_templated_dataset
+    ds = build_templated_dataset(args.p_test, args.seed)
     ds.save_to_disk(args.output_path)
     print(f'saved to {args.output_path}')
 
 
 def train(args):
+    import trainer_callbacks
     cfg = load_config(args.config)
-    task = load_module(args.model.task)
+    task = import_module(cfg.model.task)
     trainer = task.build_trainer(cfg)
     trainer.add_callback(
-        load_module('trainer_callbacks').build_epoch_predict_callback(
+        trainer_callbacks.build_epoch_predict_callback(
             trainer,
             task.predict,
             cfg.dataset.translate.source,
             cfg.dataset.translate.target,
-            Path(cfg.model.output_path) / 'predictions.json',
+            Path(cfg.output_path) / 'predictions.json',
         ))
     trainer.train()
-    trainer.save_model(cfg.model.output_path)
-    print(f'saved model to {cfg.model.output_path}')
+    trainer.save_model(cfg.output_path)
+    print(f'saved model to {cfg.output_path}')
 
 
 def score(args):
@@ -80,7 +82,6 @@ def parse_args(argv):
     sub = parser.add_subparsers(dest='command')
     dataset = sub.add_parser('dataset', formatter_class=cls)
     train = sub.add_parser('train', formatter_class=cls)
-    predict = sub.add_parser('predict', formatter_class=cls)
     score = sub.add_parser('score', formatter_class=cls)
     dataset.add_argument(
         '-p_test',
@@ -100,12 +101,6 @@ def parse_args(argv):
         default='tds',
     )
     train.add_argument(
-        '-c',
-        '--config',
-        help='yaml config to use',
-        default='bart.yaml',
-    )
-    predict.add_argument(
         '-c',
         '--config',
         help='yaml config to use',
