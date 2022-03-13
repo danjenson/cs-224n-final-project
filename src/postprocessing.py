@@ -1,8 +1,21 @@
+import difflib
 import re
+
+import bashlint.bash
 
 
 def clean(prediction):
     return re.sub(' +', ' ', prediction.split('<|target|>')[-1].strip())
+
+
+def top_100(prediction):
+    top_100 = bashlint.bash.top_100_utilities
+    tokens = prediction.split()
+    for idx, token in enumerate(tokens):
+        matches = difflib.get_close_matches(token, top_100)
+        if matches:
+            return ' '.join([matches[0]] + tokens[idx + 1:])
+    return prediction
 
 
 def max_len(prediction, n=15):
