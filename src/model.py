@@ -114,6 +114,7 @@ def parse_args(argv):
         '--postprocessing_funcs',
         help='postprocessing function names',
         nargs='*',
+        default=[],
     )
     return parser.parse_args(argv[1:])
 
