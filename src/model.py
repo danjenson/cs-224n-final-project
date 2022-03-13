@@ -39,6 +39,7 @@ def train(args):
         ))
     trainer.train()
     trainer.save_model(cfg.output_path)
+    trainer.save_state(cfg.output_path)
     print(f'saved model to {cfg.output_path}')
 
 

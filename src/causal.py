@@ -25,7 +25,7 @@ def build_trainer(cfg):
             tokenizer, batch, trans.source, trans.target, omit_labels=True),
         batched=True,
     )
-    trainer = hft.Trainer(
+    return hft.Trainer(
         model=model,
         args=hft.TrainingArguments(**vars(cfg.training)),
         train_dataset=ds['train'],
@@ -33,7 +33,6 @@ def build_trainer(cfg):
         tokenizer=tokenizer,
         data_collator=collator,
     )
-    return trainer
 
 
 def tokenize(
