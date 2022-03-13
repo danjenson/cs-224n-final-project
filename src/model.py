@@ -45,9 +45,9 @@ def train(args):
 def score(args):
     import postprocessing as pp
     import metric_utils as mu
+    pp_funcs = [getattr(pp, func) for func in args.postprocessing_funcs]
     with open(args.predictions_path) as f:
         d = json.load(f)
-    pp_funcs = [getattr(pp, func) for func in args.postprocessing_funcs]
     scores = {}
     for epoch, data in d.items():
         df = pd.DataFrame(data)
@@ -114,7 +114,7 @@ def parse_args(argv):
         '-fs',
         '--postprocessing_funcs',
         help='postprocessing function names',
-        default=['clean'],
+        nargs='*',
     )
     return parser.parse_args(argv[1:])
 
