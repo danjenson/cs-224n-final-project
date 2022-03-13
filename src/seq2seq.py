@@ -5,7 +5,7 @@ import transformers as hft
 
 def build_trainer(cfg):
     model = hft.AutoModelForSeq2SeqLM.from_pretrained(cfg.model.checkpoint)
-    tokenizer = hft.AutoTokenizer(cfg.model.checkpoint)
+    tokenizer = hft.AutoTokenizer.from_pretrained(cfg.model.checkpoint)
     collator = hft.DataCollatorForSeq2Seq(tokenizer, model)
     trans = cfg.dataset.translate
     ds = hfd.load_from_disk(cfg.dataset.path)
