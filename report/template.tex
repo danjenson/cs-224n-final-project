@@ -27,21 +27,16 @@
 }
 
 \author{
-  Name \\
-  Department of Computer Science \\
+ Daniel Jenson \\
+  Department of Management Science \& Engineering \\
   Stanford University \\
-  \texttt{name@stanford.edu} \\
+  \texttt{djenson@stanford.edu} \\
   % Examples of more authors
-%   \And
-%   Name \\
-%   Department of Computer Science \\
-%   Stanford University \\
-%   \texttt{name@stanford.edu} \\
-%   \And
-%   Name \\
-%   Department of Computer Science \\
-%   Stanford University \\
-%   \texttt{name@stanford.edu}
+  \And
+  Yingxiao Liu \\
+  Department of Civil and Environmental Engineering \\
+  Stanford University \\
+  \texttt{liuyx@stanford.edu} \\
 }
 
 \begin{document}
@@ -49,24 +44,45 @@
 \maketitle
 
 \begin{abstract}
-	An abstract should concisely (less than 300 words) motivate the problem, describe your aims, describe your contribution, and highlight your main finding(s).
+	The objective of this project is to generate bash commands from natural
+	language using a deep neural network. We are experimenting with several models,
+	including GPT-2, BART, and T5, as well as different tokenization schemes to
+	improve model performance on the NLC2CMD dataset. We have successfully
+	trained a GPT-2 model, which has achieved modest performance. Next, we will
+	next train models using BART and T-5. However, we suspect that the majority
+	of gains may be achieved from improved encoding and tokenization.
 \end{abstract}
 
 
 \section{Key Information to include}
 \begin{itemize}
-	\item Mentor:
-	\item External Collaborators (if you have any):
-	\item Sharing project:
+	\item TA mentor: Ethan A. Chi
+	\item External collaborators: No
+	\item External mentor: No
+	\item Sharing project: No
 \end{itemize}
 
 % {\color{red} This template does not contain the full instruction set for this assignment; please refer back to the milestone instructions PDF.}
 
 \section{Introduction}
-The introduction explains the problem, why it's difficult, interesting, or important, how and why current methods succeed/fail at the problem, and explains the key ideas of your approach and results. Though an introduction covers similar material as an abstract, the introduction gives more space for motivation, detail, references to existing work, and to capture the reader's interest.
+The objective of this project is to generate bash commands from natural
+language using a deep neural network. Novitiates often find the terminal
+interface perplexing and are quickly overwhelmed by the syntax of bash
+commands. Even experienced engineers frequently consult man-pages, online
+documentation, and online forums like StackOverflow to learn about the
+particulars of various commands. This project aims to ease that burden on new
+and experienced users alike. An interesting minimum viable product in this
+space in this space is ``aish,'' short for AI-shell, which is part of the
+\href{http://anix.org}{AInix} Kernel project. In the future, we hope that this
+field of research will be able to construct sequences of bash commands,
+automating entire workflows from simple natural language descriptions. However,
+for this project, we focus solely on executing atomic commands.
+% TODO: Yinxaio, embellish a little maybe
+% The introduction explains the problem, why it's difficult, interesting, or important, how and why current methods succeed/fail at the problem, and explains the key ideas of your approach and results. Though an introduction covers similar material as an abstract, the introduction gives more space for motivation, detail, references to existing work, and to capture the reader's interest.
 
 \section{Related Work}
 This section helps the reader understand the research context of your work, by providing an overview of existing work in the area.
+% TODO: Yingxiao
 
 \color{red}
 \section{Approach}
@@ -81,13 +97,12 @@ intent of other flags in the same command, introducing complex dependencies.
 These dependencies can also shift as the order of the flags and their arguments
 are permuted. In sum, the meaning of a flag is almost entirely provided by the
 invoking binary and its location in the sequence of arguments. This introduces
-difficulties in fine tuning embeddings, since training may attempt to encode
+difficulties in fine-tuning embeddings, since training may attempt to encode
 vastly different meanings in the same embedding, although this is not always a
-problem(TODO cite paper on deconstructing embeddings). Given sufficient
-training data, it is likely that that the models may eventually learn correct
-contextual meaning when employed by different binaries, but we found 10,000
-rows insufficient for the task. This line of thinking inspired our first
-approach, text generation using GPT2.
+problem. Given sufficient training data, it is likely that that the models may
+eventually learn correct contextual meaning when employed by different
+binaries, but we found 10,000 rows insufficient for the task. This line of
+thinking inspired our first approach, text generation using GPT2.
 \par
 While at first this task appears to be a straightforward translation task,
 after considering bash more closely, one can see that it does not admit of many
@@ -114,8 +129,36 @@ semantic structures, bash does not benefit from this nearly as much. As a
 non-natural, non-context-free grammar language, modeling it can be difficult,
 and our BART model, in particular, struggled with this.
 \par
-TODO: review templating / AST
-TODO: show tokenization examples
+% TODO: review templating / AST
+% TODO: show tokenization examples
+%% Finish by 2 PM
+% OLD code
+The NLC2CMD Challenge was held only once at NeurIPS in 2020 and competing teams
+put out working papers at best, but most often simply scattered notes across
+Github. The dataset is simple a JSON consisting of translation pairs. Because
+of this, a great deal of work had to go into preprocessing and encoding the
+data, as well as becoming familiar with the HuggingFace infrastructure. We used
+several trivial encodings to start, but found only one that achieves decent
+performance, detailed in the dataset section. We found that the effectiveness
+of the encoding varies by model and training objective, so this will have to be
+tuned as we experiment with different models.
+\par
+The competition also provided several utilities of which we availed ourselves.
+First, they released a bash to AST parser, which can also write an AST back to
+a templated form, e.g. replacing file paths with ``File'' and regular
+expressions with the token ``Regex.'' This allows the model to learn
+placeholder values for commands. They also provided a function to compute their
+competition scoring metric, which we use to establish our baseline.
+\par
+We used GPT-2 as our first base model, as most top competitors used this model
+and it appears to provide a solid foundation for causal language modeling. We
+also used the corresponding HuggingFace tokenizer. We experimented with BART,
+but this model requires more work, as repurposing it for casual language
+modeling has proven difficult; many original model weights are left
+uninitialized, since this was not the original training objective of the model.
+Our GPT-2 model achieved a performance of -0.21 using the evaluation criteria
+provided by the competition, which is just shy of the -0.19 achieved by the
+GPT-3 baseline.
 
 \section{Experiments}
 This section contains the following.
@@ -130,27 +173,31 @@ Some projects will have clear metrics from prior work on given datasets, but we 
 If you're defining your own metrics, be clear as to what you're hoping to measure with each evaluation method (whether quantitative or qualitative, automatic or human-defined!), and how it's defined.
 
 \color{red}
-\subsection{Experimental details (Dan's part)}
+\subsection{Experimental details}
 \color{black}
 For this task, we tested 3 models: HuggingFace's
 \href{https://huggingface.co/gpt2}{GPT2}\cite{gpt2},
 \href{https://huggingface.co/facebook/bart-large}{Facebook's BART
-Large}\cite{bart}, and \href{https://huggingface.co/t5-large}{Google's T5
-Large}. GPT2 was a causal model, predicting text from context, while the other
-two were traditional seq2seq models. Each was trained for 5, 10, and 25 epochs.
-Batch size was limited to 10 examples, except for T5, which had to be reduced
-to 5. For training, we used the AdamW optimizer with weight decay
+	Large}\cite{bart}, and \href{https://huggingface.co/google/t5-v1_1-base}{Google's T5 v1.1
+	base}. GPT2 was a causal model, predicting text from context, while the other
+two were traditional seq2seq models. Each was trained for 5, 10, and 25
+epochs. Batch size was limited to 10 examples, except for T5, which had to be
+reduced to 5. For training, we used the AdamW optimizer with weight decay
 regularization. The learning rate was linear with a warmup of 100 steps. The
-dataset was split into 98\% training and 2\% test sets. Given that the dataset
-was approximately 10,000 parallel translations, the test set was slightly over
-200 examples. Training time for GPT, BART, and T5 was approximately 1, 1.5, and 4.5
-hours, respectively, on an Azure NC6 instance with a Tesla V100 PCIe
-16GB GPU. All 3 models used cross-entropy loss for training, but were scored on
-the test set using the NLC2CMD metric at the end of each epoch.
+dataset was split into 98\% training and 2\% test sets. Given that the
+dataset was approximately 10,000 parallel translations, the test set was
+slightly over 200 examples. Training time for GPT, BART, and T5v1.1 was
+approximately 1, 1.5, and 1.25 hours, respectively, on an Azure NC6 instance
+with a Tesla V100 PCIe 16GB GPU. We attemtped training the original T5 large
+model, but even with 5 examples per batch, we got out of memory errors, and
+it took approximately 6 hours to finetune. All 3 models used cross-entropy
+loss for training, but were scored on the test set using the NLC2CMD metric
+at the end of each epoch.
 
 \color{red}
-\subsection{Results (Dan's part)}
+\subsection{Results}
 \color{black}
+% TODO: finish by 2:30 PM
 The requirement from the course website: Report the quantitative results that you have found so far. Use a table or plot to compare results and compare against baselines.
 Comment on your quantitative results. Are they what you expected? Better than you expected? Worse than you expected? Why do you think that is? What does that tell you about your approach?
 
@@ -159,6 +206,8 @@ Yingxiao's thought: show them the loss-epoch curve, the metric-epoch curve, and 
 
 \section{Analysis}
 Your report should include \textit{qualitative evaluation}. That is, try to understand your system (e.g. how it works, when it succeeds and when it fails) by inspecting key characteristics or outputs of your model.
+
+Dan's thought: include error analysis, why cross-entropy was different from metric, etc.
 
 \section{Conclusion}
 Summarize the main findings of your project, and what you have learnt. Highlight your achievements, and note the primary limitations of your work. If you like, you can describe avenues for future work.
