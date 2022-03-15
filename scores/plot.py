@@ -20,7 +20,7 @@ def main():
     sns.lineplot(x=bart_loss.epoch, y=bart_loss.loss, color='blue')
     sns.lineplot(x=gpt2_loss.epoch, y=gpt2_loss.loss, color='orange')
     sns.lineplot(x=t5_loss.epoch, y=bart_loss.loss, color='green')
-    plt.legend(labels=['Bart', 'GPT2', 'T5'])
+    plt.legend(labels=['BART', 'GPT2', 'T5'])
     plt.title('Training Loss')
     plt.xlabel('Epoch')
     plt.ylabel('Cross-Entropy Loss')
@@ -57,13 +57,13 @@ def main():
     plt.ylabel('NLC2CMD Score')
     plt.legend(
         labels=[
-            'Bart: Clean+MaxLen',
+            'BART: Clean+MaxLen',
             'GPT2: Clean+MaxLen',
             'T5: Clean+MaxLen',
-            'Bart: Clean',
+            'BART: Clean',
             'GPT2: Clean',
             'T5: Clean',
-            'GPT3 Baseline',
+            'GPT3: Baseline',
         ],
         loc='center right',
         bbox_to_anchor=(1, 0.525),

@@ -49,7 +49,7 @@
 
 \begin{abstract}
 	The objective of this project is to generate bash commands from natural
-	language using a deep neural network. We used the NLC2CMD dataset, templatized
+	language using a deep neural network. We used the NLC2CMD dataset, templated
 	the data, and experimented with several models, including GPT-2, BART, and T5,
 	as well as different tokenization schemes and postprocessing methods to improve
 	model performance on the NLC2CMD dataset. We found that although BART and GPT-2
@@ -209,13 +209,13 @@ been used by casting the shell commands into the corresponding abstract syntax
 trees (AST), replacing the identifiers and then casting the AST back to
 commands. The guide can be found
 \href{https://github.com/IBM/clai/tree/nlc2cmd}{here}. After this step, the
-command we saw in the previous example were templatized into
+command we saw in the previous example were templated into
 \begin{verbatim}
 cmd: find Path -type d -print0 | xargs -0 -I chmod Permission
 \end{verbatim}
 for easier generalization during training.
 
-The invocations and templatized commands can be fed directly into the sequence
+The invocations and templated commands can be fed directly into the sequence
 to sequence models (i.e. BART and T5) as inputs and labels for training.
 However, for the causal language model GPT2, additional preprocessing much be
 performed because such model can only generate code token by token and there is
@@ -224,11 +224,10 @@ commands, and assemble them in the form of
 
 \begin{verbatim}
 <bos_token> <source_token> <invocation> <target_token>
-
-                                              <templatized cmd> <eos_token> 
+                                              <templated cmd> <eos_token> 
 \end{verbatim}
 
-The dataset was split into the training and test sets with a ratio of 0.98 : 0.02.
+The training set consisted of 10,140 examples and the test set 207, representing an approximately 98\% to 2\% percent split.
 
 \subsection{Evaluation method}
 The standard cross-entropy loss function was used to trained the models. But a more robust metric measuring the execution accuracy of the model predictions must be used, and we used the metric defined by the competition as
@@ -271,15 +270,18 @@ it took approximately 6 hours to finetune. All 3 models used cross-entropy
 loss for training, but were scored on the test set using the NLC2CMD metric
 at the end of each epoch.
 
-\color{red}
 \subsection{Results}
-\color{black}
 % TODO: finish by 2:30 PM
-
+While out training loss consistently improved, only T5 ultimately began to
+learn the structure of bash commands. Below, you can see that cross-entropy
+loss steadily decreased for all 3 models. Curiously, T5 recorded the highest
+loss, while performing best on the scoring metric used by the competition.
 \begin{center}
 	\includegraphics[scale=0.4]{loss.png}
 	\includegraphics[scale=0.4]{metric.png}
 \end{center}
+Despite improving on the training objective, all 3 of these models still produced garbled and excessive responses. Repetition was common for all 3, although most with BART. GPT2 had a tendency to ``ramble;'' it was not uncommon for GPT2 to generate natural language intermixed with bash commands. It also frequently produced multiple ``target stories.'' A target story as used here is a section of output text that begins with the special token \texttt{<|target|>}, which was used to denote the beginning of a bash command in the encoded input.
+
 The requirement from the course website: Report the quantitative results that you have found so far. Use a table or plot to compare results and compare against baselines.
 Comment on your quantitative results. Are they what you expected? Better than you expected? Worse than you expected? Why do you think that is? What does that tell you about your approach?
 
@@ -331,12 +333,5 @@ Summarize the main findings of your project, and what you have learnt. Highlight
 
 \bibliographystyle{unsrt}
 \bibliography{references}
-
-
-\appendix
-
-\section{Appendix (optional)}
-If you wish, you can include an appendix, which should be part of the main PDF, and does not count towards the 6-8 page limit.
-Appendices can be useful to supply extra details, examples, figures, results, visualizations, etc., that you couldn't fit into the main paper. However, your grader \textit{does not} have to read your appendix, and you should assume that you will be graded based on the content of the main part of your paper only.
 
 \end{document}
