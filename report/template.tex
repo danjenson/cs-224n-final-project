@@ -6,6 +6,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{url}
 \usepackage{booktabs}
+\usepackage[outputdir=build]{minted}
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{nicefrac}
@@ -227,10 +228,13 @@ commands, and assemble them in the form of
                                               <templated cmd> <eos_token> 
 \end{verbatim}
 
-The training set consisted of 10,140 examples and the test set 207, representing an approximately 98\% to 2\% percent split.
+The training set consisted of 10,140 examples and the test set 207,
+representing an approximately 98\% to 2\% percent split.
 
 \subsection{Evaluation method}
-The standard cross-entropy loss function was used to trained the models. But a more robust metric measuring the execution accuracy of the model predictions must be used, and we used the metric defined by the competition as
+The standard cross-entropy loss function was used to trained the models. But a
+more robust metric measuring the execution accuracy of the model predictions
+must be used, and we used the metric defined by the competition as
 \begin{align*}
 	S(p) & =\sum_{i\in[1,T]}\frac{1}{T}\times\left(
 	\mathbb{I}[U(c)_i=U(C)i]\times\frac{1}{2}\left(
@@ -238,17 +242,23 @@ The standard cross-entropy loss function was used to trained the models. But a m
 	\right)
 \end{align*}
 where $U(x)$ is a sequence of bash utilities in a command $x$, $c$ is the
-predicted bash command and $C$ is the ground truth bash command.
-Apart measuring whether the utilities in the two commands match, an additional variable $X$ has been introduced to measure whether the flags associated with each utility match or not, as
+predicted bash command and $C$ is the ground truth bash command. Apart
+measuring whether the utilities in the two commands match, an additional
+variable $X$ has been introduced to measure whether the flags associated with
+each utility match or not, as
 \begin{equation*}
 	X = 2\times
 	|F(U(c)_i)\cap F(U(C)_i)| - |F(U(c)_i)\cup F(U(C)_i)|
 \end{equation*}
-where $F(x)$ refers to
-the set of bash flags in a command $x$. $T$ is the maximum length between
-$U(c)$ and $U(C)$ while $N$ is the maximum size between $F(c)$ and $F(C)$. Since the order of flags does not matter, set operations have been used here.
+where $F(x)$ refers to the set of bash flags in a command $x$. $T$ is the
+maximum length between $U(c)$ and $U(C)$ while $N$ is the maximum size between
+$F(c)$ and $F(C)$. Since the order of flags does not matter, set operations
+have been used here.
 
-This is a very strict metric penalizing for both incorrect and extra bash utilities and flags. The return value of the metric is between -1.0 and 1.0, and only a command which produces exactly the same execution result as the ground truth one can get a score of 1.0.
+This is a very strict metric penalizing for both incorrect and extra bash
+utilities and flags. The return value of the metric is between -1.0 and 1.0,
+and only a command which produces exactly the same execution result as the
+ground truth one can get a score of 1.0.
 
 \subsection{Experimental details}
 For this task, we tested 3 models: HuggingFace's
@@ -265,8 +275,8 @@ dataset was approximately 10,000 parallel translations, the test set was
 slightly over 200 examples. Training time for GPT, BART, and T5v1.1 was
 approximately 1, 1.5, and 1.25 hours, respectively, on an Azure NC6 instance
 with a Tesla V100 PCIe 16GB GPU. We attemtped training the original T5 large
-model, but even with 5 examples per batch, we got out of memory errors, and
-it took approximately 6 hours to finetune. All 3 models used cross-entropy
+model, but even with 5 examples per batch, we got out of memory errors;
+it also took approximately 6 hours to fine-tune. All 3 models used cross-entropy
 loss for training, but were scored on the test set using the NLC2CMD metric
 at the end of each epoch.
 
@@ -280,13 +290,93 @@ loss, while performing best on the scoring metric used by the competition.
 	\includegraphics[scale=0.4]{loss.png}
 	\includegraphics[scale=0.4]{metric.png}
 \end{center}
-Despite improving on the training objective, all 3 of these models still produced garbled and excessive responses. Repetition was common for all 3, although most with BART. GPT2 had a tendency to ``ramble;'' it was not uncommon for GPT2 to generate natural language intermixed with bash commands. It also frequently produced multiple ``target stories.'' A target story as used here is a section of output text that begins with the special token \texttt{<|target|>}, which was used to denote the beginning of a bash command in the encoded input.
+Despite improving on the training objective, all 3 of these models still
+produced garbled and verbose responses. Repetition was common for all 3,
+although most with BART. GPT2 had a tendency to ``ramble;'' it was not uncommon
+for GPT2 to generate natural language intermixed with bash commands. It also
+frequently produced multiple ``target stories.'' Here we define a target story
+as a section of output text that begins with the special token
+\texttt{<|target|>}, which was used to denote the beginning of a bash command
+in the encoded input. Here is an example row of output from the modeling process with GPT2:
+\begin{minted}{json}
+{
+  "source": "List the files from the current directory tree that contain
+    lines matching regular expression '^From:.*unique sender',
+    ignoring ~/src and ~/bin",
+  "target": "find Path -name Regex -prune -or -name Regex -prune \
+    -or -type f -print | xargs -I {} grep -E -i -l Regex {}",
+  "prediction": "<|endoftext|> <|source|> List the files from the current
+    directory tree that contain lines matching regular expression
+    '^From:.*unique sender', ignoring ~/src and ~/bin <|target|><|endoftext|>
+    <|endoftext|><|endoftext|><|endoftext|><|endoftext|><|endoftext|>
+    The first day of the year is a long one for the first day of the year.
+    <|target|> find Path -name Regex -daystart -type f -print0 \
+    | xargs -0 -I {} grep -H Regex {}   "
+},
+\end{minted}
+Here you can see several types of errors affecting performance. A detailed
+analysis is left for the subsequent section, but here we will highlight 3
+issues that motivated our postprocessing. First, you can see that GPT2 outputs
+multiple target stories, i.e. in the prediction, there are two chunks of text
+following a special target token. Second, we can see that GPT2 still had
+internalized the meaning of the target token, because it continued to predict
+natural language as well as special end of sentence tokens,
+\texttt{<|endoftext|>}, after the target token. Third, we can see hints of
+GPT2's pretraining through the inserted sentence ``The first day of the year is
+a long one for the first day of the year.'' This suggests that GPT2 is still
+heavily biased toward its pretraining data, despite being fine-tuned to produce
+bash commands. BART and T5 had similar errors, but those are also left for
+analysis.
+\par
+Many competitors in the NLC2CMD competition actually crafted extremely
+sophisticated postprocessing techniques. Some used ensemble models, other
+implemented a custom structured beam-search. Given the time limitations for
+this project, we elected for a rule-based approach. We ran simple functions
+that could be composed across model predictions. We would then score the
+prediction after postprocessing. We designed 3 postprocessing functions to
+address our main problems: (1) multiple target texts, (2) repetition or
+rambling, and (3) binary prediction.
+\par
+Looking at the predictions, we noticed that, most often, the target text
+closest to a bash command was the last sequence GPT2 generated. Accordingly, we
+wrote a function we named \texttt{clean} that selected the last chunk of text
+associated with a target command. Second, because the scoring metric penalizes
+incorrect or excessive flags, we tried to trim repetitions and rambling with a
+function called \texttt{max\_len}. Tokenizing by separating on whitespace, we
+collapsed repeated tokens and limited the maximum number of tokens to 15.
+Lastly, we attempted to do binary matching. Because the entire prediction's
+score hinges largely on selecting the right binary, we wrote a function that
+attempted to find the first token in a sequence that closely matched a top 100
+bash utility name. This last function did not improve performance much, and so
+was dropped when evaluating our final models. Using the above prediction and
+running through \texttt{clean} yields the following:
+\begin{verbatim}
+find Path -name Regex -daystart -type f -print0 | xargs -0 -I {} grep -H Regex {}
+\end{verbatim}
+And then through \texttt{max\_len}:
+\begin{verbatim}
+find Path -name Regex -daystart -type f -print0 | xargs -0 -I {} grep -H
+\end{verbatim}
+While these cleaning techniques are quite crude, they significantly improve
+scores. The best model scores under different preprocessing functions along
+with the GPT3 baseline are recorded in the following table:
 
-The requirement from the course website: Report the quantitative results that you have found so far. Use a table or plot to compare results and compare against baselines.
-Comment on your quantitative results. Are they what you expected? Better than you expected? Worse than you expected? Why do you think that is? What does that tell you about your approach?
-
-Yingxiao's thought: show them the loss-epoch curve, the metric-epoch curve, and one table summarizing the best scores for the gpt2, bart, t5, and baseline gpt3, with different postprocessing functions. Please comment as much as you could in this section. Mention that our results became better and better after more epochs, although the score did not improve. Any thought on the causual / seq2seq models?
-
+\begin{center}
+	\begin{tabular}{rcccc}
+		\toprule
+		model & raw   & clean & clean+max\_len \\
+		\midrule
+		GPT2  & -0.95 & -0.61 & -0.60          \\
+		BART  & -0.95 & -0.95 & -0.95          \\
+		T5    & -0.13 & -0.06 & \textbf{0.12}  \\
+		% GPT2  & -0.951691 & -0.613975 & -0.602972      \\
+		% BART  & -0.951691 & -0.951691 & -0.951691      \\
+		% T5    & -0.125204 & -0.059434 & 0.119156       \\
+		\hline
+		GPT3  & -0.19 & -0.19 & -0.19          \\
+		\bottomrule
+	\end{tabular}
+\end{center}
 
 \section{Analysis}
 % TODO: This needs to be cleaned up; I would put all invocations in a table, together
@@ -328,7 +418,21 @@ where the model didn't know when to stop.
 Such problems may be alleviated by using more robust models with defined penalty functions. Also, the number of examples we got is only 10,000, and a larger dataset will help to improve the model performance.
 
 \section{Conclusion}
-Summarize the main findings of your project, and what you have learnt. Highlight your achievements, and note the primary limitations of your work. If you like, you can describe avenues for future work.
+The three main discoveries of this project were: (1) the size of the dataset is
+the most important factor in performance, (2) postprocessing is required,
+especially when training on limited data, and (3) signaling structure to your
+model is difficult and subtle but dramatically affects performance, as seen
+with BART. While we are satisfied to have surpassed the GPT3 baseline, the
+competition winner achieved a score of 0.53, which still significantly exceeds
+the 0.12 achieved by our T5 model. This team, however, augmented their data by
+scraping Stackoverflow and similar website. They also implemented a variety of
+additional techniques, which included a custom beam search and ensemble
+classification, which were out of the scope of this project. We believe that
+success on this task likes principally in cultivating a larger dataset of
+parallel translations. T5 was able to achieve notable performance using only
+10,000 examples. With 100,000, we are confident that T5 may well exceed the
+performance of the top model, even in the absence more sophisticated
+techniques.
 
 
 \bibliographystyle{unsrt}
