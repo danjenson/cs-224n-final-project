@@ -6,7 +6,7 @@ dataset:
     target: "cmd_templated"
 model:
   task: "seq2seq"
-  checkpoint: "facebook/bart-large"
+  checkpoint: "google/t5-v1_1-base"
 training:
   output_dir: "./results"
   overwrite_output_dir: True
@@ -17,4 +17,4 @@ training:
   save_steps: 10000
   warmup_steps: 100
   logging_steps: 100
-output_path: "./results/bart"
+output_path: "./results/t5"

@@ -4,7 +4,6 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{hyperref}
 \usepackage{url}
 \usepackage{booktabs}
 \usepackage{amsfonts}
@@ -12,7 +11,12 @@
 \usepackage{microtype}
 \usepackage{graphicx}
 \usepackage{xcolor}
-\usepackage{lipsum}
+\usepackage{xcolor}
+\usepackage[colorlinks = true,
+            linkcolor = blue,
+            urlcolor  = blue,
+            citecolor = blue,
+            anchorcolor = blue]{hyperref}
 
 \newcommand{\note}[1]{\textcolor{blue}{{#1}}}
 
@@ -45,15 +49,15 @@
 \maketitle
 
 \begin{abstract}
-An abstract should concisely (less than 300 words) motivate the problem, describe your aims, describe your contribution, and highlight your main finding(s). 
+	An abstract should concisely (less than 300 words) motivate the problem, describe your aims, describe your contribution, and highlight your main finding(s).
 \end{abstract}
 
 
 \section{Key Information to include}
 \begin{itemize}
-    \item Mentor:
-    \item External Collaborators (if you have any):
-    \item Sharing project:
+	\item Mentor:
+	\item External Collaborators (if you have any):
+	\item Sharing project:
 \end{itemize}
 
 % {\color{red} This template does not contain the full instruction set for this assignment; please refer back to the milestone instructions PDF.}
@@ -87,6 +91,11 @@ If you're defining your own metrics, be clear as to what you're hoping to measur
 \color{red}
 \subsection{Experimental details (Dan's part)}
 \color{black}
+The specific models that were tested were Hugging Face's \href{https://huggingface.co/gpt2}{gpt2}\cite{gpt2}, \href{https://huggingface.co/facebook/bart-large}{Facebook's BART Large}\cite{bart}, 
+
+Three models were tested
+Custom configuration
+For training, we developed
 The requirement from the course website: Report how you ran your experiments (e.g. model configurations, learning rate, training time, etc.)
 
 Yingxiao's thought: interpret the configuration we used for training
@@ -109,6 +118,7 @@ Summarize the main findings of your project, and what you have learnt. Highlight
 
 \bibliographystyle{unsrt}
 \bibliography{references}
+
 
 \appendix
 
