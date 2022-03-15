@@ -27,14 +27,14 @@ def main():
     plt.savefig('loss.png')
     plt.clf()
     both_df = pd.DataFrame({
-        'bart': bart['scores']['clean+max_len'][:10],
-        't5': t5['scores']['clean+max_len'][:10],
-        'gpt2': gpt2['scores']['clean+max_len'][:10],
+        'bart': bart['scores']['clean+max_len'],
+        't5': t5['scores']['clean+max_len'],
+        'gpt2': gpt2['scores']['clean+max_len'],
     })
     clean_df = pd.DataFrame({
-        'bart': bart['scores']['clean'][:10],
-        't5': t5['scores']['clean'][:10],
-        'gpt2': gpt2['scores']['clean'][:10],
+        'bart': bart['scores']['clean'],
+        't5': t5['scores']['clean'],
+        'gpt2': gpt2['scores']['clean'],
     })
     sns.lineplot(x=both_df.index + 1, y=both_df.bart, color='blue')
     sns.lineplot(x=both_df.index + 1, y=both_df.gpt2, color='orange')

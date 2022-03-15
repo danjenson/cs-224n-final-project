@@ -49,12 +49,10 @@
 
 \begin{abstract}
 	The objective of this project is to generate bash commands from natural
-	language using a deep neural network. We are experimenting with several models,
-	including GPT-2, BART, and T5, as well as different tokenization schemes to
-	improve model performance on the NLC2CMD dataset. We have successfully
-	trained a GPT-2 model, which has achieved modest performance. Next, we will
-	next train models using BART and T-5. However, we suspect that the majority
-	of gains may be achieved from improved encoding and tokenization.
+	language using a deep neural network. We experimented with several models,
+	including GPT2, BART, and T5, as well as different tokenization schemes to
+	improve model performance on the NLC2CMD dataset. We found that T5,
+	specifically v1.1 released by Google, performs the best on this task.
 \end{abstract}
 
 
@@ -212,15 +210,13 @@ Describe the evaluation metric(s) you use, plus any other details necessary to u
 Some projects will have clear metrics from prior work on given datasets, but we realize that other projects will define their own metrics.
 If you're defining your own metrics, be clear as to what you're hoping to measure with each evaluation method (whether quantitative or qualitative, automatic or human-defined!), and how it's defined.
 
-\color{red}
 \subsection{Experimental details}
-\color{black}
 For this task, we tested 3 models: HuggingFace's
 \href{https://huggingface.co/gpt2}{GPT2}\cite{gpt2},
 \href{https://huggingface.co/facebook/bart-large}{Facebook's BART
 	Large}\cite{bart}, and \href{https://huggingface.co/google/t5-v1_1-base}{Google's T5 v1.1
-	base}. GPT2 was a causal model, predicting text from context, while the other
-two were traditional seq2seq models. Each was trained for 5, 10, and 25
+	base}. GPT2 was a causal model, generating text given a context, while the
+other two were traditional seq2seq models. Each was trained for 5, 10, and 25
 epochs. Batch size was limited to 10 examples, except for T5, which had to be
 reduced to 5. For training, we used the AdamW optimizer with weight decay
 regularization. The learning rate was linear with a warmup of 100 steps. The
