@@ -69,10 +69,51 @@ The introduction explains the problem, why it's difficult, interesting, or impor
 This section helps the reader understand the research context of your work, by providing an overview of existing work in the area.
 
 \color{red}
-\section{Approach (Dan's part)}
+\section{Approach}
 \color{black}
-The requirement from the course website: This section details your approach(es) to the problem. For example, this is where you would describe the architecture of your neural network(s) or your novel algorithms. For projects that aren’t describing a novel methodology, this section might describe in more detail whatever technical tools (e.g. probing methods, proof techniques, interpretability algorithms, etc.) you’ll use
-in your experiments.
+The general approach consisted of two principle methods: (1) text generation
+and (2) translation. First, it is important to note that Bash is not a
+context-free grammar. It admits of very little recursion and, while most
+binaries are POSIX compliant, their interfaces are non-standardized. Flags
+often carry different semantic meaning and imply different tasks when employed
+by different binaries. Moreover, flags often override, modify, or cancel the
+intent of other flags in the same command, introducing complex dependencies.
+These dependencies can also shift as the order of the flags and their arguments
+are permuted. In sum, the meaning of a flag is almost entirely provided by the
+invoking binary and its location in the sequence of arguments. This introduces
+difficulties in fine tuning embeddings, since training may attempt to encode
+vastly different meanings in the same embedding, although this is not always a
+problem(TODO cite paper on deconstructing embeddings). Given sufficient
+training data, it is likely that that the models may eventually learn correct
+contextual meaning when employed by different binaries, but we found 10,000
+rows insufficient for the task. This line of thinking inspired our first
+approach, text generation using GPT2.
+\par
+While at first this task appears to be a straightforward translation task,
+after considering bash more closely, one can see that it does not admit of many
+properties or structures of natural language. Accordingly, we thought that
+rather than trying to properly translate natural language into bash, we could
+train a model to hallucinate bash ``stories'' given natural language. The
+high-level idea here is that we finetune a GPT2 model, showing it complete
+stories that consist of both a natural language portion and a bash portion with
+some added separating tokens. While training, GPT2 learns common storylines,
+and at testing time, we feed the trained model only the first half of the
+story, i.e. the natural language portion, and ask it to complete the story,
+hoping that it will generate bash commands as the most likely story completion.
+In many respects, this idea performs quite well; however, a significant issue
+with this approach is constraining responses from GPT2. How long should the
+story be? When does the real content of the ``bash story'' start and end? What
+happens when GPT2 has multiple endings? These questions are detailed in the
+error analysis section.
+\par
+The second approach we used was a more traditional seq2seq language modeling
+approach. Pre-trained models for BART and T5 are easily fine-tuned for
+translation tasks. The requirement from the course website: This section
+details your approach(es) to the problem. For example, this is where you would
+describe the architecture of your neural network(s) or your novel algorithms.
+For projects that aren’t describing a novel methodology, this section might
+describe in more detail whatever technical tools (e.g. probing methods, proof
+techniques, interpretability algorithms, etc.) you’ll use in your experiments.
 
 Yingxiao's thoughts: here, we can talk about the three different models we tried, different tokenziers, different trainers, different post processing (we can also talk about this later), and anything in our codes worth mentioning
 
@@ -91,14 +132,21 @@ If you're defining your own metrics, be clear as to what you're hoping to measur
 \color{red}
 \subsection{Experimental details (Dan's part)}
 \color{black}
-The specific models that were tested were Hugging Face's \href{https://huggingface.co/gpt2}{gpt2}\cite{gpt2}, \href{https://huggingface.co/facebook/bart-large}{Facebook's BART Large}\cite{bart}, 
-
-Three models were tested
-Custom configuration
-For training, we developed
-The requirement from the course website: Report how you ran your experiments (e.g. model configurations, learning rate, training time, etc.)
-
-Yingxiao's thought: interpret the configuration we used for training
+For this task, we tested 3 models: HuggingFace's
+\href{https://huggingface.co/gpt2}{GPT2}\cite{gpt2},
+\href{https://huggingface.co/facebook/bart-large}{Facebook's BART
+Large}\cite{bart}, and \href{https://huggingface.co/t5-large}{Google's T5
+Large}. GPT2 was a causal model, predicting text from context, while the other
+two were traditional seq2seq models. Each was trained for 5, 10, and 25 epochs.
+Batch size was limited to 10 examples, except for T5, which had to be reduced
+to 5. For training, we used the AdamW optimizer with weight decay
+regularization. The learning rate was linear with a warmup of 100 steps. The
+dataset was split into 98\% training and 2\% test sets. Given that the dataset
+was approximately 10,000 parallel translations, the test set was slightly over
+200 examples. Training time for GPT, BART, and T5 was approximately 1, 1.5, and 4.5
+hours, respectively, on an Azure NC6 instance with a Tesla V100 PCIe
+16GB GPU. All 3 models used cross-entropy loss for training, but were scored on
+the test set using the NLC2CMD metric at the end of each epoch.
 
 \color{red}
 \subsection{Results (Dan's part)}
