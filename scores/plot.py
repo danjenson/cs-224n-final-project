@@ -76,8 +76,8 @@ def main():
 
 def loss_df(data):
     return pd.DataFrame({
-        'loss': [x['loss'] for x in data['loss'] if x['epoch'] <= 10],
-        'epoch': [x['epoch'] for x in data['loss'] if x['epoch'] <= 10],
+        'loss': [x['loss'] for x in data['loss']],
+        'epoch': [x['epoch'] for x in data['loss']],
     })
 
 

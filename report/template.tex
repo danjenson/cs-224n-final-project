@@ -48,7 +48,13 @@
 \maketitle
 
 \begin{abstract}
-The objective of this project is to generate bash commands from natural language using a deep neural network. We used the NLC2CMD dataset, templatized the data, and experimented with several models, including GPT-2, BART, and T5, as well as different tokenization schemes and postprocessing methods to improve model performance on the NLC2CMD dataset. We found that although BART and GPT-2 models got the lowest cross-entropy loss, T5 achieved the highest score measured with the defined metric and beat the baseline model. (maybe add something about the source of error or the future work)
+	The objective of this project is to generate bash commands from natural
+	language using a deep neural network. We used the NLC2CMD dataset, templatized
+	the data, and experimented with several models, including GPT-2, BART, and T5,
+	as well as different tokenization schemes and postprocessing methods to improve
+	model performance on the NLC2CMD dataset. We found that although BART and GPT-2
+	models got the lowest cross-entropy loss, T5 achieved the highest score
+	measured with the defined metric and beat the GPT3 baseline model.
 \end{abstract}
 
 
@@ -63,23 +69,70 @@ The objective of this project is to generate bash commands from natural language
 % {\color{red} This template does not contain the full instruction set for this assignment; please refer back to the milestone instructions PDF.}
 
 \section{Introduction}
-ash, the Unix command language, has long been used to interact with computers universally, expressively and efficiently.  However, due to the existence of numerous bash utilities (e.g. ``find'', ``cd'', ``mkdir'') and flags (e.g. ``-f'', ``-r'' ), novitiates often find the terminal interface perplexing and are quickly overwhelmed by the syntax of Bash commands. Even experienced engineers frequently consult man-pages, online documentation, and online forms like Stack Overflow to learn about the particulars of various commands. This project aims to ease those burdens on new and experienced users alike, and develop tools to generate Bash commands from natural language. We want to provide a NLI (Natural Language Interface) enable people to interact with computers through natural languages, and make the programming resources more accessible to the public.
+ash, the Unix command language, has long been used to interact with computers
+universally, expressively and efficiently.  However, due to the existence of
+numerous bash utilities (e.g. ``find'', ``cd'', ``mkdir'') and flags (e.g.
+``-f'', ``-r'' ), novitiates often find the terminal interface perplexing and
+are quickly overwhelmed by the syntax of Bash commands. Even experienced
+engineers frequently consult man-pages, online documentation, and online forms
+like Stack Overflow to learn about the particulars of various commands. This
+project aims to ease those burdens on new and experienced users alike, and
+develop tools to generate Bash commands from natural language. We want to
+provide a NLI (Natural Language Interface) enable people to interact with
+computers through natural languages, and make the programming resources more
+accessible to the public.
 
-However, translating natural language into bash can be challenging: different users have different ways to express logical statement in natural language; a single task may involve pipelines of different utilities, and the order of these utilities matters; one utility can be associated with multiple flags, and different flags can be switched; there are a lot of identifiers like specific paths or file names in bash commands, and we need a way to generalize our model predictions; and finally, the bash commands must be perfectly correct before they can be executed in terminals. Although it is impossible to solve all these problems, we tried to tackle some of them.
+However, translating natural language into bash can be challenging: different
+users have different ways to express logical statement in natural language; a
+single task may involve pipelines of different utilities, and the order of
+these utilities matters; one utility can be associated with multiple flags, and
+different flags can be switched; there are a lot of identifiers like specific
+paths or file names in bash commands, and we need a way to generalize our model
+predictions; and finally, the bash commands must be perfectly correct before
+they can be executed in terminals. Although it is impossible to solve all these
+problems, we tried to tackle some of them.
 
-In this work, we used the data from the NeurIPS 2020 NLC2CMD Challenge, and experimented with several transformer models, including GPT-2, BART, and T5, as well as different tokenization and postprocessing schemes to generate bash commands from natural language. We evaluated the model performance from both the training loss and a specific metric measuring how similar two Bash commands are, and compared our models with the baseline model provided in the competition. 
+In this work, we used the data from the NeurIPS 2020 NLC2CMD Challenge, and
+experimented with several transformer models, including GPT-2, BART, and T5, as
+well as different tokenization and postprocessing schemes to generate bash
+commands from natural language. We evaluated the model performance from both
+the training loss and a specific metric measuring how similar two Bash commands
+are, and compared our models with the baseline model provided in the
+competition.
 
 
 \section{Related Work}
-Code generation is a variant of semantic parsing, and a number of research works have been published in this area. One of the earliest and most successful studies was conducted to translate the natural language to SQL query, and Zhong et al. (2017) \cite{zhong2017seq2sql} proposed a deep augmented pointer network and achieved an execution accuracy of 60\% when combined with reinforcement learning. However, it must be taken into consideration that SQL is more like a domain specific language with a much simpler syntax.
+Code generation is a variant of semantic parsing, and a number of research
+works have been published in this area. One of the earliest and most successful
+studies was conducted to translate the natural language to SQL query, and Zhong
+et al. (2017) \cite{zhong2017seq2sql} proposed a deep augmented pointer network
+and achieved an execution accuracy of 60\% when combined with reinforcement
+learning. However, it must be taken into consideration that SQL is more like a
+domain specific language with a much simpler syntax.
 
-For high level programming language generation, there are recent attempts to translate well structured natural language input into Java or Python.  Ling et al. (2016) \cite{ling2016latent} proposed a generative mode with a multiple pointer network to generate code from texts in Trading Card Games, and such input language is rather formal. A more robust syntax-based model has been developed by Yin and Neubig (2017) \cite{yin2017syntactic} and tested on the same dataset, but the result was only found to be equally good. Rahit et al. (2019) \cite{rahit2019machine} used recurrent neural network (RNN) and long-short term memory (LSTM) to build their model and reported an accuracy as high as 74\% when the input was prepared in a format closer to pseudo code with keywords such as “define” and “if-else”. 
+For high level programming language generation, there are recent attempts to
+translate well structured natural language input into Java or Python.  Ling et
+al. (2016) \cite{ling2016latent} proposed a generative mode with a multiple
+pointer network to generate code from texts in Trading Card Games, and such
+input language is rather formal. A more robust syntax-based model has been
+developed by Yin and Neubig (2017) \cite{yin2017syntactic} and tested on the
+same dataset, but the result was only found to be equally good. Rahit et al.
+(2019) \cite{rahit2019machine} used recurrent neural network (RNN) and
+long-short term memory (LSTM) to build their model and reported an accuracy as
+high as 74\% when the input was prepared in a format closer to pseudo code with
+keywords such as “define” and “if-else”.
 
-In the specific domain of Bash command generation, Lin et al. (2018) \cite{lin2018nl2bash} modified the seq2seq model by adding gated recurrent units (GRU) and RNN cells, and introducing a copying mechanism. The model was evaluated manually by people, rather than by an objective metric, and the accuracy was reported to be 0.29. This again confirmed the difficulty of the natural language to bash translation.
+In the specific domain of Bash command generation, Lin et al. (2018)
+\cite{lin2018nl2bash} modified the seq2seq model by adding gated recurrent
+units (GRU) and RNN cells, and introducing a copying mechanism. The model was
+evaluated manually by people, rather than by an objective metric, and the
+accuracy was reported to be 0.29. This again confirmed the difficulty of the
+natural language to bash translation.
 
-\color{red}
+% TODO: Yingxaio -- what about the competition winner? Ethan said we should
+% definitely include info from that during OH
+
 \section{Approach}
-\color{black}
 The NLC2CMD Challenge was held once by NeurIPS in 2020. The provided dataset
 consists of 10,000 parallel translations as a JSON. The goal for competitors
 was to generate templated commands from natural language commands that could be
@@ -134,20 +187,40 @@ and our BART model, in particular, struggled with this.
 In this section, we will show the our experimental details and discuss on the results.
 
 \subsection{Data}
-The dataset we used is from the ``\href{https://nlc2cmd.us-east.mybluemix.net/}{The NLC2CMD Competition},'' consisting of 10,000 parallel translations of English (named as the ``invocation'') and bash command (named as the ``cmd''), and one example is shown as follows:
+The dataset we used is from the
+``\href{https://nlc2cmd.us-east.mybluemix.net/}{The NLC2CMD Competition},''
+consisting of 10,000 parallel translations of English (named as the
+``invocation'') and bash command (named as the ``cmd''), and one example is
+shown as follows:
 
 \begin{verbatim}
 invocation: Assign permissions 755 to directories in the current directory tree
 cmd: find . -type d -print0 | xargs -0 chmod 755
 \end{verbatim}
 
-Instead of a single task, most of the invocations involve a sequence of different tasks, and consequently the bash commands are usually in the form of long pipelines. In addition, since the bash commands contain identifiers, such as directory paths, file names, and permissions, a templatization scheme has been used by casting the shell commands into the corresponding abstract syntax trees (AST), replacing the identifiers and then casting the AST back to commands. The guide can be found \href{https://github.com/IBM/clai/tree/nlc2cmd}{here}. After this step, the command we saw in the previous example were templatized into
+% TODO: Yingxiao, no need to include the guide.
+% TODO: I think we need to give an example through tokenization and decoding for each model
+% this is just copypasta from before.
+Instead of a single task, most of the invocations involve a sequence of
+different tasks, and consequently the bash commands are usually in the form of
+long pipelines. In addition, since the bash commands contain identifiers, such
+as directory paths, file names, and permissions, a templatization scheme has
+been used by casting the shell commands into the corresponding abstract syntax
+trees (AST), replacing the identifiers and then casting the AST back to
+commands. The guide can be found
+\href{https://github.com/IBM/clai/tree/nlc2cmd}{here}. After this step, the
+command we saw in the previous example were templatized into
 \begin{verbatim}
 cmd: find Path -type d -print0 | xargs -0 -I chmod Permission
 \end{verbatim}
 for easier generalization during training.
 
-The invocations and templatized commands can be fed directly into the sequence to sequence models (i.e. BART and T5) as inputs and labels for training. However, for the causal language model GPT-2, additional preprocessing much be performed because such model can only generate code token by token and there is no label at all. We introduced special tokens to separate the invocations and commands, and assemble them in the form of 
+The invocations and templatized commands can be fed directly into the sequence
+to sequence models (i.e. BART and T5) as inputs and labels for training.
+However, for the causal language model GPT2, additional preprocessing much be
+performed because such model can only generate code token by token and there is
+no label at all. We introduced special tokens to separate the invocations and
+commands, and assemble them in the form of
 
 \begin{verbatim}
 <bos_token> <source_token> <invocation> <target_token>
@@ -166,10 +239,10 @@ The standard cross-entropy loss function was used to trained the models. But a m
 	\right)
 \end{align*}
 where $U(x)$ is a sequence of bash utilities in a command $x$, $c$ is the
-predicted bash command and $C$ is the ground truth bash command. 
-Apart measuring whether the utilities in the two commands match, an additional variable $X$ has been introduced to measure whether the flags associated with each utility match or not, as 
+predicted bash command and $C$ is the ground truth bash command.
+Apart measuring whether the utilities in the two commands match, an additional variable $X$ has been introduced to measure whether the flags associated with each utility match or not, as
 \begin{equation*}
-X = 2\times
+	X = 2\times
 	|F(U(c)_i)\cap F(U(C)_i)| - |F(U(c)_i)\cup F(U(C)_i)|
 \end{equation*}
 where $F(x)$ refers to
@@ -178,12 +251,7 @@ $U(c)$ and $U(C)$ while $N$ is the maximum size between $F(c)$ and $F(C)$. Since
 
 This is a very strict metric penalizing for both incorrect and extra bash utilities and flags. The return value of the metric is between -1.0 and 1.0, and only a command which produces exactly the same execution result as the ground truth one can get a score of 1.0.
 
-\subsection{Baseline model}
-We used the black-box GPT-3 model provided by the competition as the baseline model. This model was reported to achieve a score of -0.13 measuring with the aforementioned metric, and we compared our model performance with this number.
-
-\color{red}
 \subsection{Experimental details}
-\color{black}
 For this task, we tested 3 models: HuggingFace's
 \href{https://huggingface.co/gpt2}{GPT2}\cite{gpt2},
 \href{https://huggingface.co/facebook/bart-large}{Facebook's BART
@@ -219,6 +287,8 @@ Yingxiao's thought: show them the loss-epoch curve, the metric-epoch curve, and 
 
 
 \section{Analysis}
+% TODO: This needs to be cleaned up; I would put all invocations in a table, together
+% TODO: What were the primary sources of error for each model? It looks like BART wasn't predicting the binary
 One thing worth exploring is that for BART and GPT-2, although the training loss kept decreasing over epochs, the score was not improved that much. The raw model predictions have been extracted before postprocessing at the end of every epoch, and below is one example from the BART model:
 \begin{verbatim}
 invocation: display all the html files in the current folder excluding 
@@ -251,9 +321,9 @@ target    : mount -o remount,ro -t yaffs2 Regex Regex
 prediction: mount Regex -o remount,rw Regex mount Regex -o remount,rw Regex 
             mount Regex -o remount, rw ...
 \end{verbatim}
-where the model didn't know when to stop. 
+where the model didn't know when to stop.
 
-Such problems may be alleviated by using more robust models with defined penalty functions. Also, the number of examples we got is only 10,000, and a larger dataset will help to improve the model performance. 
+Such problems may be alleviated by using more robust models with defined penalty functions. Also, the number of examples we got is only 10,000, and a larger dataset will help to improve the model performance.
 
 \section{Conclusion}
 Summarize the main findings of your project, and what you have learnt. Highlight your achievements, and note the primary limitations of your work. If you like, you can describe avenues for future work.
