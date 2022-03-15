@@ -108,14 +108,14 @@ error analysis section.
 \par
 The second approach we used was a more traditional seq2seq language modeling
 approach. Pre-trained models for BART and T5 are easily fine-tuned for
-translation tasks. The requirement from the course website: This section
-details your approach(es) to the problem. For example, this is where you would
-describe the architecture of your neural network(s) or your novel algorithms.
-For projects that aren’t describing a novel methodology, this section might
-describe in more detail whatever technical tools (e.g. probing methods, proof
-techniques, interpretability algorithms, etc.) you’ll use in your experiments.
-
-Yingxiao's thoughts: here, we can talk about the three different models we tried, different tokenziers, different trainers, different post processing (we can also talk about this later), and anything in our codes worth mentioning
+translation tasks. While many natural language modeling tasks admit of a fair
+amount of transfer learning because natural languages share some abstract
+semantic structures, bash does not benefit from this nearly as much. As a
+non-natural, non-context-free grammar language, modeling it can be difficult,
+and our BART model, in particular, struggled with this.
+\par
+TODO: review templating / AST
+TODO: show tokenization examples
 
 \section{Experiments}
 This section contains the following.
