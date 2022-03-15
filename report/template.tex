@@ -7,23 +7,27 @@
 \usepackage{url}
 \usepackage{booktabs}
 \usepackage{amsfonts}
+\usepackage{amssymb}
 \usepackage{nicefrac}
 \usepackage{microtype}
 \usepackage{graphicx}
+\usepackage{verbatim}
 \usepackage{xcolor}
+\usepackage{lipsum}
 \usepackage{xcolor}
 \usepackage[colorlinks = true,
             linkcolor = blue,
             urlcolor  = blue,
             citecolor = blue,
             anchorcolor = blue]{hyperref}
-
 \newcommand{\note}[1]{\textcolor{blue}{{#1}}}
+\newcommand{\abs}[1]{\left| #1\right|}
+\usepackage{amsmath}
 
 \title{
-  Title of your project \\
+  Translating Natural Language to Bash Commands using Deep Neural Networks \\
   \vspace{1em}
-  \small{\normalfont Stanford CS224N \{Custom, Default\} Project}  % Select one and delete the other
+  \small{\normalfont Stanford CS224N Custom Project}
 }
 
 \author{
@@ -77,16 +81,23 @@ space in this space is ``aish,'' short for AI-shell, which is part of the
 field of research will be able to construct sequences of bash commands,
 automating entire workflows from simple natural language descriptions. However,
 for this project, we focus solely on executing atomic commands.
-% TODO: Yinxaio, embellish a little maybe
+% TODO: Yinxaio, clean up and embellish
 % The introduction explains the problem, why it's difficult, interesting, or important, how and why current methods succeed/fail at the problem, and explains the key ideas of your approach and results. Though an introduction covers similar material as an abstract, the introduction gives more space for motivation, detail, references to existing work, and to capture the reader's interest.
 
 \section{Related Work}
 This section helps the reader understand the research context of your work, by providing an overview of existing work in the area.
-% TODO: Yingxiao
+% TODO: Yingxiao summarize preview work, maybe add a second article -- the one that won the competition
 
 \color{red}
 \section{Approach}
 \color{black}
+The NLC2CMD Challenge was held once by NeurIPS in 2020. The provided dataset
+consists of 10,000 parallel translations as a JSON. The goal for competitors
+was to generate templated commands from natural language commands that could be
+used to guide bash users. Most competitors used GPT2 as their base model. This
+paper also uses GPT2 but also surveys two additional models, BART and T5,
+version 1.1.
+\par
 The general approach consisted of two principle methods: (1) text generation
 and (2) translation. First, it is important to note that Bash is not a
 context-free grammar. It admits of very little recursion and, while most
@@ -98,21 +109,22 @@ These dependencies can also shift as the order of the flags and their arguments
 are permuted. In sum, the meaning of a flag is almost entirely provided by the
 invoking binary and its location in the sequence of arguments. This introduces
 difficulties in fine-tuning embeddings, since training may attempt to encode
-vastly different meanings in the same embedding, although this is not always a
-problem. Given sufficient training data, it is likely that that the models may
-eventually learn correct contextual meaning when employed by different
-binaries, but we found 10,000 rows insufficient for the task. This line of
-thinking inspired our first approach, text generation using GPT2.
+vastly different meanings in the same embedding. This is particularly
+challenging given sparse datasets. Given sufficient training data, it is likely
+that that the models may eventually learn correct contextual meaning when
+employed by different binaries, but we found 10,000 rows insufficient for the
+task. This line of thinking inspired our first approach, text generation using
+GPT2.
 \par
 While at first this task appears to be a straightforward translation task,
 after considering bash more closely, one can see that it does not admit of many
 properties or structures of natural language. Accordingly, we thought that
 rather than trying to properly translate natural language into bash, we could
 train a model to hallucinate bash ``stories'' given natural language. The
-high-level idea here is that we finetune a GPT2 model, showing it complete
+high-level idea here is that we fine-tune a GPT2 model, showing it complete
 stories that consist of both a natural language portion and a bash portion with
-some added separating tokens. While training, GPT2 learns common storylines,
-and at testing time, we feed the trained model only the first half of the
+some added special tokens. When training, GPT2 learns common storylines,
+and when testing, we feed the trained model only the first half of the
 story, i.e. the natural language portion, and ask it to complete the story,
 hoping that it will generate bash commands as the most likely story completion.
 In many respects, this idea performs quite well; however, a significant issue
@@ -128,46 +140,74 @@ amount of transfer learning because natural languages share some abstract
 semantic structures, bash does not benefit from this nearly as much. As a
 non-natural, non-context-free grammar language, modeling it can be difficult,
 and our BART model, in particular, struggled with this.
-\par
-% TODO: review templating / AST
-% TODO: show tokenization examples
-%% Finish by 2 PM
-% OLD code
-The NLC2CMD Challenge was held only once at NeurIPS in 2020 and competing teams
-put out working papers at best, but most often simply scattered notes across
-Github. The dataset is simple a JSON consisting of translation pairs. Because
-of this, a great deal of work had to go into preprocessing and encoding the
-data, as well as becoming familiar with the HuggingFace infrastructure. We used
-several trivial encodings to start, but found only one that achieves decent
-performance, detailed in the dataset section. We found that the effectiveness
-of the encoding varies by model and training objective, so this will have to be
-tuned as we experiment with different models.
-\par
-The competition also provided several utilities of which we availed ourselves.
-First, they released a bash to AST parser, which can also write an AST back to
-a templated form, e.g. replacing file paths with ``File'' and regular
-expressions with the token ``Regex.'' This allows the model to learn
-placeholder values for commands. They also provided a function to compute their
-competition scoring metric, which we use to establish our baseline.
-\par
-We used GPT-2 as our first base model, as most top competitors used this model
-and it appears to provide a solid foundation for causal language modeling. We
-also used the corresponding HuggingFace tokenizer. We experimented with BART,
-but this model requires more work, as repurposing it for casual language
-modeling has proven difficult; many original model weights are left
-uninitialized, since this was not the original training objective of the model.
-Our GPT-2 model achieved a performance of -0.21 using the evaluation criteria
-provided by the competition, which is just shy of the -0.19 achieved by the
-GPT-3 baseline.
 
 \section{Experiments}
-This section contains the following.
-
 \subsection{Data}
 Describe the dataset(s) you are using (provide references). If it's not already clear, make sure the associated task is clearly described.
 Being precise about the exact form of the input and output can be very useful for readers attempting to understand your work, especially if you've defined your own task.
+% TODO: review templating / AST
+% TODO: show tokenization examples
+% The competition also provided several utilities of which we availed ourselves.
+% First, they released a bash to AST parser, which can also write an AST back to
+% a templated form, e.g. replacing file paths with ``File'' and regular
+% expressions with the token ``Regex.'' This allows the model to learn
+% placeholder values for commands. They also provided a function to compute their
+% competition scoring metric, which we use to establish our baseline.
 
 \subsection{Evaluation method}
+% TODO: Yingxiao clean up
+The competition clearly defined a metric for evaluation, which we used. The
+data consists of natural language to bash command pairs. Our model, $A$,
+will implement a top 5 translator from a natural language command, $nlc$, to a
+prediction, $c$, and confidence, $\delta$, tuple.
+\[
+	\begin{aligned}
+		G(nlc)
+		 & =\{C\mid \text{Bash command that achieves the task described in} nlc\} \\
+		A : nlc
+		 & \rightarrow \{p \mid p = \langle c, \delta\rangle\}                    \\
+		|A(nlc)|
+		 & \le 5                                                                  \\
+	\end{aligned}
+\]
+The normalized score of a prediction, $p=\langle c, \delta\rangle$ is:
+\[
+	\begin{aligned}
+		S(p)
+		 & = \max_{C\in G(nlc)}\sum_{i\in[1,T]}\frac{\delta}{T}\times\left(
+		\mathbb{I}[U(c)_i=U(C)i]\times\frac{1}{2}\left(
+			1+\frac{1}{N}\left(X\right)\right) -\mathbb{I}[U(c)_i\ne U(C)_i]
+		\right)                                                                    \\
+		\text{where}
+		 &                                                                         \\
+		X
+		 & = 2\times \abs{F(U(c)_i)\cap F(U(C)_i)} - \abs{F(U(c)_i)\cup F(U(C)_i)} \\
+		U(c)
+		 & = \text{sequence of Bash utilities in a command $c$}                    \\
+		F(u)
+		 & = \text{the set of flags for an utility $u$}                            \\
+		T
+		 & = \max\left(\abs{U(c)}, \abs{U(C)}\right)                               \\
+		N
+		 & = \max\left(\abs{F(U(c)_i)}, \abs{F(U(C)_i)}\right)                     \\
+	\end{aligned}
+\]
+The overall score is given by the following:
+\[
+	\begin{aligned}
+		Score(A(nlc))
+		 & =
+		\begin{cases}
+			\max_{p\in A(nlc)}S(p),
+			 & \text{ if }\exists_{p\in A(nlc)}\text{ such that }S(p) > 0 \\
+			\frac{1}{\abs{A(nlc)}}\sum_{p\in A(nlc)}S(p),
+			 & \text{otherwise}                                           \\
+		\end{cases}
+	\end{aligned}
+\]
+This scoring mechanism promotes precision and recall of the correct binary and
+flags, weighted by confidence. There are more caveats and details under the
+Task section of the challenge website.
 Describe the evaluation metric(s) you use, plus any other details necessary to understand your evaluation.
 Some projects will have clear metrics from prior work on given datasets, but we realize that other projects will define their own metrics.
 If you're defining your own metrics, be clear as to what you're hoping to measure with each evaluation method (whether quantitative or qualitative, automatic or human-defined!), and how it's defined.
@@ -198,6 +238,11 @@ at the end of each epoch.
 \subsection{Results}
 \color{black}
 % TODO: finish by 2:30 PM
+
+\begin{center}
+	\includegraphics[scale=0.4]{loss.png}
+	\includegraphics[scale=0.4]{metric.png}
+\end{center}
 The requirement from the course website: Report the quantitative results that you have found so far. Use a table or plot to compare results and compare against baselines.
 Comment on your quantitative results. Are they what you expected? Better than you expected? Worse than you expected? Why do you think that is? What does that tell you about your approach?
 
