@@ -1,3 +1,5 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:8a632f24063a8fedd00b370c7e4a50d92d918914fa3da0e3f52dc6d54cfc5b94
-size 104
+{
+  "venvPath": "/home/danj/.pyenv/versions/",
+  "venv": "3.9.9",
+  "reportPrivateImportUsage": false
+}

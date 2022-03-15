@@ -1,3 +1,401 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:9070d1aebf300ccac437b05321394e0ac6f61456780bdc31f7f0f7564de5796f
-size 31750
+<|endoftext|> english: Search for Subscription.java under current directory, and go to directory containing it.
+bash: cd $( find Path -name Regex -printf '%h\n' ) <|endoftext|>
+<|endoftext|> english: Output the base name of first argument to script or function, that is the part following the last slash.
+bash: echo $( basename Regex ) <|endoftext|>
+<|endoftext|> english: find regular files in the "mail" folder under the user's home directory, displaying filenames and lines that contain the text "Linux"
+bash: find Path -type f | xargs -I {} grep Regex {} <|endoftext|>
+<|endoftext|> english: change owner of the file process to user root
+bash: chown Regex File <|endoftext|>
+<|endoftext|> english: Find all symbolic links under '/some/directory' driectory tree
+bash: find Path -type l -print <|endoftext|>
+<|endoftext|> english: List each unique case insensitive character in "file" prefixed by number of occurrences and sorted from most frequent to least frequent
+bash: grep -o Regex File | tr Regex Regex | sort | uniq -c | sort -n -r <|endoftext|>
+<|endoftext|> english: Write out the entire directory hierarchy from the current directory
+bash: find Path <|endoftext|>
+<|endoftext|> english: Find all *shp* files/directories under current directory and move them to ../shp_all/
+bash: find Path -name Regex -exec mv {} File \; <|endoftext|>
+<|endoftext|> english: Change directory to the download directory specified in the current user's user-dirs.dirs file
+bash: cd $( grep Regex File | cut -f Number -d Regex | tr Regex Regex ) <|endoftext|>
+<|endoftext|> english: Display differences between directories dir1 and dir2, treating absent files as empty.
+bash: diff -N -a -u Quantity File File <|endoftext|>
+<|endoftext|> english: Compresses all '*.xml' files under current directory with 'bzip2' utility.
+bash: find Path -name Regex -print0 | xargs -0 -n Quantity -P Quantity -I {} bzip2 {} <|endoftext|>
+<|endoftext|> english: display all the ".mov" video files in the current folder in the format filename and folder path
+bash: find Path -iname Regex -printf "%p %f\n" <|endoftext|>
+<|endoftext|> english: Find all files under current directory and change their permission to 600
+bash: find Path -type f -exec chmod Permission {} \; <|endoftext|>
+<|endoftext|> english: Create a symbolic link named "~/bin/subl" to "/Applications/Sublime Text 2.app/Contents/SharedSupport/bin/subl"
+bash: ln -s File Regex <|endoftext|>
+<|endoftext|> english: Remove all empty regular files under the current directory and below
+bash: find Path -type f -size Size -print | xargs -I {} rm {} <|endoftext|>
+<|endoftext|> english: Search the current directory for all regular files executable by 'user', 'group', and 'others'
+bash: find Path -maxdepth Quantity -type f -perm -Permission <|endoftext|>
+<|endoftext|> english: Print list of files that are only in directory /dir1 and not their sub directories and only their file names.
+bash: diff -q File File | grep Regex | grep -E Regex | sed -n Program <|endoftext|>
+<|endoftext|> english: Delete all MP3 files under /tmp
+bash: find Path -iname Regex -print0 | xargs -0 -I {} rm {} <|endoftext|>
+<|endoftext|> english: Print content of each file under the current directory followed by that file name
+bash: find Path -type f -exec cat {} \; -print <|endoftext|>
+<|endoftext|> english: Copy the directory structure in "src/" to "dest/" with empty files
+bash: find Path -type d -exec mkdir -p Directory \; -or -type f -exec touch File \; <|endoftext|>
+<|endoftext|> english: Recursively copy all files and directories in "demo" excluding ".git" to "demo_bkp"
+bash: find Path -depth -name Regex -prune -or -print0 | cpio -0 -p -d -v --quiet Regex <|endoftext|>
+<|endoftext|> english: List all files in the current directory tree that were modified 60 minutes ago
+bash: find Path -mmin Quantity -print0 | xargs -0 -r -I {} ls -l {} <|endoftext|>
+<|endoftext|> english: Print the contents of "${SPOOL_FILE}" file to the console and append to "${LOG_FILE}" file
+bash: cat File | tee -a File <|endoftext|>
+<|endoftext|> english: Print the sizes of all files from the current directory tree
+bash: find Path -iname Regex -type f -printf +%b <|endoftext|>
+<|endoftext|> english: Print "This is a sentence." by replacing all consecutive space characters with a single newline character
+bash: echo Regex | tr -s Regex Regex <|endoftext|>
+<|endoftext|> english: find all files that are readable or writable by their owner
+bash: find Path -perm +Permission -print <|endoftext|>
+<|endoftext|> english: Print common files of directory "one" and "two"
+bash: comm -1 -2 <( ls File ) <( ls File ) <|endoftext|>
+<|endoftext|> english: List all files in maximum 2 levels down the current directory
+bash: find Path -maxdepth Quantity -type f -print0 | xargs -0 -n Quantity -I {} ls -l {} <|endoftext|>
+<|endoftext|> english: Determine if user "$USER" is logged in
+bash: who | grep Regex <|endoftext|>
+<|endoftext|> english: Find all regular files named postgis-2.0.0 under your home directory
+bash: find Path -type f -name Regex <|endoftext|>
+<|endoftext|> english: find all the files that have been modified in the last 24 hours
+bash: find Path -type f -mtime -Timespan <|endoftext|>
+<|endoftext|> english: Split "input_file" into files of at most 100 lines each with prefix "output_file"
+bash: split -l Quantity File Regex <|endoftext|>
+<|endoftext|> english: search for a word in all the regular files in the current folder.
+bash: find Path -type f -print0 | xargs -r -0 -I {} grep -F Regex {} <|endoftext|>
+<|endoftext|> english: Find .java files in the current directory tree that contain 'TODO', and print their names
+bash: find Path -name Regex -exec grep -H -i -n Regex {} + | basename $( cut -d Regex -f Number ) <|endoftext|>
+<|endoftext|> english: show all the ".acc" files in the folder /home
+bash: find Path -type f -name Regex <|endoftext|>
+<|endoftext|> english: search for all the files in the current folder which have spaces and force delete them
+bash: find Path -name Regex -print0 | xargs -0 -I {} rm -r -d -f {} <|endoftext|>
+<|endoftext|> english: find all the files in the folder ./machbook and change the owner of them to the user with id "184"
+bash: find Path -exec chown Regex {} \; <|endoftext|>
+<|endoftext|> english: find all the files in the current folder which have been accessed in the last 60 minutes
+bash: find Path -amin -Quantity <|endoftext|>
+<|endoftext|> english: Find all the files in entire file system  which are accessed 50 days back
+bash: find Path -atime Timespan <|endoftext|>
+<|endoftext|> english: Count the number of users logged in minus one
+bash: who | sed Program | wc -l <|endoftext|>
+<|endoftext|> english: Find recursively the latest modified file in the current directory
+bash: find Path -type f -printf '%T@ %p\n' | sort -n | tail - Quantity | cut -f Number -d Regex <|endoftext|>
+<|endoftext|> english: display the number of lines in all the ".c" files in the current folder
+bash: find Path -name Regex -print | xargs -I {} wc -l {} <|endoftext|>
+<|endoftext|> english: Display human-readable file type description of utf8.txt
+bash: file File <|endoftext|>
+<|endoftext|> english: Make a copy of file1 in dir1, dir2, and dir3.
+bash: echo Regex Regex Regex | xargs -n Quantity -I {} cp File {} <|endoftext|>
+<|endoftext|> english: Prints name of a current shell binary file.
+bash: ls -l File | sed Program <|endoftext|>
+<|endoftext|> english: Disable exiting the shell on error
+bash: set Regex <|endoftext|>
+<|endoftext|> english: Display infinite scroll of random ASCII art
+bash: yes Regex | bash <|endoftext|>
+<|endoftext|> english: Create a symolic link in "/usr/local/" to "/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl"
+bash: ln -s File Regex <|endoftext|>
+<|endoftext|> english: Find all files/directores that are newer than /etc/motd and conain the string 'top' at the beginning of their names under user's home directory tree
+bash: find Path -name Regex -newer File <|endoftext|>
+<|endoftext|> english: Prints all child processes of a process with id 20238.
+bash: pstree -p Regex | sed Program | grep Regex | sed Program <|endoftext|>
+<|endoftext|> english: List all *.txt files under current directory that contains the regex 'pattern'
+bash: find Path -type f -name Regex -exec grep -E -l Regex {} \; <|endoftext|>
+<|endoftext|> english: Create a ssh tunnel on local port 2222 through "bridge.example.com" to "remote.example.com" port 22 without executing any commands and run in the background
+bash: ssh -N -L Regex Regex <|endoftext|>
+<|endoftext|> english: Set variable "b" to the first word of "a" converted to lowercase.
+bash: echo Regex | awk Program <|endoftext|>
+<|endoftext|> english: Search for all files with the same inode number 41525360
+bash: find Path -follow -inum Quantity <|endoftext|>
+<|endoftext|> english: Search the current directory tree for filenames matching the pattern '[mM][yY][fF][iI][lL][eE]*'
+bash: find Path -name Regex <|endoftext|>
+<|endoftext|> english: Report only total size of file systems in terabytes.
+bash: df File | awk Program <|endoftext|>
+<|endoftext|> english: Find writable regular files in the current directory
+bash: find Path -maxdepth Quantity -type f Path <|endoftext|>
+<|endoftext|> english: find all the symbolic links in the current folder and follow to the pointing file
+bash: find Path -L <|endoftext|>
+<|endoftext|> english: Print numbers from 1 to 10 with 2 values per line
+bash: seq Number | awk Program <|endoftext|>
+<|endoftext|> english: Filter contents of 'file' through awk commands written in script.awk, display the result.
+bash: awk -f File Program <|endoftext|>
+<|endoftext|> english: Copy all regular files from the current directory tree to directory `TARGET'
+bash: find Path -type f -exec cp -t Directory {} + <|endoftext|>
+<|endoftext|> english: Display the contents of "myfile" located in the current directory.
+bash: cat File <|endoftext|>
+<|endoftext|> english: Find all of the character devices on the system
+bash: find Path -type c <|endoftext|>
+<|endoftext|> english: List the unique file extensions of all files under the current directory
+bash: find Path -type f | grep -o -E Regex | sort -u <|endoftext|>
+<|endoftext|> english: Find the process id of mysql
+bash: ps -A | grep Regex <|endoftext|>
+<|endoftext|> english: Find a hostname that resolves to IP '173.194.33.71'
+bash: dig Regex -x Regex <|endoftext|>
+<|endoftext|> english: change owner and group of the file it to user and group root
+bash: chown Regex File <|endoftext|>
+<|endoftext|> english: Find all files/directories under '/usr' directory tree that have not been modified in the last 356 days counting days from today
+bash: find Path -mtime +Timespan -daystart <|endoftext|>
+<|endoftext|> english: Find all symlinks under current directory
+bash: find Path -type l <|endoftext|>
+<|endoftext|> english: display all the jars in the current folder
+bash: find Path -iname Regex <|endoftext|>
+<|endoftext|> english: Search the current directory tree for regular files that contain "string"
+bash: find Path -type f | xargs -I {} grep Regex {} <|endoftext|>
+<|endoftext|> english: find all files in the current directory and sub-directories that were accessed after modifying /etc/hosts
+bash: find Path -anewer File <|endoftext|>
+<|endoftext|> english: Change the owner to "hduser" and group to "hadoop" of "{directory path}"
+bash: chown Regex File File <|endoftext|>
+<|endoftext|> english: Find broken symlinks
+bash: find Path -follow -lname Regex <|endoftext|>
+<|endoftext|> english: Create symlinks to all  /home/folder2/*.txt files with the same name in current directory
+bash: find Path -type f -exec ln -s {} \; <|endoftext|>
+<|endoftext|> english: Prints day of first Tuesday in a month.
+bash: cal | awk Program <|endoftext|>
+<|endoftext|> english: Finds PIDs of all running processes, gets executable binary of each process, and prints containing folder of each binary.
+bash: ps -A -o pid | xargs -I {} readlink File | xargs -I {} dirname Regex <|endoftext|>
+<|endoftext|> english: find the ten biggest files
+bash: find Path -type f -exec du -s {} \; | sort -r -k Number | head <|endoftext|>
+<|endoftext|> english: Find all links pointing to /path/to/foo.txt
+bash: find Path -lname Regex <|endoftext|>
+<|endoftext|> english: display the version of find
+bash: find Path --version <|endoftext|>
+<|endoftext|> english: Compress the file 'file' with 'bzip2' and append all output to the file 'logfile' and stdout
+bash: bzip2 File | tee -a File <|endoftext|>
+<|endoftext|> english: Prints current directory name
+bash: pwd | grep -o Regex <|endoftext|>
+<|endoftext|> english: find directory names starts with 'bar'
+bash: find Path -path Regex -print <|endoftext|>
+<|endoftext|> english: display the number of lines in all the php files in the current folder
+bash: find Path -name Regex | xargs -I {} cat {} | wc -l <|endoftext|>
+<|endoftext|> english: Gets IP addresses of all network interfaces.
+bash: ifconfig | grep Regex | cut -d Regex -f Number | awk Program <|endoftext|>
+<|endoftext|> english: Archive all filepattern-*2009* files/directories under data/ into 2009.tar
+bash: find Path -name Regex -print0 | xargs -0 -I {} tar -u -f File {} <|endoftext|>
+<|endoftext|> english: Save the absolute path of the directory of the current script to variable "DIR"
+bash: dirname $( readlink -f File ) <|endoftext|>
+<|endoftext|> english: Find all files/directories named 'foo' in the entire filesystem
+bash: find Path -name Regex <|endoftext|>
+<|endoftext|> english: Find all files in the current directory tree whose names are ".DS_STORE" and delete them
+bash: find Path -name Regex -delete <|endoftext|>
+<|endoftext|> english: Find text in whole directory tree
+bash: find Path -type f | xargs -I {} grep Regex {} <|endoftext|>
+<|endoftext|> english: search in the home folder for all the files with the name "monfichier"
+bash: find Path -name Regex <|endoftext|>
+<|endoftext|> english: Print what year it was 222 days ago
+bash: date '+%Y' --date Regex <|endoftext|>
+<|endoftext|> english: display all the jpg files in the current folder which belong to the user nobody
+bash: find Path -name Regex -user Regex <|endoftext|>
+<|endoftext|> english: Mount "ntfs-3g" filesystem "/dev/mapper/myvolume" on "/media/volume"
+bash: mount -t ntfs-3g Regex Regex <|endoftext|>
+<|endoftext|> english: find all the directories with the name "uploads" in current folder
+bash: find Path -type d -name Regex <|endoftext|>
+<|endoftext|> english: Prints all NS servers of domain google.com.
+bash: dig Regex Regex | awk Program <|endoftext|>
+<|endoftext|> english: Number each non-blank line of standard input
+bash: nl <|endoftext|>
+<|endoftext|> english: Search the current directory tree for regular files that were modified $FTIME days ago
+bash: find Path -type f -mtime Timespan <|endoftext|>
+<|endoftext|> english: Print the list of all subdirectories of the current directory
+bash: find Path -maxdepth Quantity -mindepth Quantity -type d <|endoftext|>
+<|endoftext|> english: List (in long list format with inode number) the file under the current directory that has the oldest modification time
+bash: find Path -type f -ls | sort File | head - Quantity <|endoftext|>
+<|endoftext|> english: Find all files/directories under /home/baumerf/public_html/ that were modified less than 60 minutes ago excluding *.log files/directories
+bash: find Path -mmin -Quantity -not -name Regex <|endoftext|>
+<|endoftext|> english: Generates default-formatted file name of temporary file in a /dev/mapper folder, and saves path to it in a variable 'MAPPER'.
+bash: mktemp -u -p Regex <|endoftext|>
+<|endoftext|> english: Remove gitlab.site.org from root's known hosts file.
+bash: ssh-keygen -f File -R Regex <|endoftext|>
+<|endoftext|> english: Search for 'some string' in all *js files under current directory and show the matched lines with line numbers
+bash: find Path -name Regex -exec grep -n Regex {} \; <|endoftext|>
+<|endoftext|> english: Recursively archive "test/a/" to "test/dest" excluding "test/a/b/c/d"
+bash: rsync -n -v -r -a -L File File --exclude Regex <|endoftext|>
+<|endoftext|> english: Change permissions to 644 for all files showing the respective chmod command
+bash: find Path -type f -print0 | xargs -t -0 -I {} chmod -v Permission {} <|endoftext|>
+<|endoftext|> english: Print "$somedir is empty" if $somedir is empty
+bash: find Path -maxdepth Quantity -empty -exec echo {} Regex Regex \; <|endoftext|>
+<|endoftext|> english: Remove trailing white spaces from all files under current directory ignoring directories wtih *.git* (case insensitive) in their paths and keep backups of the originals
+bash: find Path -type f -not -iwholename Regex -print0 | xargs -0 -I {} sed -i Program File File {} <|endoftext|>
+<|endoftext|> english: For each .def file under the current directory, create an empty .def.out file with current timestamp.
+bash: find Path -name Regex | sed Program | xargs -I {} touch {} <|endoftext|>
+<|endoftext|> english: Print file type of command "gcc"
+bash: file -L $( which Regex ) <|endoftext|>
+<|endoftext|> english: List all files in the current directory tree including those that may contain spaces in their names
+bash: find Path -print0 | xargs -0 -l -i -I {} echo {} {} <|endoftext|>
+<|endoftext|> english: Display file type information for all instances of "file" in the current PATH.
+bash: which Regex | xargs -I {} file {} <|endoftext|>
+<|endoftext|> english: find all js files which path does not contain ./node_modules/* nor './vendor/*"
+bash: find Path -name Regex -not -path Regex -not -path Regex <|endoftext|>
+<|endoftext|> english: lines.txt contains a list of line numbers, one entry per line - output only these lines from text.txt omitting the rest of the file.
+bash: cat -n File | join -o 2.2 File File <|endoftext|>
+<|endoftext|> english: Print file type information of the "java" executable
+bash: cat $( which Regex ) | file File <|endoftext|>
+<|endoftext|> english: Find and print the names of all files found in the current directory and all of its sub-directories.
+bash: find Path -print <|endoftext|>
+<|endoftext|> english: search for all the files in current folder and display all the file names separated by space
+bash: find Path | awk Program <|endoftext|>
+<|endoftext|> english: Find all the files which are changed in last 1 hour in entire file system and show a few lines of output from the beginning
+bash: find Path -cmin -Quantity | head <|endoftext|>
+<|endoftext|> english: Rename "original.filename" to "new.original.filename"
+bash: mv File <|endoftext|>
+<|endoftext|> english: Search all Python files in the current directory tree for string "import antigravity"
+bash: find Path -name Regex | xargs -I {} grep Regex {} <|endoftext|>
+<|endoftext|> english: Change permissions to u=rwx,g=rx,o= for all directories inside the current directory tree
+bash: find Path -type d -exec chmod Permission {} \; <|endoftext|>
+<|endoftext|> english: remove all the files in the current folder which have not been modified in the last 10 days
+bash: find Path -mtime +Timespan | xargs -I {} rm {} <|endoftext|>
+<|endoftext|> english: Remove regular files changed more than 15 days ago from the /tmp directory tree
+bash: find Path -ctime +Timespan -type f -exec rm {} \; <|endoftext|>
+<|endoftext|> english: looks for all files larger than 10 megabytes (10485760 bytes) within /home
+bash: find Path -type f -size +Size -print <|endoftext|>
+<|endoftext|> english: create directory temp into home directory
+bash: mkdir Directory <|endoftext|>
+<|endoftext|> english: start from current directory, skip the directory src/emacs and all files and directories under it, and print the names of the other files found
+bash: find Path -wholename Regex -prune -or -print <|endoftext|>
+<|endoftext|> english: display all files in the current folder after pruning those in the current folder ( dot is the output of this command )
+bash: find Path -prune -print <|endoftext|>
+<|endoftext|> english: Counts lines in file $file ignoring '//' commented lines, lines with spaces only and empty lines.
+bash: cat File | sed Program | sed Program | wc -l <|endoftext|>
+<|endoftext|> english: Find users whose names begin with "ab" or whose terminal from which they are logged in ends with "1"
+bash: who | grep -e Regex -e Regex <|endoftext|>
+<|endoftext|> english: Find all directories under current directory tree that were modified $FTIME days ago
+bash: find Path -type d -mtime Timespan <|endoftext|>
+<|endoftext|> english: Recursively copy all regular files below current directory to directory /tmp on hostname, connecting as ssh user matching current username on local host.
+bash: find Path -type f -exec scp {} File \; <|endoftext|>
+<|endoftext|> english: Find all files/directories under current directory with 'FooBar' in their paths and copy them to ~/foo/bar
+bash: find Path | grep Regex | xargs -I {} cp {} File <|endoftext|>
+<|endoftext|> english: Search the /root directory recursively for files named "FindCommandExamples.txt"
+bash: find Path -name Regex <|endoftext|>
+<|endoftext|> english: Find the first file/directory in ... directory and quit
+bash: find Path -print Path <|endoftext|>
+<|endoftext|> english: Print amount of space available on the file system containing path to the current working directory in megabytes.
+bash: df File -B Size | tail - Quantity | awk Program | grep Regex <|endoftext|>
+<|endoftext|> english: Delete all files named "filename" in the current directory tree, except the one with path ./path/to/filename
+bash: find Path -name Regex -and -not -path Regex -delete <|endoftext|>
+<|endoftext|> english: Print a sorted list of the extensions of the regular files from the current directory tree
+bash: find Path -type f | sed -e Program | sed -e Program | sort -u <|endoftext|>
+<|endoftext|> english: Find all files under /home/username/public_html/sites/all/modules and set their permission to 640
+bash: find Path -type f -exec chmod Permission {} + <|endoftext|>
+<|endoftext|> english: list files in /usr modified after the time which /tmp/stamp$$ modified
+bash: find Path -newer File <|endoftext|>
+<|endoftext|> english: find md5sum of 'string to be hashed'
+bash: echo Regex | md5 <|endoftext|>
+<|endoftext|> english: change the permissions of all the directories to 755 in the folder "/home/nobody/public_html"
+bash: find Path -type d -exec chmod Permission {} \; <|endoftext|>
+<|endoftext|> english: Search for line 111 in file "active_record.rb" with 2 lines of context
+bash: nl -b a -n ln File | grep -C Quantity Regex <|endoftext|>
+<|endoftext|> english: find all the regular/normal files in the current folder and replace everything expect the extension of the file and display unique file extensions
+bash: find Path -type f | sed -e Program | sort | uniq <|endoftext|>
+<|endoftext|> english: Delete all empty directories in minimum 2 levels down the root directory
+bash: find Path -mindepth Quantity -type d -empty -delete <|endoftext|>
+<|endoftext|> english: As root, edit the cron job list of user "apache" using the editor specified by EDITOR environment variable, or default /usr/bin/editor if this variable is not set.
+bash: crontab -e -u Regex <|endoftext|>
+<|endoftext|> english: Find all files under current directory matching the regex '.*\(\(error\|access\)\(_log\)?\|mod_jk\.log\)\.[0-9]+' in their paths
+bash: find Path -type f -regex Regex <|endoftext|>
+<|endoftext|> english: prints top 10 commands used
+bash: history | awk Program | awk Program | sort | uniq -c | sort -n -r | head <|endoftext|>
+<|endoftext|> english: find all the configuration files in the file system
+bash: find Path -name Regex <|endoftext|>
+<|endoftext|> english: find all the files in the folder "/u/bill" which have been accessed in the last 2-6 minutes
+bash: find Path -amin +Quantity -amin -Quantity <|endoftext|>
+<|endoftext|> english: List all *.txt files/directories under /etc
+bash: find Path -name Regex | xargs -I {} ls -l {} <|endoftext|>
+<|endoftext|> english: Set timestamp of B to the timestamp in stat format specified by variable "old_time"
+bash: touch $( date --date Regex ) File <|endoftext|>
+<|endoftext|> english: Find all *.foo files under current directory and print their contents
+bash: find Path -name Regex -exec cat {} \; <|endoftext|>
+<|endoftext|> english: calculate the total size of jpg files in current folder
+bash: find Path -name Regex -exec du -k {} \; | awk Program <|endoftext|>
+<|endoftext|> english: Calculate the md5 sum of the md5 sum of all the files sorted under "$path"
+bash: find Path -type f -print0 | sort -z | xargs -r -0 -I {} md5sum {} | md5sum <|endoftext|>
+<|endoftext|> english: display all text files in the current folder
+bash: find Path -type f -name Regex <|endoftext|>
+<|endoftext|> english: Execute the file utility for each file found under /etc and below
+bash: find Path -print0 | xargs -0 -I {} file {} <|endoftext|>
+<|endoftext|> english: find all the files in the current folder which are bigger than 1MB
+bash: find Path -size +Size -print <|endoftext|>
+<|endoftext|> english: Find all broken symlinks under /path/to/search directory
+bash: find Path -type l -xtype l <|endoftext|>
+<|endoftext|> english: Find all files/directories that were modified after February 1st under '/usr' directory tree
+bash: find Path -newermt Regex <|endoftext|>
+<|endoftext|> english: Find with combine multiple search criterias , in this command serach  files that begin with abc in there name and dont have .py extension .
+bash: find Path -type f -name Regex ! -name Regex <|endoftext|>
+<|endoftext|> english: Find all directories under '/nas' directory tree
+bash: find Path -type d <|endoftext|>
+<|endoftext|> english: Display differences between /destination/dir/1 and /destination/dir/2 excluding files that match any pattern in file "exclude.pats".
+bash: diff File File -r -X File <|endoftext|>
+<|endoftext|> english: find the MyCProgram.c (case insensitive find) under the current directory and run the md5sum command against it
+bash: find Path -iname Regex -exec md5sum {} \; <|endoftext|>
+<|endoftext|> english: display all the files in the folder "/dev" which belong to the user "peter"
+bash: find Path -user Regex | more <|endoftext|>
+<|endoftext|> english: Removes 'foo' file.
+bash: rm File <|endoftext|>
+<|endoftext|> english: Find all files/directories under current directory with the null character as the delimiter
+bash: find Path -print0 <|endoftext|>
+<|endoftext|> english: Find all files in the current directory tree named 'FILES.EXT'
+bash: find Path -name Regex <|endoftext|>
+<|endoftext|> english: Compress all files in directory "$PATH_TO_LOGS" that were last modified more than "$SOME_NUMBER_OF_DAYS" days ago
+bash: find Path -maxdepth Quantity -mtime +Timespan -exec gzip -N {} \; <|endoftext|>
+<|endoftext|> english: find all the files that have been changed today
+bash: find Path -ctime Timespan -type f <|endoftext|>
+<|endoftext|> english: Archive "/path/to/sfolder" to "name@remote.server:/path/to/remote/dfolder" compressing the data during transmission
+bash: rsync -a -v -l -z -p File File <|endoftext|>
+<|endoftext|> english: Find empty files under test directory
+bash: find Path -empty <|endoftext|>
+<|endoftext|> english: Displays the count of of each unique line read from standard input
+bash: sort | uniq -c <|endoftext|>
+<|endoftext|> english: find all files that belong to root user
+bash: find Path -uid Regex -print <|endoftext|>
+<|endoftext|> english: Calculate the md5 sum of "password"
+bash: echo Regex | md5sum <|endoftext|>
+<|endoftext|> english: Assign permissions 755 to directories in the current directory tree
+bash: find Path -type d -print0 | xargs -0 -I {} chmod Permission {} <|endoftext|>
+<|endoftext|> english: Make directories and parents as needed for each unique second "&" delimited field with " ", ",", and ":" removed in "filetypes.txt"
+bash: mkdir -p $( cut -f Number -d Regex File | sed Program | sort -u ) <|endoftext|>
+<|endoftext|> english: Find all files named "file.ext" in the current directory tree and print the path names of the directories they are in
+bash: find Path $( pwd ) -name Regex | xargs -l Quantity -I {} dirname {} <|endoftext|>
+<|endoftext|> english: search for all the files in the current directory which have the name a.out or core or which end with .o and delete them.
+bash: find Path \( -name Regex -or -name Regex -or -name Regex \) -exec rm {} \; <|endoftext|>
+<|endoftext|> english: List level 2 subdirectories of the current directory
+bash: find Path -mindepth Quantity -maxdepth Quantity -type d -printf '%M %u %g %p\n' <|endoftext|>
+<|endoftext|> english: Delete all files with '.old' extension under current directory tree
+bash: find Path -name Regex -print | xargs -I {} rm {} <|endoftext|>
+<|endoftext|> english: Find all the files in file system which are modified 50 days back
+bash: find Path -mtime Timespan <|endoftext|>
+<|endoftext|> english: Find all files with '.jpg' extension in the current directory ignoring sub-directories and archive them to a file named jpeg.tgz
+bash: find Path -maxdepth Quantity -iname Regex | xargs -I {} tar -c -z -v -f File {} <|endoftext|>
+<|endoftext|> english: use find -exec with multiple commands
+bash: find Path -name Regex -exec echo {} \; -exec grep Regex {} \; <|endoftext|>
+<|endoftext|> english: Remount "/system" with read only permission
+bash: mount -o remount,ro Regex <|endoftext|>
+<|endoftext|> english: search for all regular files in the current directory which have the extension "c" or "asm"
+bash: find Path -type f \( -iname Regex -or -iname Regex \) <|endoftext|>
+<|endoftext|> english: Remove the passphrase from ~/.ssh/id_rsa.
+bash: ssh-keygen -f File -P Regex <|endoftext|>
+<|endoftext|> english: List the files in the /etc directory tree containing text '128.200.34.'
+bash: find Path -type f -print | xargs -I {} grep -i -l Regex {} <|endoftext|>
+<|endoftext|> english: remove all the files in the present directory which have special characters in their name and do not search in the sub directories of the current folder.
+bash: find Path -name Regex -maxdepth Quantity -exec rm -f {} \; <|endoftext|>
+<|endoftext|> english: Execute commands from "$file" in the current shell.
+bash: source File <|endoftext|>
+<|endoftext|> english: List file contents of compressed file 'compressed.tar.gz'
+bash: gzip -l Regex <|endoftext|>
+<|endoftext|> english: Find SUID files
+bash: find Path -perm +Permission <|endoftext|>
+<|endoftext|> english: Output "stuff", removing "/foo/bar/" from the specified path.
+bash: basename Regex <|endoftext|>
+<|endoftext|> english: display the count of all the directories present in a folder
+bash: find Path -type d | wc -l <|endoftext|>
+<|endoftext|> english: Delete all regular files with '.txt' extension that were modified in more than 25 minutes ago in maximum 1 level down the directory '/home/u20806/public_html'
+bash: find Path -maxdepth Quantity -mmin +Quantity -type f -name Regex -delete <|endoftext|>
+<|endoftext|> english: List unique MD5 digests of all files in the current directory ending in .txt
+bash: md5sum File | cut -d Regex -f Number | sort -u <|endoftext|>
+<|endoftext|> english: display all the files in the home folder
+bash: find Path -print <|endoftext|>
+<|endoftext|> english: Print the time to ping "8.8.8.8" followed by a time stamp if the ping is greater than 58
+bash: ping Regex | awk Program <|endoftext|>
+<|endoftext|> english: Find all *.foo files under current directory and print their contents
+bash: cat $( find Path -name Regex -print ) <|endoftext|>
+<|endoftext|> english: Search for "foo" in every file in the current directory and number the output
+bash: grep Regex File | nl <|endoftext|>
+<|endoftext|> english: Make directory "/var/svn"
+bash: mkdir Directory <|endoftext|>
+<|endoftext|>
