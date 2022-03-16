@@ -6,6 +6,7 @@ We have checked the predictions of all models and listed the primary sources of 
 \newcolumntype{L}{>{\centering\arraybackslash}m{3.7cm}}
 \newcolumntype{M}{>{\centering\arraybackslash}m{1.7cm}}
 \newcolumntype{N}{>{\centering\arraybackslash}m{8.5cm}}
+\newcolumntype{O}{>{\centering\arraybackslash}m{6cm}}
 
 \begin{center}
 \begin{tabular}{ |M|L|L|L| } 
@@ -28,9 +29,24 @@ We have checked the predictions of all models and listed the primary sources of 
 \end{tabular}
 \end{center}
 
-Because neither BART nor GPT-2 can correctly capture the target utilities, they received a significant penalty for that and their scores were very low. The redundant utilities or identifies, on the other side, did not hurt that much, and consequently T5 got a high score and beat the GPT-3 baseline model.
+Because neither BART nor GPT-2 can correctly capture the target utilities, they received a significant penalty for that and their scores were very low. The redundant utilities or identifies, on the other side, did not hurt that much, and consequently T5 got a high score and beat the GPT-3 baseline model. It is strange that the BART model tends to get the wrong starting utility for almost all the examples (that's why the score of the model is close to -1.0), but got everything else correct in the predictions. More examples are shown as follows:
+\begin{center}
+\begin{tabular}{ |O|O| } 
+  \hline
+  Target & Prediction \\ 
+  \hline
+  comm -2 -3 File File & 
+  -2 -3 File File\\ 
+  \hline
+  chown Regex -R File & 
+  own Regex -R File \\ 
+  \hline
+  mv -f File File & mmv -f File File\\
+  \hline
+\end{tabular}
+\end{center}
 
-Another factor affecting the model performance is the data size. The number of examples we have is only 10,000, and we found no other dataset of comparable size on the internet. Our models should behave better if they could learn additional patterns from more training examples.
+First, we confirmed that the model actually was learning over epochs. How the model prediction changed for the same invocation``display all the html files in the current folder excluding search in the path ./foo'' has been summarized in the table below. Although none of the predictions correctly captured the target command, the model pruned the trailing garbage itself at the end and the predictions became more and more like Bash commands.
 
 \begin{center}
 \begin{tabular}{|M|N|}
@@ -46,14 +62,23 @@ Another factor affecting the model performance is the data size. The number of e
 \end{tabular}
 \end{center}
 
+One possible reason could be that although BART is good at capture the overall structure of the commands, it does not emphasize on the accuracy of each word. The model may not pay enough attention to the leading word of the prediction during training; instead the main effort of training could go to the study of "what the next word would be given the adjacent ones", but the leading word is only preceded by the bos token. Therefore, predicting the leading word would benefit little from the study of sentence structure. However, in Bash commands, the leading word is guaranteed to be a utility and carry the heaviest weight during execution.
 
-Although none of the predictions correctly captured the target command, the model pruned the trailing garbage itself at the end and the predictions became more and more like Bash commands.
+Also, with a closer look at the GPT2 predictions, we can have a guess on why the model made wrong interpretations often.  The example below shows the raw prediction of the GPT2 model when an invocation ``Change the ownership of all files in the current directory tree from root to www-data'' was provided.
 
-Also, another type of error have also been identified for all three models where unnecessary command pipelines were appended in the predictions
+\begin{verbatim}
+<|endoftext|> <|source|> Change the ownership of all files in the current 
+directory tree from root to www-data <|target|> (omit 23 <|endoftext|> tokens 
+here) Synchronize file systems to /tmp/ and output the result to console 
+<|target|> df File | awk Program | xargs -I {} ls -a -l -d -S -r File
+\end{verbatim}
+The model wrongly generated another invocation: ``Synchronize file systems to /tmp/ and output the result to console'', whose information was then mixed with the information carried by the real invocation, and totally messed the state of the model. Consequently, the final prediction, was now totally irrelevant to the true command ``find Path -user Regex -exec chown Regex {}''.
+
+Finally, another type of error that could be identified for all three models is the unnecessary command pipelines appended in the predictions, as
 \begin{verbatim}
 target    : cat File | sort -r -h 
 prediction: cat File | sort -n -r | grep -v Regex
 \end{verbatim}
 indicating that models failed to generate the end of text token at the right position.
 
-Such problems may be alleviated by using more robust models with defined penalty functions. Also, the number of examples we got is only 10,000, and a larger dataset will help to improve the model performance.
+Another factor affecting the model performance is the data size. The number of examples we have is only 10,000, and we found no other dataset of comparable size on the internet. Our models should behave better if they could learn additional patterns from more training examples.
