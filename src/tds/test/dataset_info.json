@@ -1,3 +1,35 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:19eaff3027dea3ea5525eb7d7d9646476cf25218704c5560951aa9b557f3f464
-size 663
+{
+  "builder_name": null,
+  "citation": "",
+  "config_name": null,
+  "dataset_size": null,
+  "description": "",
+  "download_checksums": null,
+  "download_size": null,
+  "features": {
+    "cmd": {
+      "dtype": "string",
+      "id": null,
+      "_type": "Value"
+    },
+    "nlc": {
+      "dtype": "string",
+      "id": null,
+      "_type": "Value"
+    },
+    "cmd_templated": {
+      "dtype": "string",
+      "id": null,
+      "_type": "Value"
+    }
+  },
+  "homepage": "",
+  "license": "",
+  "post_processed": null,
+  "post_processing_size": null,
+  "size_in_bytes": null,
+  "splits": null,
+  "supervised_keys": null,
+  "task_templates": null,
+  "version": null
+}

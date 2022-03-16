@@ -24,6 +24,7 @@
 \newcommand{\note}[1]{\textcolor{blue}{{#1}}}
 \newcommand{\abs}[1]{\left| #1\right|}
 \usepackage{amsmath}
+\usepackage{array}
 
 \title{
   Translating Natural Language to Bash Commands using Deep Neural Networks \\
@@ -69,69 +70,7 @@
 
 % {\color{red} This template does not contain the full instruction set for this assignment; please refer back to the milestone instructions PDF.}
 
-\section{Introduction}
-ash, the Unix command language, has long been used to interact with computers
-universally, expressively and efficiently.  However, due to the existence of
-numerous bash utilities (e.g. ``find'', ``cd'', ``mkdir'') and flags (e.g.
-``-f'', ``-r'' ), novitiates often find the terminal interface perplexing and
-are quickly overwhelmed by the syntax of Bash commands. Even experienced
-engineers frequently consult man-pages, online documentation, and online forms
-like Stack Overflow to learn about the particulars of various commands. This
-project aims to ease those burdens on new and experienced users alike, and
-develop tools to generate Bash commands from natural language. We want to
-provide a NLI (Natural Language Interface) enable people to interact with
-computers through natural languages, and make the programming resources more
-accessible to the public.
-
-However, translating natural language into bash can be challenging: different
-users have different ways to express logical statement in natural language; a
-single task may involve pipelines of different utilities, and the order of
-these utilities matters; one utility can be associated with multiple flags, and
-different flags can be switched; there are a lot of identifiers like specific
-paths or file names in bash commands, and we need a way to generalize our model
-predictions; and finally, the bash commands must be perfectly correct before
-they can be executed in terminals. Although it is impossible to solve all these
-problems, we tried to tackle some of them.
-
-In this work, we used the data from the NeurIPS 2020 NLC2CMD Challenge, and
-experimented with several transformer models, including GPT-2, BART, and T5, as
-well as different tokenization and postprocessing schemes to generate bash
-commands from natural language. We evaluated the model performance from both
-the training loss and a specific metric measuring how similar two Bash commands
-are, and compared our models with the baseline model provided in the
-competition.
-
-
-\section{Related Work}
-Code generation is a variant of semantic parsing, and a number of research
-works have been published in this area. One of the earliest and most successful
-studies was conducted to translate the natural language to SQL query, and Zhong
-et al. (2017) \cite{zhong2017seq2sql} proposed a deep augmented pointer network
-and achieved an execution accuracy of 60\% when combined with reinforcement
-learning. However, it must be taken into consideration that SQL is more like a
-domain specific language with a much simpler syntax.
-
-For high level programming language generation, there are recent attempts to
-translate well structured natural language input into Java or Python.  Ling et
-al. (2016) \cite{ling2016latent} proposed a generative mode with a multiple
-pointer network to generate code from texts in Trading Card Games, and such
-input language is rather formal. A more robust syntax-based model has been
-developed by Yin and Neubig (2017) \cite{yin2017syntactic} and tested on the
-same dataset, but the result was only found to be equally good. Rahit et al.
-(2019) \cite{rahit2019machine} used recurrent neural network (RNN) and
-long-short term memory (LSTM) to build their model and reported an accuracy as
-high as 74\% when the input was prepared in a format closer to pseudo code with
-keywords such as “define” and “if-else”.
-
-In the specific domain of Bash command generation, Lin et al. (2018)
-\cite{lin2018nl2bash} modified the seq2seq model by adding gated recurrent
-units (GRU) and RNN cells, and introducing a copying mechanism. The model was
-evaluated manually by people, rather than by an objective metric, and the
-accuracy was reported to be 0.29. This again confirmed the difficulty of the
-natural language to bash translation.
-
-% TODO: Yingxaio -- what about the competition winner? Ethan said we should
-% definitely include info from that during OH
+\input{introduction_and_related_work}
 
 \section{Approach}
 The NLC2CMD Challenge was held once by NeurIPS in 2020. The provided dataset
@@ -187,78 +126,7 @@ and our BART model, in particular, struggled with this.
 \section{Experiments}
 In this section, we will show the our experimental details and discuss on the results.
 
-\subsection{Data}
-The dataset we used is from the
-``\href{https://nlc2cmd.us-east.mybluemix.net/}{The NLC2CMD Competition},''
-consisting of 10,000 parallel translations of English (named as the
-``invocation'') and bash command (named as the ``cmd''), and one example is
-shown as follows:
-
-\begin{verbatim}
-invocation: Assign permissions 755 to directories in the current directory tree
-cmd: find . -type d -print0 | xargs -0 chmod 755
-\end{verbatim}
-
-% TODO: Yingxiao, no need to include the guide.
-% TODO: I think we need to give an example through tokenization and decoding for each model
-% this is just copypasta from before.
-Instead of a single task, most of the invocations involve a sequence of
-different tasks, and consequently the bash commands are usually in the form of
-long pipelines. In addition, since the bash commands contain identifiers, such
-as directory paths, file names, and permissions, a templatization scheme has
-been used by casting the shell commands into the corresponding abstract syntax
-trees (AST), replacing the identifiers and then casting the AST back to
-commands. The guide can be found
-\href{https://github.com/IBM/clai/tree/nlc2cmd}{here}. After this step, the
-command we saw in the previous example were templated into
-\begin{verbatim}
-cmd: find Path -type d -print0 | xargs -0 -I chmod Permission
-\end{verbatim}
-for easier generalization during training.
-
-The invocations and templated commands can be fed directly into the sequence
-to sequence models (i.e. BART and T5) as inputs and labels for training.
-However, for the causal language model GPT2, additional preprocessing much be
-performed because such model can only generate code token by token and there is
-no label at all. We introduced special tokens to separate the invocations and
-commands, and assemble them in the form of
-
-\begin{verbatim}
-<bos_token> <source_token> <invocation> <target_token>
-                                              <templated cmd> <eos_token> 
-\end{verbatim}
-
-The training set consisted of 10,140 examples and the test set 207,
-representing an approximately 98\% to 2\% percent split.
-
-\subsection{Evaluation method}
-The standard cross-entropy loss function was used to trained the models. But a
-more robust metric measuring the execution accuracy of the model predictions
-must be used, and we used the metric defined by the competition as
-\begin{align*}
-	S(p) & =\sum_{i\in[1,T]}\frac{1}{T}\times\left(
-	\mathbb{I}[U(c)_i=U(C)i]\times\frac{1}{2}\left(
-		1+\frac{1}{N}\left(X\right)\right) -\mathbb{I}[U(c)_i\ne U(C)_i]
-	\right)
-\end{align*}
-where $U(x)$ is a sequence of bash utilities in a command $x$, $c$ is the
-predicted bash command and $C$ is the ground truth bash command. Apart
-measuring whether the utilities in the two commands match, an additional
-variable $X$ has been introduced to measure whether the flags associated with
-each utility match or not, as
-\begin{equation*}
-	X = 2\times
-	|F(U(c)_i)\cap F(U(C)_i)| - |F(U(c)_i)\cup F(U(C)_i)|
-\end{equation*}
-where $F(x)$ refers to the set of bash flags in a command $x$. $T$ is the
-maximum length between $U(c)$ and $U(C)$ while $N$ is the maximum size between
-$F(c)$ and $F(C)$. Since the order of flags does not matter, set operations
-have been used here.
-
-This is a very strict metric penalizing for both incorrect and extra bash
-utilities and flags. The return value of the metric is between -1.0 and 1.0,
-and only a command which produces exactly the same execution result as the
-ground truth one can get a score of 1.0.
+\input{data_and_evaluation_method}
 
 \subsection{Experimental details}
 For this task, we tested 3 models: HuggingFace's
@@ -287,8 +155,8 @@ learn the structure of bash commands. Below, you can see that cross-entropy
 loss steadily decreased for all 3 models. Curiously, T5 recorded the highest
 loss, while performing best on the scoring metric used by the competition.
 \begin{center}
-	\includegraphics[scale=0.4]{loss.png}
-	\includegraphics[scale=0.4]{metric.png}
+	\includegraphics[scale=0.6]{loss.png}
+	\includegraphics[scale=0.6]{metric.png}
 \end{center}
 Despite improving on the training objective, all 3 of these models still
 produced garbled and verbose responses. Repetition was common for all 3,
@@ -378,44 +246,7 @@ with the GPT3 baseline are recorded in the following table:
 	\end{tabular}
 \end{center}
 
-\section{Analysis}
-% TODO: This needs to be cleaned up; I would put all invocations in a table, together
-% TODO: What were the primary sources of error for each model? It looks like BART wasn't predicting the binary
-One thing worth exploring is that for BART and GPT-2, although the training loss kept decreasing over epochs, the score was not improved that much. The raw model predictions have been extracted before postprocessing at the end of every epoch, and below is one example from the BART model:
-\begin{verbatim}
-invocation: display all the html files in the current folder excluding 
-            search in the path ./foo,
-target: find Path -path Regex -prune -or -type f -name Regex
-\end{verbatim}
-The prediction after the first epoch is
-\begin{verbatim}
-findfind Path -name Regex -prune -or -name f -name Regexexecexecexecexecexec
-execexecexecexecexecexecexecexecexec
-\end{verbatim}
-the prediction after the sixth epoch is
-\begin{verbatim}
-Path -path Regex -prune -or -path f -name Regex -findfindfindfind
-\end{verbatim}
-and the prediction after the fourteenth epoch is
-\begin{verbatim}
-findfind Path -path Regex -prune -or -name f -name Regex -print - -
-\end{verbatim}
-Although none of the predictions correctly captured the target command, the model actually was learning something during training and pruned the trailing garbage itself at the end. However, the model still missed the flag "-type" and output many redundant ones (but not totally nonsense), not much improvement in score was made.
-
-Also, one common error for all three models is unnecessary command sequences and here is one example
-\begin{verbatim}
-target    : cat File | sort -r -h 
-prediction: cat File | sort -n -r | grep -v Regex
-\end{verbatim}
-Another type of error is the repeating sequences shown in the example below
-\begin{verbatim}
-target    : mount -o remount,ro -t yaffs2 Regex Regex 
-prediction: mount Regex -o remount,rw Regex mount Regex -o remount,rw Regex 
-            mount Regex -o remount, rw ...
-\end{verbatim}
-where the model didn't know when to stop.
-
-Such problems may be alleviated by using more robust models with defined penalty functions. Also, the number of examples we got is only 10,000, and a larger dataset will help to improve the model performance.
+\input{analysis}
 
 \section{Conclusion}
 The three main discoveries of this project were: (1) the size of the dataset is

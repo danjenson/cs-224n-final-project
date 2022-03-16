@@ -1,3 +1,200 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:20805189df6039d72da7130baf3c66a9f07d2fb07dd22f763803f69a425e4d72
-size 7891
+find Path -type f -not -regex Regex -exec  \;
+ln -s -f $( readlink -f File ) Regex
+find Path -name Regex -prune -or -name Regex -prune -or -type f -print | xargs -I {} grep -E -i -l Regex {}
+find Path -mmin -Quantity -mmin +Quantity
+find Path -mmin -Quantity
+find Path -name Regex
+more File
+cat <( crontab -l ) <( echo Regex ) | crontab File
+find Path -mtime +Timespan -print
+find Path -maxdepth Quantity -name Regex | tail
+watch -d ls -l
+bunzip2 File File | wc -c
+find Path -mtime +Timespan -exec rm {} \;
+find Path -type f -exec ls -s {} \; | sort -n -r | head - Quantity
+find Path -type f -exec grep -i Regex {} \; -print | wc -l
+find Path -name Regex | xargs -I {} grep -E Regex {}
+find Path -maxdepth Quantity -type f | xargs -I {} grep -F Regex {}
+find Path -type f -empty -delete
+find Path -name Regex -exec mv {} File \;
+find Path -name Regex -type f
+find Path -type f -atime +Timespan
+uname -v | grep -o Regex
+find Path -name Regex -print
+find Path -name Regex | xargs -I {} rm {}
+mount Regex Regex -t ext4
+find Path $( pwd ) -type f | xargs -I {} sed -i Program {}
+find Path -type f
+find Path -nouser -or -nogroup
+find Path
+find Path -type d -exec chmod Permission {} \;
+basename $( echo Regex | tr Regex Regex )
+pstree --show-parents -p Regex | head -n Quantity | sed Program | grep Regex | wc -l
+find Path -type f -size +Size -exec ls -l -h {} \; | awk Program
+echo Regex | awk Program
+find Path -type f -printf '%TY-%Tm-%Td %TT   %p\n' | sort
+split
+find Path -name Regex -print0 | xargs -0 -I {} wc -w {}
+chown Regex File
+history | awk Program
+readlink --canonicalize --no-newline File
+chown -R -f Regex File
+find Path Path -xdev -name Regex -print
+find Path -type l -exec readlink -f {} \; | grep -v $( readlink -f File )
+date -d $( date -d Regex +%Y-%m-1 ) +%a
+cal
+sleep Timespan
+find Path -path Regex
+find Path -type f -perm Permission -print Path
+cp --parents File File File
+echo $( date ) Regex
+find Path -size +Size -size -Size
+find Path -type f -iname Regex -print0 | xargs -0 -I {} grep Regex {}
+find Path -mmin -Quantity -exec ls -l {} \;
+find Path -name Regex -exec dirname {} \; | sort -u
+find Path -regex Regex
+chmod Permission $( find Path -type f )
+find Path -name Regex -print -xdev
+find Path -name Regex
+find Path \( -newer File -or -user Regex \) -print
+scp -3 File File
+find Path -atime +Timespan -delete
+find Path -iname Regex
+find Path -type f -print0 | xargs -0 -n Quantity -I {} echo Regex {} | sh File
+find Path -name Regex
+find Path -iname Regex -atime +Timespan
+gunzip -t Regex
+hostname | tr Regex Regex | tr -d Regex | awk Program
+find Path -mtime -Timespan
+find Path -type f -print0 | xargs -0 -I {} grep Regex {}
+rsync -z -v -r --exclude Regex --include Regex --include Regex File File
+df | grep Regex
+find Path -type d -mmin +Quantity -print0 | xargs -0 -I {} rmdir {}
+cat File | xargs -n Quantity -I {} ping -c Quantity {}
+chown -R Regex File
+find Path -name Regex | grep Regex | xargs -i -I {} cp -p {} File {}
+ssh-keygen -f File -N Regex
+find Path -newermt Regex
+env -i Program
+find Path -type f \( -exec grep -q Regex {} \; -or -print \)
+du -s File | read Regex
+ln -s -f File Regex
+comm -1 -2 File File
+find Path -regextype posix-egrep -regex Regex
+mktemp -d Regex
+find Path Path -maxdepth Quantity -name Regex -printf '%f.torrent\n'
+find Path -type f -printf "\n%AD %AT %p" | head -n Quantity
+find Path -type f ! -perm Permission -print0 | xargs -0 -I {} chmod Permission {}
+find Path -atime +Timespan
+find Path -name Regex -type f
+find Path -print0 | sort -z | cpio -p -d -v -0 Regex
+find Path -type f -user Regex -perm -Permission -exec ls -l {} \;
+find Path ! \( -newer File -user Regex \) -print
+readlink --canonicalize --no-newline File
+df -h File
+mktemp Regex
+find Path -nouser -or -nogroup
+tree -f -i
+find Path \( ! -regex Regex \) -type f -print0 | xargs -0 -I {} sed -i Program {}
+find Path -name Regex
+find Path -name Regex -prune -or \( ! -name Regex -print0 \) | cpio -p -m -d -0 Regex
+find Path -exec echo {} \;
+set Regex
+bind Regex
+find Path -name Regex -prune -or -depth Path -print
+find Path -depth -type d -empty -exec rmdir {} \;
+ls -t -Q | tail -n +Quantity | xargs -I {} rm {}
+find Path -type f -exec chmod Permission {} \;
+echo -n | md5sum
+find Path -exec grep Regex {} \;
+find Path -type f ! -perm -Permission
+find Path -type d | sed -e Program -e Program | grep -v Regex | awk Program | xargs -I {} chgrp {}
+find Path -type f -printf '%T@ %p\n' | sort -n | tail - Quantity | cut -f Number -d Regex | sed Program | xargs -I {} ls -l {}
+find Path -type d -print0 | tr Regex Regex
+find Path -name Regex -type f -exec du -h {} \;
+find Path -name Regex -type f -cmin +Quantity | grep Regex | sed Program
+seq Number Number | head - Quantity
+find Path -iname Regex -type f
+find Path -name Regex -exec grep Regex {} File \;
+ifconfig Regex | grep Regex | awk Program | cut -d Regex -f Number
+find Path -iname Regex -size +Size
+groups Regex | grep Regex
+cat File | sort | sort -u -c
+find Path -name Regex
+find Path ! -name Regex
+diff -q -r File File
+find Path -name Regex -exec rm -f {} \;
+find Path -user Regex
+rm -f File File
+find Path Path -iname Regex -print0 | du --files0-from File -c -s | tail - Quantity
+bg Regex
+ln -s -- File Regex
+chown -R Regex File
+find Path -iname Regex -exec grep Regex {} \; -print | sed -r Program
+cat File | wc -l
+set | grep -A Quantity Regex | grep -m Quantity -B Quantity Regex
+join -1 Regex -2 Regex File File
+find Path -perm Permission
+find Path -xdev -size +Size -exec ls -l {} \;
+find Path -mindepth Quantity -type d -exec mv -t Directory {} +
+find Path -ctime -Timespan
+find Path -name Regex
+find | grep -E Regex
+find Path -uid Regex -print
+mktemp --tmpdir Directory Regex
+find Path -name Regex -type f -exec ln -s {} \;
+find Path \( -name Regex ! -path Regex \) -exec grep -I -w Regex {} +
+find Path -name Regex | sed Program
+find Path -name Regex
+find Path -type f -empty -delete
+mkdir --parents Directory
+find Path -exec curl Regex Regex Regex {} Regex \;
+ifconfig Regex | grep Regex | cut -d Regex -f Number | cut -d Regex -f Number
+find Path -type d \( ! -name Regex \) -or \( ! -name Regex \) -print
+find Path -type f -exec ls -s {} \; | sort -n | head - Quantity
+tar --one-file-system -c -z -v File | split -b Size File Regex
+find Path | wc -l
+ln -n -s -f File Regex
+tree -i -f | grep Regex | xargs -n Quantity -I {} grep -H Regex {}
+find Path -iname Regex
+find Path -type f -name Regex | xargs -I {} zcat {} | wc -l
+find Path -daystart -type f -mtime Timespan
+find Path -type f -group Regex
+find Path -group Regex -print
+history -r Quantity
+mkdir Directory
+find Path -type f -print
+find -L Path -type l
+find Path -maxdepth Quantity -empty -exec echo {} Regex Regex \;
+ssh-keygen -p -f File
+find Path -name Regex
+find Path $( pwd ) -name Regex -printf "%f\n"
+find Path -newer File
+echo Regex | rev | cut -d Regex -f Number | rev
+find Path -mindepth Quantity -maxdepth Quantity -type d -print0
+tac File | sed Program | tac
+find Path -type f -name Regex | xargs --replace Regex -I {} sed --in-place Regex Program {}
+cp --remove-destination $( readlink File ) File
+find Path -name Regex -exec wc -c {} + | tail -n Quantity | cut -d Regex -f Number
+find Path -type d -exec mkdir -p Directory \;
+sed Program File
+find Path -iname Regex
+find Path -exec basename {} \;
+chown -R Regex File
+echo Regex | readlink File
+find Path -prune -empty -type d
+find Path -type f -follow | xargs -I {} ls -a -l {} | awk Program | sort -u
+jobs -p | awk Program
+find Path -type f -printf '%p %s\n' | awk Program
+yes Regex | head - Quantity
+dig -x Regex Regex
+find Path -name Regex -type f -printf '"%p"\n' | xargs -I {} rm -f {}
+find Path -type f | cpio -p -v -d -m -B Regex
+find Path -print | xargs -I {} grep Regex {}
+ls -d File
+find Path -name Regex
+dig Regex
+find Path -name Regex -exec grep -I -w Regex {} + | grep -E -v Regex
+find Path -name Regex
+sed -i $( whoami ) File
+find Path -ls | awk Program
