@@ -1,37 +1,64 @@
 \section{Introduction}
-Bash, the Unix command language, has long been used to interact with computers
-universally, expressively and efficiently.  However, due to the existence of
-numerous bash binaries (e.g. ``find'', ``cd'', ``mkdir'') and flags (e.g.
-``-f'', ``-r'' ), novitiates often find the terminal interface perplexing and
-are quickly overwhelmed by the syntax of Bash commands. Even experienced
-engineers frequently consult man-pages, online documentation, and online forms
-like Stack Overflow to learn about the particulars of various commands. This
-project aims to ease those burdens on new and experienced users alike, and
-develop tools to generate Bash commands from natural language. We want to
-provide a NLI (Natural Language Interface) enabling people to interact with
-computers through natural languages, and thus make the programming resources more accessible to the general public.
-
-However, translating natural language into Bash can be challenging: different
-users have different ways to express logical statement in natural language; a
-single task may involve long pipelines of different binaries, and the order of
-these binaries is also important; each binary can be associated with multiple flags, and different flags carry different semantic meaning and imply different tasks when employed by different binaries; there are a lot of identifiers like specific paths or file names that cannot easily generalize; and finally, the translated command must be perfectly correct before
-they can be executed in terminals.
-
-In order to tackle some of these problems, we used the data from the NeurIPS 2020 NLC2CMD Challenge, and experimented with several transformer models, including GPT-2, BART, and T5, as well as different tokenization and postprocessing schemes to generate Bash commands from natural language in this work. We evaluated the model performance in terms of both
-the training loss and a specific metric measuring the execution accuracy of the prediction, and compared our models with the baseline model provided in the competition.
-
+Bash or the Bourne Again Shell, is a standard and popular command line
+interface to Unix-based computer systems. Despite it's popularity, it has a
+very steep learning curve. Novitiates are often overwhelmed by the concepts of
+binaries, flags, and arguments. Even experienced engineers frequently consult
+man-pages, online documentation, and online forms like Stack Overflow to learn
+about the particulars of various commands. This project aims to ease those
+burdens on new and experienced users alike, and develop tools to generate Bash
+commands from natural language. We want to provide a NLI (Natural Language
+Interface) enabling people to interact with computers through natural
+languages, and thus make the programming resources more accessible to the
+general public.
+\par
+However, translating natural language into Bash can be challenging: many
+natural language queries or commands can be converted into the same bash
+command; conversely, many bash commands may correspond to the same natural
+language command, due to it's inherent ambiguity and the required specificity
+of a bash command. Thus, there is a many-to-many relationship between natural
+language and bash commands. Further compounding this difficulty is that bash
+commands can be composed, generating pipelines of commands corresponding to
+entire data flows. Lastly, these meaning of these commands all shifts when
+either the order of the commands or their arguments are permuted. For this
+reason, generating a perfectly correct bash command from natural language can
+be extremely difficult.
+\par
+In order to tackle some of these problems, we used the data from the NeurIPS
+2020 NLC2CMD Challenge, and experimented with several transformer models,
+including GPT-2, BART, and T5, as well as different tokenization and
+post-processing schemes to generate Bash commands from natural language. We
+evaluated the model performance in terms of both the training loss and a
+specific metric measuring the accuracy of the prediction, and compared our
+models with the baseline model provided by the competition.
 
 \section{Related Work}
-Code generation is a variant of semantic parsing, and a number of research
-works have been published in this area. One of the earliest and most successful
-studies was conducted to translate the natural language to SQL query, and Zhong et al. (2017) \cite{zhong2017seq2sql} proposed a deep augmented pointer network and achieved an execution accuracy of 60\% with the help of reinforcement learning. However, since SQL is more like a domain specific language with a much simpler syntax, such a model may not generalize well into general-purpose programming language.
-
-For high-level programming language generation, there are recent attempts to
-translate well structured natural language input into Java or Python.  Ling et
-al. (2016) \cite{ling2016latent} proposed a generative mode with a multiple
-pointer network to generate code from texts in Trading Card Games, although the selected input language in the Games is rather formal than casual. A more robust syntax-based model has been developed by Yin and Neubig (2017) \cite{yin2017syntactic} and tested on the same dataset, but the result was only found to be equally good. Rahit et al.(2019) \cite{rahit2019machine} used recurrent neural network (RNN) and long-short term memory (LSTM) to build their model and reported an accuracy as high as 74\% when the input was prepared in a format closer to pseudo code with keywords such as “define” and “if-else”.
-
+Code generation is a variant of semantic parsing, and a significant amount of
+research has been published in this area. One of the earliest and most
+successful studies was conducted to translate the natural language to SQL
+query, and Zhong et al. (2017) \cite{zhong2017seq2sql} proposed a deep
+augmented pointer network and an loss function supplemented by reinforcement
+learning; in the SQL domain, they were able to achieve an execution accuracy of
+60\%. Notably, however, SQL is a singular well-defined syntax with a
+context-free grammar. Accordingly, this model does not always generalize well
+to programming languages like bash.
+\par
+For high-level programming language generation, there are a number of recent
+attempts to translate well-structured natural language input into Java or
+Python.  Ling et al. (2016) \cite{ling2016latent} proposed a generative mode
+with a multiple pointer network to generate code from texts in Trading Card
+Games, although the selected input language in the games very well-defined. A
+more robust syntax-based model has been developed by Yin and Neubig (2017)
+\cite{yin2017syntactic} and tested on the same dataset, but performance did not
+increase materially. Rahit et al.(2019) \cite{rahit2019machine} used recurrent
+neural network (RNN) and long-short term memory (LSTM) to build their model and
+reported an accuracy as high as 74\% when the input was prepared in a format
+closer to pseudocode with keywords such as ``define'' and ``if-else.''
+\par
 In the specific domain of Bash command generation, Lin et al. (2018)
 \cite{lin2018nl2bash} modified the seq2seq model by adding gated recurrent
 units (GRU) and RNN cells, and introducing a copying mechanism. The model was
-evaluated manually by people, rather than by an objective metric, and the accuracy was reported to be 0.29. Fu et al. (2021) \cite{Fu2021ATransform} built a transformer model combined with beam searching and won the NLC2CMD Challenge competition. They tested different models and concluded that transformer-based models could significantly outperform the RNN-based models.
+evaluated manually by people, rather than by an objective metric, and the
+accuracy was reported to be 0.29. Fu et al. (2021) \cite{Fu2021ATransform}
+built a transformer model combined with beam searching and won the NLC2CMD
+Challenge competition. They tested different models and concluded that
+transformer-based models could significantly outperform the RNN-based models.

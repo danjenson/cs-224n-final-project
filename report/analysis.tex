@@ -1,70 +1,72 @@
 \section{Analysis}
-% TODO: This needs to be cleaned up; I would put all invocations in a table, together
-% TODO: What were the primary sources of error for each model? It looks like BART wasn't predicting the binary
-We have checked the predictions of all models and listed the primary sources of error for each model in the table below, together with examples.
-
+The first task in analyzing model performance was error analysis. We checked all predictions on the test set by epoch for each model to discover generalizations, which are summarized in the following table:
 \newcolumntype{L}{>{\centering\arraybackslash}m{3.7cm}}
 \newcolumntype{M}{>{\centering\arraybackslash}m{1.7cm}}
 \newcolumntype{N}{>{\centering\arraybackslash}m{8.5cm}}
 \newcolumntype{O}{>{\centering\arraybackslash}m{6cm}}
 
 \begin{center}
-\begin{tabular}{ |M|L|L|L| } 
-  \hline
-  Model & BART & T5 & GPT-2 \\ 
-  \hline
-  Primary sources of error & 
-  missing or invalid binaries (like "findfind") & 
-  repetition of sequences or redundant identifiers & 
-  wrong interpretations of the invocation\\ 
-  \hline
-  Example target & find Path -name Regex -print | xargs -l -i -I {} wc {} {}, & 
-  yes Regex | sed Program &
-  sort <( sort -u File ) File File | uniq -u \\ 
-  \hline
-  Example prediction & 
-  Path -name Regex |print0 wargs -I QuantityI -I {} wc - & yes Regex | headt Program yes yes yes yes yes yes & 
-  find Path -iname Regex -exec grep -i Regex {}\\
-  \hline
-\end{tabular}
+	\begin{tabular}{ |M|L|L|L| }
+		\hline
+		\textbf{Model}                                         & \textbf{BART}                                              & \textbf{T5} & \textbf{GPT-2} \\
+		\hline
+		Primary sources of error                               &
+		missing or invalid binaries (like "findfind")          &
+		repetition of sequences or redundant tokens            &
+		wrong interpretations of the invocation                                                                                                            \\
+		\hline
+		Example target                                         & find Path -name Regex -print | xargs -l -i -I {} wc {} {}, &
+		yes Regex | sed Program                                &
+		sort <( sort -u File ) File File | uniq -u                                                                                                         \\
+		\hline
+		Example prediction                                     &
+		Path -name Regex |print0 wargs -I QuantityI -I {} wc - & yes Regex | headt Program yes yes yes yes yes yes          &
+		find Path -iname Regex -exec grep -i Regex {}                                                                                                      \\
+		\hline
+	\end{tabular}
 \end{center}
 
-Because neither BART nor GPT-2 could correctly capture the target binaries, they received a significant penalty for that. The redundant binaries or identifies, on the other side, did not hurt that much, and consequently T5 got a high score and beat the GPT-3 baseline model. It is strange that the BART model tended to get the wrong starting binary for almost all the examples (that's why the score of the model is close to -1.0), but got everything else correct in the predictions. More examples are shown as follows:
+Because both BART nor GPT-2 struggled to correctly capture the target binaries,
+they received a significant scoring penalties. The redundant binaries or flags
+and arguments, on the other side, were not so hardly penalized; consequently,
+T5 was able to edge out the GPT-3 baseline. Curiously, the BART model tended to
+get the wrong starting binary for almost all the examples, but did very well in predicting the remainder of the command. Here are some examples of this pathology:
 \begin{center}
-\begin{tabular}{ |O|O| } 
-  \hline
-  Target & Prediction \\ 
-  \hline
-  comm -2 -3 File File & 
-  -2 -3 File File\\ 
-  \hline
-  chown Regex -R File & 
-  own Regex -R File \\ 
-  \hline
-  mv -f File File & mmv -f File File\\
-  \hline
-\end{tabular}
+	\begin{tabular}{ |O|O| }
+		\hline
+		\textbf{Target}      & \textbf{Prediction} \\
+		\hline
+		comm -2 -3 File File &
+		-2 -3 File File                            \\
+		\hline
+		chown Regex -R File  &
+		own Regex -R File                          \\
+		\hline
+		mv -f File File      & mmv -f File File    \\
+		\hline
+	\end{tabular}
 \end{center}
-
-First, we confirmed that the model actually was learning over epochs. How the model prediction changed for the same input invocation``display all the html files in the current folder excluding search in the path ./foo'' has been summarized in the table below. Although none of the predictions correctly captured the target binary ``find", the model pruned the trailing garbage at the end itself and the predictions became more and more like Bash commands.
-
+In investigating this further, we first confirmed that the model was improving over epochs.
+We analyzed a single invocation: ``display all the html files in the current
+folder excluding search in the path ./foo'' over several epochs. Although none
+of the predictions correctly captured the target binary ``find,'' the model did
+improve in pruning trailing repetitions.
 \begin{center}
-\begin{tabular}{|M|N|}
-    \hline
-     Target&  find Path -path Regex -prune -or -type f -name Regex\\
-     \hline
-     Prediction (1 epoch)&  findfind Path -name Regex -prune -or -name f -name Regexexecexecexecexecexecexecexecexecexecexecexecexecexecexec\\
-     \hline
-     Prediction (6 epochs)&  Path -path Regex -prune -or -path f -name Regex -findfindfindfind\\
-     \hline
-     Prediction (14 epochs)& findfind Path -path Regex -prune -or -name f -name Regex -print - -\\
-     \hline
-\end{tabular}
+	\begin{tabular}{|M|N|}
+		\hline
+		Target                 & find Path -path Regex -prune -or -type f -name Regex                                                             \\
+		\hline
+		Prediction (1 epoch)   & findfind Path -name Regex -prune -or -name f -name Regexexecexecexecexecexecexecexecexecexecexecexecexecexecexec \\
+		\hline
+		Prediction (6 epochs)  & Path -path Regex -prune -or -path f -name Regex -findfindfindfind                                                \\
+		\hline
+		Prediction (14 epochs) & findfind Path -path Regex -prune -or -name f -name Regex -print - -                                              \\
+		\hline
+	\end{tabular}
 \end{center}
-
-One possible reason could be that although BART is good at capture the overall structure of the commands, it does not emphasize on the accuracy of each word. The model may not pay enough attention to the leading word of the prediction during training; instead the main effort of training could go to the study of "what the next word would be given the adjacent ones", but the leading word is only preceded by the bos token. Therefore, predicting the leading word would benefit little from the study of sentence structure. However, in Bash commands, the leading word is guaranteed to be a binary and carry the heaviest weight during execution.
-
-Also, with a closer look at the GPT-2 predictions, we can have a guess on why the model made wrong interpretations often.  The example below shows the raw prediction of the GPT-2 model when an invocation ``Change the ownership of all files in the current directory tree from root to www-data'' was provided.
+One possible reason for this aberrant behavior is that BART, while doing a reasonable job in capturing the intent of the sentence, struggled to develop individual token accuracy; in particular, the accuracy of the binary token. Predicting a binary given only the natural language and the beginning of sentence special token was difficult. Because predicting the binary is so important, we hypothesize that separating BART training into the following to phases may improve performance: (1) train only on the natural language command and the singular token corresponding to the correct Bash utility, and then (2) fine-tune the model further with the full templated Bash command. Improving binary prediction in BART would likely make it competitive with T5.
+\par
+We also investigated GPT-2 prediction errors. Here is an example prediction for the natural language invocation: ``Change the ownership of all files in the current directory tree from root to www-data'':
 
 \begin{verbatim}
 <|endoftext|> <|source|> Change the ownership of all files in the current 
@@ -72,13 +74,13 @@ directory tree from root to www-data <|target|> (omit 23 <|endoftext|> tokens
 here) Synchronize file systems to /tmp/ and output the result to console 
 <|target|> df File | awk Program | xargs -I {} ls -a -l -d -S -r File
 \end{verbatim}
-The model wrongly generated another invocation: ``Synchronize file systems to /tmp/ and output the result to console'', whose information was then mixed with the information carried by the real invocation, and totally messed the model states. Consequently, the final prediction was now totally irrelevant to the true command ``find Path -user Regex -exec chown Regex {}''.
-
-Finally, another type of error that could be identified for all three models is the unnecessary command pipelines appended in the predictions, as
+The model incorrectly generated another invocation: ``Synchronize file systems to /tmp/ and output the result to console.'' This has greater implications than simply generating additional cruft to be trimmed; it actually corrupts the hidden state of the model. Consequently, the final prediction was now totally irrelevant to the true command \texttt{find Path -user Regex -exec chown Regex \{\}}.
+\par
+The last error class, which was demonstrated by all 3 models was ``rambling,'' or inserting additional command sequences after the target sequence. Here is an example:
 \begin{verbatim}
 target    : cat File | sort -r -h 
 prediction: cat File | sort -n -r | grep -v Regex
 \end{verbatim}
-indicating that models failed to generate the end of text token at the right position.
-
-Another factor affecting the model performance is the data size. The number of examples we have is only 10,000, and we found no other dataset of comparable size on the internet. Our models should behave better if they could learn additional patterns from more training examples.
+This suggests that all the models failed to generate the end of text token in the correct location.
+\par
+While all of these models could be improved with longer training, phased training, and more sophisticated post-processing, the principal factor affecting performance was data size. 10,000 examples is insufficient to generate very accurate translations, and we were unable to find additional data sources that did not require significant preprocessing.

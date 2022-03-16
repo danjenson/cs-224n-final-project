@@ -36,6 +36,9 @@ def main():
         't5': t5['scores']['clean'],
         'gpt2': gpt2['scores']['clean'],
     })
+    binary_df = pd.DataFrame({
+        'bart': bart['scores']['binary'],
+    })
     sns.lineplot(x=both_df.index + 1, y=both_df.bart, color='blue')
     sns.lineplot(x=both_df.index + 1, y=both_df.gpt2, color='orange')
     sns.lineplot(x=both_df.index + 1, y=both_df.t5, color='green')
@@ -51,6 +54,10 @@ def main():
                  y=clean_df.t5,
                  color='green',
                  linestyle='--')
+    sns.lineplot(x=binary_df.index + 1,
+                 y=binary_df.bart,
+                 color='blue',
+                 linestyle=':')
     plt.axhline(y=-0.19, color='red')
     plt.title('Model Performance')
     plt.xlabel('Epoch')
@@ -63,6 +70,7 @@ def main():
             'BART: Clean',
             'GPT2: Clean',
             'T5: Clean',
+            'BART: Binary',
             'GPT3: Baseline',
         ],
         loc='center right',

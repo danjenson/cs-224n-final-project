@@ -1,76 +1,82 @@
 \subsection{Data}
 The dataset we used is from the
 ``\href{https://nlc2cmd.us-east.mybluemix.net/}{The NLC2CMD Competition},''
-consisting of 10,000 parallel translations of English (named as the
-``invocation'') and bash command (named as the ``cmd''), and one example is
-shown as follows:
-
+consisting of 10,000 parallel translations of English (labelled the
+``invocation'') and Bash command (labelled the ``cmd''). Here is an example:
 \begin{verbatim}
 invocation: Assign permissions 755 to directories in the current directory tree
 cmd: find . -type d -print0 | xargs -0 chmod 755
 \end{verbatim}
-
-
-Most of the invocations in the dataset involve a sequence of
-different tasks, and consequently the bash commands are usually in the form of
-long pipelines. In addition, since the bash commands contain identifiers, such
-as directory paths, file names, and permissions, a templatization scheme has
-been used by casting the shell commands into the corresponding abstract syntax
-trees (AST), replacing the identifiers and then casting the AST back to
-commands. After this step, the
-command we saw in the previous example becomes
+Most of the invocations in the dataset involve a sequence of different tasks,
+and consequently the Bash commands often consist of a series of pipelines. In
+addition, since the Bash commands contain identifiers, such as directory paths,
+file names, and permissions, a templatization scheme has been imposed by
+converting shell commands into their corresponding abstract syntax trees
+(ASTs), replacing identifier nodes with placeholders, and then recombining the
+command. Applying this process to the previous command produces the following
+templated command:
 \begin{verbatim}
-templatized cmd: find Path -type d -print0 | xargs -0 -I chmod Permission
+templated cmd: find Path -type d -print0 | xargs -0 -I chmod Permission
 \end{verbatim}
-for easier generalization during training.
-
-The dataset was split into the training and test sets with a ratio of 0.98 : 0.02, which produced a test set of slightly over 200 examples. The invocations and templatized commands must be tokenized by the tokenizer associated with each model, and the outputs of different tokenizers are different. Print out the output of the tokenizer (followed by a decoding process to translate the tokens back to words) and we can find that the above example has been tokenized in the form of
+This helps the model to generalize during training, without getting distracted
+by a myriad of specific identifiers.
+\par
+The dataset was split into the training and test sets with a ratio of 0.98 to 0.02, yielding 10,140 training examples and 207 test examples. The invocations and templated commands must be tokenized by the same tokenizer used in training each model; accordingly, the outputs vary by model and tokenizer. For instance, the BART tokenizer yields the following encoded example:
 \begin{verbatim}
 <s>Assign permissions 755 to directories in the current directory 
 tree</s></s>find Path -type d -print0 | xargs -0 -I chmod Permission</s>
 \end{verbatim}
-by the BART tokenizer, and in the form of
+While the T5 tokenizer yields the following:
 \begin{verbatim}
 Assign permissions 755 to directories in the current directory 
 tree</s> find Path -type d -print0 | xargs -0 -I chmod Permission</s>
 \end{verbatim}
-by the T5 tokenizer.
-
-For the causal language model GPT-2, additional preprocessing much be
-performed because the tokenizer doesn't distinguish between inputs and labels. We introduced special tokens to separate the invocations and
-commands, and assemble them in the form of
-
+The GPT-2 model does not ingest input as pairs, but instead entire sections of
+text. Natively, it only defines the beginning and ending special tokens, so so
+we had to develop our own encoding scheme to communicate the structure of our
+input to the GPT-2 model. The primary objective of the encoding scheme is to
+introduce tokens that signal the beginning of natural language and Bash commands. For this, we used the \texttt{<|source|>} and \texttt{<|target|>} tokens, but these could have been any tokens unlikely to be used by Bash utilities or arguments. The general template for the encoding scheme was as follows:
 \begin{verbatim}
 <bos_token> <source_token> <invocation> <target_token>
-
-                                              <templatized cmd> <eos_token> 
+                                              <templated cmd> <eos_token> 
 \end{verbatim}
-before feeding them into the GPT-2 tokenizer. For the example above, the output of the GPT-2 tokenizer is
+Using the above example, this produces the following:
 \begin{verbatim}
 <|endoftext|> <|source|> Assign permissions 755 to directories in the current
 directory tree <|target|> find Path -type d -print0 | xargs -0 -I chmod 
 Permission <|endoftext|>
-
 \end{verbatim}
+While this encoding was sufficient for training, we still found it difficult
+for GPT-2 to learn the semantics of our special tokens.
 
 
 \subsection{Evaluation method}
-The standard cross-entropy loss function was used to trained the models. But a more robust metric measuring the execution accuracy of the model predictions defined by the competition was used to evaluate the performance of our models. The metric is expressed mathematically as
+The standard cross-entropy loss function was used to train the models. But a
+more robust metric measuring the accuracy of the model predictions defined by
+the competition was used to evaluate the performance of our models. The metric
+is expressed mathematically as
 \begin{align*}
 	S(p) & =\sum_{i\in[1,T]}\frac{1}{T}\times\left(
 	\mathbb{I}[U(c)_i=U(C)i]\times\frac{1}{2}\left(
 		1+\frac{1}{N}\left(X\right)\right) -\mathbb{I}[U(c)_i\ne U(C)_i]
 	\right)
 \end{align*}
-where $U(x)$ is a sequence of bash binaries in a command $x$, $c$ is the
-predicted bash command and $C$ is the ground truth bash command.
-Apart from measuring whether the utilities in the two commands match, an additional variable $X$ has been introduced to measure whether the flags associated with each utility match or not, as
+where $U(x)$ is a sequence of Bash binaries in a command $x$, $c$ is the
+predicted Bash command and $C$ is the ground truth Bash command. Apart from
+measuring whether the utilities in the two commands match, an additional
+variable $X$ has been introduced to measure whether the flags associated with
+each utility match or not, as
 \begin{equation*}
 	X = 2\times
 	|F(U(c)_i)\cap F(U(C)_i)| - |F(U(c)_i)\cup F(U(C)_i)|
 \end{equation*}
-where $F(x)$ refers to
-the set of bash flags in a command $x$. $T$ is the maximum length between
-$U(c)$ and $U(C)$ while $N$ is the maximum size between $F(c)$ and $F(C)$. Since the order of flags does not matter, set operations have been used here.
-
-This is a very strict metric penalizing for both incorrect and extra bash utilities and flags. The return value of the metric is between -1.0 and 1.0, and only a command which produces exactly the same execution result as the ground truth one can get a score of 1.0.
+where $F(x)$ refers to the set of Bash flags in a command $x$. $T$ is the
+maximum length between $U(c)$ and $U(C)$ while $N$ is the maximum size between
+$F(c)$ and $F(C)$. Since the order of flags does not matter, these are set
+operations.
+\par
+It is important to note that this metric is extremely strict, assigning a score
+of nearly -1.0 for predicting the incorrect binary alone. It also penalizes
+extra and incorrect flags and arguments. The return value ranges from -1.0 to
+1.0, and a score of 1.0 is only awarded when a command is precisely equivalent
+to the golden one.
