@@ -11,33 +11,33 @@ cmd: find . -type d -print0 | xargs -0 chmod 755
 \end{verbatim}
 
 
-Instead of a single task, most of the invocations involve a sequence of
+Most of the invocations in the dataset involve a sequence of
 different tasks, and consequently the bash commands are usually in the form of
 long pipelines. In addition, since the bash commands contain identifiers, such
 as directory paths, file names, and permissions, a templatization scheme has
 been used by casting the shell commands into the corresponding abstract syntax
 trees (AST), replacing the identifiers and then casting the AST back to
 commands. After this step, the
-command we saw in the previous example were templatized into
+command we saw in the previous example becomes
 \begin{verbatim}
 templatized cmd: find Path -type d -print0 | xargs -0 -I chmod Permission
 \end{verbatim}
 for easier generalization during training.
 
-The dataset was split into the training and test sets with a ratio of 0.98 : 0.02. The invocations and templatized commands must be tokenized by the tokenizer associated with each model. and the outputs of different tokenizers are different. Print out the output of the tokenizer (followed by a decoding process to translate the tokens back to words) and we can find that the above example has been tokenized in the form of
+The dataset was split into the training and test sets with a ratio of 0.98 : 0.02, which produced a test set of slightly over 200 examples. The invocations and templatized commands must be tokenized by the tokenizer associated with each model, and the outputs of different tokenizers are different. Print out the output of the tokenizer (followed by a decoding process to translate the tokens back to words) and we can find that the above example has been tokenized in the form of
 \begin{verbatim}
 <s>Assign permissions 755 to directories in the current directory 
 tree</s></s>find Path -type d -print0 | xargs -0 -I chmod Permission</s>
 \end{verbatim}
-for the BART tokenizer, and in the form of
+by the BART tokenizer, and in the form of
 \begin{verbatim}
 Assign permissions 755 to directories in the current directory 
 tree</s> find Path -type d -print0 | xargs -0 -I chmod Permission</s>
 \end{verbatim}
 by the T5 tokenizer.
 
-For the causal language model GPT2, additional preprocessing much be
-performed. We introduced special tokens to separate the invocations and
+For the causal language model GPT-2, additional preprocessing much be
+performed because the tokenizer doesn't distinguish between inputs and labels. We introduced special tokens to separate the invocations and
 commands, and assemble them in the form of
 
 \begin{verbatim}
@@ -45,7 +45,7 @@ commands, and assemble them in the form of
 
                                               <templatized cmd> <eos_token> 
 \end{verbatim}
-before fed them into the GPT-2 tokenizer. For the example above, the output of the GPT-2 tokenizer is
+before feeding them into the GPT-2 tokenizer. For the example above, the output of the GPT-2 tokenizer is
 \begin{verbatim}
 <|endoftext|> <|source|> Assign permissions 755 to directories in the current
 directory tree <|target|> find Path -type d -print0 | xargs -0 -I chmod 
@@ -55,16 +55,16 @@ Permission <|endoftext|>
 
 
 \subsection{Evaluation method}
-The standard cross-entropy loss function was used to trained the models. But a more robust metric measuring the execution accuracy of the model predictions must be used, and we used the metric defined by the competition as
+The standard cross-entropy loss function was used to trained the models. But a more robust metric measuring the execution accuracy of the model predictions defined by the competition was used to evaluate the performance of our models. The metric is expressed mathematically as
 \begin{align*}
 	S(p) & =\sum_{i\in[1,T]}\frac{1}{T}\times\left(
 	\mathbb{I}[U(c)_i=U(C)i]\times\frac{1}{2}\left(
 		1+\frac{1}{N}\left(X\right)\right) -\mathbb{I}[U(c)_i\ne U(C)_i]
 	\right)
 \end{align*}
-where $U(x)$ is a sequence of bash utilities in a command $x$, $c$ is the
+where $U(x)$ is a sequence of bash binaries in a command $x$, $c$ is the
 predicted bash command and $C$ is the ground truth bash command.
-Apart measuring whether the utilities in the two commands match, an additional variable $X$ has been introduced to measure whether the flags associated with each utility match or not, as
+Apart from measuring whether the utilities in the two commands match, an additional variable $X$ has been introduced to measure whether the flags associated with each utility match or not, as
 \begin{equation*}
 	X = 2\times
 	|F(U(c)_i)\cap F(U(C)_i)| - |F(U(c)_i)\cup F(U(C)_i)|
