@@ -51,7 +51,7 @@
 
 \begin{abstract}
   The objective of this project was to generate Bash commands from natural
-  language using a deep neural network. We used the NLC2CMD dataset and tested
+  language using deep neural networks. We used the NLC2CMD dataset and tested
   three models: GPT-2, BART, and T5. We also experimented with tokenization methods
   and post-processing to improve accuracy on the competition scoring metric. We
   found that while cross-entropy loss decreased steadily for all models,
@@ -137,9 +137,9 @@ For this task, we tested three models: HuggingFace's
   epochs. Batch size was limited to 10 examples to avoid out of memory errors.
   For training, we used the AdamW optimizer with weight decay regularization.
   The learning rate was linear with a warmup of 100 steps. Training time for
-  GPT-2, BART, and T5v1.1 was approximately 1, 1.5, and 1.25 hours,
+  GPT-2, BART, and T5 v1.1 was approximately 1, 1.5, and 1.25 hours,
   respectively, on an Azure NC6 instance with a Tesla V100 PCIe 16GB GPU. We
-  attempted training the original T5 large model, but even with five examples per
+  attempted to train the original T5 large model, but even with five examples per
   batch, we got out of memory errors; it also took approximately seven hours to
   fine-tune. All three models used cross-entropy loss for training, but were scored
   on the test set using the NLC2CMD metric at the end of each epoch.
@@ -247,18 +247,17 @@ The three main discoveries of this project were: (1) the size of the dataset is
 the most important factor in performance, (2) post-processing is required,
 especially when training on limited data, and (3) signaling structure to your
 model is difficult and subtle but dramatically affects performance, as seen
-with BART. While we are satisfied to have surpassed the GPT-3 baseline, the
-competition winner achieved a score of 0.53, which still significantly exceeds
-the 0.12 achieved by our T5 model. This team, however, augmented their data by
-scraping Stack Overflow and similar websites. They also implemented a variety of
-additional techniques, which included a custom beam search and ensemble
-classification, which were out of the scope of this project. We believe that
-success on this task lies principally in cultivating a larger dataset of
-parallel translations. T5 was able to achieve notable performance using only
-10,000 examples. With 100,000, we are confident that T5 may well exceed the
-performance of the top model, even in the absence of more sophisticated
-techniques.
-
+with BART and GPT-2. While we are satisfied to have surpassed the GPT-3
+baseline, the competition winner achieved a score of 0.53, which still
+significantly exceeds the 0.12 achieved by our T5 model. This team, however,
+augmented their data by scraping Stack Overflow and similar websites. They also
+implemented a variety of additional techniques, which included a custom beam
+search and ensemble classification, which were out of the scope of this
+project. We believe that success on this task lies principally in cultivating a
+larger dataset of parallel translations. T5 was able to achieve notable
+performance using only 10,000 examples. With 100,000, we are confident that T5
+may well exceed the performance of the top model, even in the absence of more
+sophisticated techniques.
 
 \bibliographystyle{unsrt}
 \bibliography{references}
