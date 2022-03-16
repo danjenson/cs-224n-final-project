@@ -52,12 +52,12 @@
 \begin{abstract}
   The objective of this project was to generate Bash commands from natural
   language using a deep neural network. We used the NLC2CMD dataset and tested
-  3 models: GPT-2, BART, and T5. We also experimented with tokenization methods
+  three models: GPT-2, BART, and T5. We also experimented with tokenization methods
   and post-processing to improve accuracy on the competition scoring metric. We
-  found that while cross-entropy loss increased steadily for all models,
+  found that while cross-entropy loss decreased steadily for all models,
   only T5 was able to continue learning the structure of Bash commands. After
   post-processing, all models improved, but only T5 and BART exceeded
-  the performance of the GPT-3 baseline model.
+  the performance of the GPT-three baseline model.
 \end{abstract}
 
 
@@ -80,11 +80,11 @@ that could be used to guide Bash users. Most competitors used GPT-2 as their
 base model. This paper also used GPT-2 but also surveyed two additional models,
 BART and T5, version 1.1.
 \par
-The general approach consisted of two principle methods: (1) text generation
-and (2) translation. First, it is important to note that Bash is not a
-context-free grammar. It admits of very little recursion and, while most
-binaries are POSIX compliant, their interfaces are still not entirely
-standardized. Flags often carry different semantic meaning and imply
+The general approach consisted of two methods: (1) text generation and (2)
+translation. First, it is important to note that Bash is not a context-free
+grammar. It admits of very little recursion and, while most binaries are POSIX
+compliant, interfaces are still not entirely standardized. Flags often carry
+different semantic meaning and imply
 different tasks when employed by different binaries. Moreover, flags often
 override, modify, or cancel the intent of other flags in the same command,
 introducing complex dependencies. These dependencies can also shift as the
@@ -101,20 +101,20 @@ GPT-2.
 \par
 While at first this task appears to be a straightforward translation task,
 after considering Bash more closely, one can see that it does not admit of many
-properties or structures of natural language. Accordingly, we thought that
-rather than trying to properly translate natural language into Bash, we could
+properties or structures of natural language. Accordingly, rather than trying
+to properly translate natural language into Bash, we thought that we could
 train a model to hallucinate Bash ``stories'' given natural language. The
 high-level idea here is that we fine-tune a GPT-2 model, showing it complete
 stories that consist of both a natural language portion and a Bash portion with
-some added special tokens. When training, GPT-2 learns common storylines,
-and when testing, we feed the trained model only the first half of the
-story, i.e. the natural language portion, and ask it to complete the story,
-hoping that it will generate Bash commands as the most likely story completion.
-In many respects, this idea performs quite well; however, a significant issue
-with this approach is constraining responses from GPT-2. How long should the
-story be? When does the real content of the ``Bash story'' start and end? What
-happens when GPT-2 has multiple endings? These questions are detailed in the
-error analysis section.
+some added special tokens. When training, GPT-2 learns common storylines.
+When testing, we feed the trained model only the first half of the story, i.e.
+the natural language portion, and ask it to complete the story, hoping that it
+will generate Bash commands as the most likely story completion. In many
+respects, this idea performs quite well; however, a significant issue with this
+approach is constraining responses from GPT-2. How long should the story be?
+When does the real content of the ``Bash story'' start and end? What happens
+when GPT-2 has multiple endings? These questions are detailed in the error
+analysis section.
 \par
 The second approach we used was a more traditional seq2seq language modeling
 approach. Pre-trained models for BART and T5 are easily fine-tuned for
@@ -128,7 +128,7 @@ and our BART model, in particular, struggled with this.
 \input{data_and_evaluation_method}
 
 \subsection{Experimental details}
-For this task, we tested 3 models: HuggingFace's
+For this task, we tested three models: HuggingFace's
 \href{https://huggingface.co/GPT-2}{GPT-2}\cite{GPT-2},
 \href{https://huggingface.co/facebook/bart-large}{Facebook's BART
 	Large}\cite{bart}, and \href{https://huggingface.co/google/t5-v1_1-base}{Google's T5 v1.1
@@ -139,23 +139,23 @@ For this task, we tested 3 models: HuggingFace's
   The learning rate was linear with a warmup of 100 steps. Training time for
   GPT-2, BART, and T5v1.1 was approximately 1, 1.5, and 1.25 hours,
   respectively, on an Azure NC6 instance with a Tesla V100 PCIe 16GB GPU. We
-  attempted training the original T5 large model, but even with 5 examples per
-  batch, we got out of memory errors; it also took approximately 7 hours to
-  fine-tune. All 3 models used cross-entropy loss for training, but were scored
+  attempted training the original T5 large model, but even with five examples per
+  batch, we got out of memory errors; it also took approximately seven hours to
+  fine-tune. All three models used cross-entropy loss for training, but were scored
   on the test set using the NLC2CMD metric at the end of each epoch.
 
 \subsection{Results}
 While training loss consistently improved, only T5 ultimately began to
 learn the structure of Bash commands. Below, you can see that cross-entropy
-loss steadily decreased for all 3 models. Curiously, T5 recorded the highest
+loss steadily decreased for all three models. Curiously, T5 recorded the highest
 loss, while performing best on the scoring metric used by the competition.
 \begin{center}
 	\includegraphics[scale=0.6]{loss.png}
 	\includegraphics[scale=0.6]{metric.png}
 \end{center}
-Despite improving on the training objective, all 3 of these models still
-produced garbled and verbose responses. Repetition was common for all 3,
-although most with BART. GPT-2 had a tendency to ``ramble;'' it was not uncommon
+Despite improving on the training objective, all three of these models still
+produced garbled and verbose responses. Repetition was common for all three,
+although most common with BART. GPT-2 had a tendency to ``ramble;'' it was not uncommon
 for GPT-2 to generate natural language intermixed with Bash commands. It also
 frequently produced multiple ``target stories.'' Here we define a target story
 as a section of output text that begins with the special token
@@ -177,28 +177,28 @@ in the encoded input. Here is an example row of output from the modeling process
     | xargs -0 -I {} grep -H Regex {}   "
 },
 \end{minted}
-Here you can see several types of errors affecting performance. A detailed
-analysis is left for the subsequent section, but here we will highlight 3
+Here, you can see several types of errors affecting performance. A detailed
+analysis is left for the subsequent section, but here we will highlight three
 issues that motivated our post-processing. First, you can see that GPT-2 outputs
 multiple target stories, i.e. in the prediction, there are two chunks of text
-following a special target token. Second, we can see that GPT-2 still had
+following a special target token. Second, we can see that GPT-2 had
 not internalized the meaning of the target token, because it continued to predict
-natural language as well as special end of sentence tokens,
+natural language as well as special end-of-sentence tokens,
 \texttt{<|endoftext|>}, after the target token. Third, we can see hints of
-GPT-2's pretraining through the inserted sentence ``The first day of the year is
+GPT-2's pretraining through the inserted sentence, ``The first day of the year is
 a long one for the first day of the year.'' This suggests that GPT-2 is still
 heavily biased toward its pretraining data, despite being fine-tuned to produce
 Bash commands. BART and T5 had similar errors, but those are left for the
 analysis section.
 \par
 Many competitors in the NLC2CMD competition actually crafted extremely
-sophisticated post-processing techniques. Some used ensemble models, other
+sophisticated post-processing techniques. Some used ensemble models, others
 implemented a custom structured beam-search. Given the time limitations for
 this project, we elected for a rule-based approach. We ran simple functions
-that could be composed across model predictions. We would then score the
-prediction after post-processing. We designed 3 post-processing functions to
+that could be composed across model predictions. We then scored the
+prediction after post-processing. We designed three post-processing functions to
 address our main problems: (1) multiple target texts, (2) repetition or
-rambling, and (3) binary prediction.
+rambling, and (three) binary prediction.
 \par
 Looking at the predictions, we noticed that, most often, the target text
 closest to a Bash command was the last sequence GPT-2 generated. Accordingly, we
@@ -224,7 +224,7 @@ find Path -name Regex -daystart -type f -print0 | xargs -0 -I {} grep -H
 \end{verbatim}
 While these cleaning techniques are quite crude, they significantly improve
 scores. The best model scores under different preprocessing functions along
-with the GPT-3 baseline are recorded in the following table:
+with the GPT-three baseline are recorded in the following table:
 
 \begin{center}
 	\begin{tabular}{rccccc}
@@ -233,12 +233,12 @@ with the GPT-3 baseline are recorded in the following table:
 		\midrule
     GPT-2 & -0.95 & -0.61 & -0.60 & -0.95          \\
     BART  & -0.95 & -0.95 & -0.95 & \textbf{-0.05}         \\
-    T5    & -0.13 & -0.06 & \textbf{0.12} & -0.12   \\
-		% GPT-2  & -0.951691 & -0.613975 & -0.602972      \\
+    T5    & -0.1three & -0.06 & \textbf{0.12} & -0.12   \\
+		% GPT-2  & -0.951691 & -0.61three975 & -0.602972      \\
 		% BART  & -0.951691 & -0.951691 & -0.951691      \\
-		% T5    & -0.125204 & -0.059434 & 0.119156       \\
+		% T5    & -0.125204 & -0.0594three4 & 0.119156       \\
 		\hline
-    GPT3  & -0.19 & -0.19 & -0.19 & -0.19         \\
+    GPTthree  & -0.19 & -0.19 & -0.19 & -0.19         \\
 		\bottomrule
 	\end{tabular}
 \end{center}
@@ -248,10 +248,10 @@ with the GPT-3 baseline are recorded in the following table:
 \section{Conclusion}
 The three main discoveries of this project were: (1) the size of the dataset is
 the most important factor in performance, (2) post-processing is required,
-especially when training on limited data, and (3) signaling structure to your
+especially when training on limited data, and (three) signaling structure to your
 model is difficult and subtle but dramatically affects performance, as seen
-with BART. While we are satisfied to have surpassed the GPT-3 baseline, the
-competition winner achieved a score of 0.53, which still significantly exceeds
+with BART. While we are satisfied to have surpassed the GPT-three baseline, the
+competition winner achieved a score of 0.5three, which still significantly exceeds
 the 0.12 achieved by our T5 model. This team, however, augmented their data by
 scraping Stack Overflow and similar websites. They also implemented a variety of
 additional techniques, which included a custom beam search and ensemble
@@ -259,7 +259,7 @@ classification, which were out of the scope of this project. We believe that
 success on this task lies principally in cultivating a larger dataset of
 parallel translations. T5 was able to achieve notable performance using only
 10,000 examples. With 100,000, we are confident that T5 may well exceed the
-performance of the top model, even in the absence more sophisticated
+performance of the top model, even in the absence of more sophisticated
 techniques.
 
 

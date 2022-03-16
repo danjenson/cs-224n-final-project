@@ -26,7 +26,7 @@ The first task in analyzing model performance was error analysis. We checked all
 	\end{tabular}
 \end{center}
 
-Because both BART nor GPT-2 struggled to correctly capture the target binaries,
+Because both BART and GPT-2 struggled to correctly capture the target binaries,
 they received significant scoring penalties. The redundant binaries or flags
 and arguments, on the other hand, were not so harshly penalized; consequently,
 T5 was able to edge out the GPT-3 baseline. Curiously, the BART model tended to
@@ -64,7 +64,17 @@ improve in pruning trailing repetitions.
 		\hline
 	\end{tabular}
 \end{center}
-One possible reason for this aberrant behavior is that BART, while doing a reasonable job in capturing the intent of the sentence, struggled to develop individual token accuracy; in particular, the accuracy of the binary token. Predicting a binary given only the natural language and the beginning of sentence special token was difficult. Because predicting the binary is so important, we hypothesize that separating BART training into the following to phases may improve performance: (1) train only on the natural language command and the singular token corresponding to the correct Bash utility, and then (2) fine-tune the model further with the full, templated Bash commands. Improving binary prediction in BART would likely make it competitive with T5.
+One possible reason for this aberrant behavior is that BART, while doing a
+reasonable job in capturing the intent of the sentence, struggled to develop
+individual token accuracy; in particular, the accuracy of the binary token.
+Predicting a binary given only the natural language and the
+beginning-of-sentence special token was difficult. Because predicting the
+binary is so important, we hypothesize that separating BART training into the
+following two phases may improve performance: (1) train only on the natural
+language command and the singular token corresponding to the correct Bash
+utility, and then (2)
+fine-tune the model further with the full, templated Bash commands. Improving
+binary prediction in BART would likely make it competitive with T5.
 \par
 We also investigated GPT-2 prediction errors. Here is an example prediction for the natural language invocation: ``Change the ownership of all files in the current directory tree from root to www-data'':
 
@@ -76,11 +86,16 @@ here) Synchronize file systems to /tmp/ and output the result to console
 \end{verbatim}
 The model incorrectly generated another invocation: ``Synchronize file systems to /tmp/ and output the result to console.'' This has greater implications than simply generating additional cruft to be trimmed; it actually corrupts the hidden state of the model. Consequently, the final prediction was orthogonal to the target command \texttt{find Path -user Regex -exec chown Regex \{\}}.
 \par
-The last error class, which was demonstrated by all 3 models was ``rambling,'' or inserting additional command sequences after the target sequence. Here is an example:
+The last error class, which was demonstrated by all 3 models, was ``rambling,'' or inserting additional command sequences after the target sequence. Here is an example:
 \begin{verbatim}
 target    : cat File | sort -r -h 
 prediction: cat File | sort -n -r | grep -v Regex
 \end{verbatim}
-This suggests that all the models failed to generate the end of text token in the correct location.
+This suggests that all the models failed to generate the end-of-text token in
+the correct location.
 \par
-While all of these models could be improved with longer training, phased training, and more sophisticated post-processing, the principal factor affecting performance was data size. 10,000 examples is insufficient to generate very accurate translations, and we were unable to find additional data sources that did not require significant preprocessing.
+While all of these models could be improved with longer training, phased
+training, and more sophisticated post-processing, the principal factor
+affecting performance was data size. 10,000 examples is insufficient to
+generate very accurate translations, and we were unable to find additional data
+sources that did not require significant preprocessing.

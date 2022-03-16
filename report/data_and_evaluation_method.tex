@@ -31,7 +31,7 @@ While the T5 tokenizer yields the following:
 Assign permissions 755 to directories in the current directory 
 tree</s> find Path -type d -print0 | xargs -0 -I chmod Permission</s>
 \end{verbatim}
-The GPT-2 model does not ingest input as pairs, but instead entire sections of
+The GPT-2 model does not ingest input as pairs, but instead as entire sections of
 text. Natively, it only defines the beginning and ending special tokens, so
 we had to develop our own encoding scheme to communicate the structure of our
 input to the GPT-2 model. The primary objective of the encoding scheme is to
@@ -54,23 +54,23 @@ for GPT-2 to learn the semantics of our special tokens.
 The standard cross-entropy loss function was used to train the models. But a
 more robust metric measuring the accuracy of the model predictions defined by
 the competition was used to evaluate the performance of our models. The metric
-is expressed mathematically as
+is expressed mathematically:
 \begin{align*}
 	S(p) & =\sum_{i\in[1,T]}\frac{1}{T}\times\left(
 	\mathbb{I}[U(c)_i=U(C)i]\times\frac{1}{2}\left(
 		1+\frac{1}{N}\left(X\right)\right) -\mathbb{I}[U(c)_i\ne U(C)_i]
 	\right)
 \end{align*}
-where $U(x)$ is a sequence of Bash binaries in a command $x$, $c$ is the
+$U(x)$ is a sequence of Bash binaries in a command $x$, $c$ is the
 predicted Bash command and $C$ is the ground truth Bash command. Apart from
-measuring whether the utilities in the two commands match, an additional
+measuring whether the executables in the two commands match, an additional
 variable $X$ has been introduced to measure whether the flags associated with
-each utility match or not, as
+each utility match or not:
 \begin{equation*}
 	X = 2\times
 	|F(U(c)_i)\cap F(U(C)_i)| - |F(U(c)_i)\cup F(U(C)_i)|
 \end{equation*}
-where $F(x)$ refers to the set of Bash flags in a command $x$. $T$ is the
+$F(x)$ refers to the set of Bash flags in a command $x$. $T$ is the
 maximum length between $U(c)$ and $U(C)$ while $N$ is the maximum size between
 $F(c)$ and $F(C)$. Since the order of flags does not matter, these are set
 operations.
