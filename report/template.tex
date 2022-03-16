@@ -211,7 +211,7 @@ Lastly, we attempted to do binary matching. Because the entire prediction's
 score hinges largely on selecting the right binary, we wrote a function that
 attempted to find the first token in a sequence that closely matched a top 100
 Bash utility name. This function only materially improved performance for BART,
-but it was extremely noisy can be seen in the above model performance chart.
+but it was extremely noisy, as can be seen in the above model performance chart.
 Using the above prediction and running through \texttt{clean} yields the
 following:
 \begin{verbatim}
@@ -224,7 +224,7 @@ find Path -name Regex -daystart -type f -print0 | xargs -0 -I {} grep -H
 \end{verbatim}
 While these cleaning techniques are quite crude, they significantly improve
 scores. The best model scores under different preprocessing functions along
-with the GPT3 baseline are recorded in the following table:
+with the GPT-3 baseline are recorded in the following table:
 
 \begin{center}
 	\begin{tabular}{rccccc}

@@ -1,8 +1,8 @@
 \subsection{Data}
 The dataset we used is from the
 ``\href{https://nlc2cmd.us-east.mybluemix.net/}{The NLC2CMD Competition},''
-consisting of 10,000 parallel translations of English (labelled the
-``invocation'') and Bash command (labelled the ``cmd''). Here is an example:
+consisting of 10,000 parallel translations of English (labelled
+``invocation'') and Bash commands (labelled ``cmd''). Here is an example:
 \begin{verbatim}
 invocation: Assign permissions 755 to directories in the current directory tree
 cmd: find . -type d -print0 | xargs -0 chmod 755
@@ -32,7 +32,7 @@ Assign permissions 755 to directories in the current directory
 tree</s> find Path -type d -print0 | xargs -0 -I chmod Permission</s>
 \end{verbatim}
 The GPT-2 model does not ingest input as pairs, but instead entire sections of
-text. Natively, it only defines the beginning and ending special tokens, so so
+text. Natively, it only defines the beginning and ending special tokens, so
 we had to develop our own encoding scheme to communicate the structure of our
 input to the GPT-2 model. The primary objective of the encoding scheme is to
 introduce tokens that signal the beginning of natural language and Bash commands. For this, we used the \texttt{<|source|>} and \texttt{<|target|>} tokens, but these could have been any tokens unlikely to be used by Bash utilities or arguments. The general template for the encoding scheme was as follows:
@@ -40,7 +40,7 @@ introduce tokens that signal the beginning of natural language and Bash commands
 <bos_token> <source_token> <invocation> <target_token>
                                               <templated cmd> <eos_token> 
 \end{verbatim}
-Using the above example, this produces the following:
+Using the above example, this scheme produces the following encoding:
 \begin{verbatim}
 <|endoftext|> <|source|> Assign permissions 755 to directories in the current
 directory tree <|target|> find Path -type d -print0 | xargs -0 -I chmod 
