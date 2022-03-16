@@ -57,7 +57,7 @@
   found that while cross-entropy loss decreased steadily for all models,
   only T5 was able to continue learning the structure of Bash commands. After
   post-processing, all models improved, but only T5 and BART exceeded
-  the performance of the GPT-three baseline model.
+  the performance of the GPT-3 baseline model.
 \end{abstract}
 
 
@@ -77,7 +77,7 @@
 The NLC2CMD Challenge was held once by NeurIPS in 2020. The goal for
 competitors was to generate templated commands from natural language commands
 that could be used to guide Bash users. Most competitors used GPT-2 as their
-base model. This paper also used GPT-2 but also surveyed two additional models,
+base model. This paper used GPT-2 but also surveyed two additional models,
 BART and T5, version 1.1.
 \par
 The general approach consisted of two methods: (1) text generation and (2)
@@ -198,11 +198,11 @@ this project, we elected for a rule-based approach. We ran simple functions
 that could be composed across model predictions. We then scored the
 prediction after post-processing. We designed three post-processing functions to
 address our main problems: (1) multiple target texts, (2) repetition or
-rambling, and (three) binary prediction.
+rambling, and (3) binary prediction.
 \par
 Looking at the predictions, we noticed that, most often, the target text
 closest to a Bash command was the last sequence GPT-2 generated. Accordingly, we
-wrote a function we named \texttt{clean} that selected the last chunk of text
+wrote a function named \texttt{clean} that selected the last chunk of text
 associated with a target command. Second, because the scoring metric penalizes
 incorrect or excessive flags, we tried to trim repetitions and rambling with a
 function called \texttt{max\_len}. Tokenizing by separating on white space, we
@@ -212,7 +212,7 @@ score hinges largely on selecting the right binary, we wrote a function that
 attempted to find the first token in a sequence that closely matched a top 100
 Bash utility name. This function only materially improved performance for BART,
 but it was extremely noisy, as can be seen in the above model performance chart.
-Using the above prediction and running through \texttt{clean} yields the
+Using the above prediction and running through the \texttt{clean} function yields the
 following:
 \begin{verbatim}
 find Path -name Regex -daystart -type f -print0 | xargs -0 -I {} grep -H Regex {}
@@ -223,8 +223,8 @@ This is already a significant improvement. Further passing it through
 find Path -name Regex -daystart -type f -print0 | xargs -0 -I {} grep -H
 \end{verbatim}
 While these cleaning techniques are quite crude, they significantly improve
-scores. The best model scores under different preprocessing functions along
-with the GPT-three baseline are recorded in the following table:
+scores. The best model scores under different post-processing functions along
+with the GPT-3 baseline are recorded in the following table:
 
 \begin{center}
 	\begin{tabular}{rccccc}
@@ -233,12 +233,12 @@ with the GPT-three baseline are recorded in the following table:
 		\midrule
     GPT-2 & -0.95 & -0.61 & -0.60 & -0.95          \\
     BART  & -0.95 & -0.95 & -0.95 & \textbf{-0.05}         \\
-    T5    & -0.1three & -0.06 & \textbf{0.12} & -0.12   \\
+    T5    & -0.13 & -0.06 & \textbf{0.12} & -0.12   \\
 		% GPT-2  & -0.951691 & -0.61three975 & -0.602972      \\
 		% BART  & -0.951691 & -0.951691 & -0.951691      \\
 		% T5    & -0.125204 & -0.0594three4 & 0.119156       \\
 		\hline
-    GPTthree  & -0.19 & -0.19 & -0.19 & -0.19         \\
+    GPT-3  & -0.19 & -0.19 & -0.19 & -0.19         \\
 		\bottomrule
 	\end{tabular}
 \end{center}
@@ -248,10 +248,10 @@ with the GPT-three baseline are recorded in the following table:
 \section{Conclusion}
 The three main discoveries of this project were: (1) the size of the dataset is
 the most important factor in performance, (2) post-processing is required,
-especially when training on limited data, and (three) signaling structure to your
+especially when training on limited data, and (3) signaling structure to your
 model is difficult and subtle but dramatically affects performance, as seen
-with BART. While we are satisfied to have surpassed the GPT-three baseline, the
-competition winner achieved a score of 0.5three, which still significantly exceeds
+with BART. While we are satisfied to have surpassed the GPT-3 baseline, the
+competition winner achieved a score of 0.53, which still significantly exceeds
 the 0.12 achieved by our T5 model. This team, however, augmented their data by
 scraping Stack Overflow and similar websites. They also implemented a variety of
 additional techniques, which included a custom beam search and ensemble

@@ -73,7 +73,7 @@ binary is so important, we hypothesize that separating BART training into the
 following two phases may improve performance: (1) train only on the natural
 language command and the singular token corresponding to the correct Bash
 utility, and then (2)
-fine-tune the model further with the full, templated Bash commands. Improving
+fine-tune the model with the full, templated Bash commands. Improving
 binary prediction in BART would likely make it competitive with T5.
 \par
 We also investigated GPT-2 prediction errors. Here is an example prediction for the natural language invocation: ``Change the ownership of all files in the current directory tree from root to www-data'':
@@ -84,7 +84,7 @@ directory tree from root to www-data <|target|> (omit 23 <|endoftext|> tokens
 here) Synchronize file systems to /tmp/ and output the result to console 
 <|target|> df File | awk Program | xargs -I {} ls -a -l -d -S -r File
 \end{verbatim}
-The model incorrectly generated another invocation: ``Synchronize file systems to /tmp/ and output the result to console.'' This has greater implications than simply generating additional cruft to be trimmed; it actually corrupts the hidden state of the model. Consequently, the final prediction was orthogonal to the target command \texttt{find Path -user Regex -exec chown Regex \{\}}.
+The model incorrectly generated another invocation: ``Synchronize file systems to /tmp/ and output the result to console.'' This has greater implications than simply generating additional cruft to be trimmed; it actually corrupts the hidden state of the model. Consequently, the final prediction was orthogonal to the target command: \texttt{find Path -user Regex -exec chown Regex \{\}}.
 \par
 The last error class, which was demonstrated by all 3 models, was ``rambling,'' or inserting additional command sequences after the target sequence. Here is an example:
 \begin{verbatim}

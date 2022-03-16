@@ -5,9 +5,9 @@ very steep learning curve. Novitiates are often overwhelmed by the concepts of
 binaries, flags, and arguments. Even experienced engineers frequently consult
 man-pages, online documentation, and online forums like Stack Overflow to learn
 about the particulars of various commands. This project aims to ease those
-burdens on new and experienced users alike, and develop tools to generate Bash
-commands from natural language. We want to provide a Natural Language
-Interface that enables people to interact with computers through natural
+burdens on new and experienced users alike, and to develop tools to generate Bash
+commands from natural language. We want to provide a natural language
+interface that enables people to interact with computers through natural
 languages, and thus making programming resources more accessible to the
 general public.
 \par
@@ -34,7 +34,7 @@ competition.
 \section{Related Work}
 Code generation is a variant of semantic parsing, and a significant amount of
 research has been published in this area. One of the earliest and most
-successful studies was conducted to translate the natural language to SQL
+successful studies was conducted to translate natural language to SQL
 queries. Zhong et al. (2017) \cite{zhong2017seq2sql} proposed a deep
 augmented pointer network and a loss function supplemented by reinforcement
 learning. In the SQL domain, they were able to achieve an execution accuracy of
@@ -46,8 +46,8 @@ For high-level programming language generation, there are a number of recent
 attempts to translate well-structured natural language input into Java or
 Python.  Ling et al. (2016) \cite{ling2016latent} proposed a generative model
 with a multiple pointer network to generate code from texts in Trading Card
-Games, although the selected input language in the games very well-defined. A
-more robust syntax-based model has been developed by Yin and Neubig (2017)
+Games, although the selected input language in the games is very well-defined. A
+more robust syntax-based model was developed by Yin and Neubig (2017)
 \cite{yin2017syntactic} and tested on the same dataset, but performance did not
 increase materially. Rahit et al.(2019) \cite{rahit2019machine} used recurrent
 neural network (RNN) and long-short term memory (LSTM) cells to build their model and
@@ -59,6 +59,6 @@ In the specific domain of Bash command generation, Lin et al. (2018)
 units (GRU) and RNN cells and introducing a copying mechanism. The model was
 evaluated manually by people, rather than by an objective metric, and the
 accuracy was reported to be 0.29. Fu et al. (2021) \cite{Fu2021ATransform}
-built a transformer model combined with beam searching and won the NLC2CMD
+built a transformer model combined with a custom beam search and won the NLC2CMD
 Challenge competition. They tested different models and concluded that
 transformer-based models could significantly outperform the RNN-based models.
